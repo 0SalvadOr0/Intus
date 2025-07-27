@@ -300,22 +300,38 @@ const Blog = () => {
                               </div>
                             )}
 
-                            {/* YouTube Video */}
+                            {/* Media Section - Professional Design */}
                             {post.youtube_url && (
-                              <div className="my-8 p-6 bg-gradient-to-r from-red-500/10 to-red-600/10 rounded-xl border border-red-500/20">
-                                <h3 className="text-xl font-semibold mb-3 text-foreground flex items-center gap-2">
-                                  <span className="text-red-500">����</span>
-                                  Video correlato
-                                </h3>
-                                <a
-                                  href={post.youtube_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-2 text-red-500 hover:text-red-600 font-medium transition-colors group"
-                                >
-                                  Guarda su YouTube
-                                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                </a>
+                              <div className="my-8">
+                                <div className="bg-gradient-to-r from-background to-muted/50 rounded-2xl p-6 border border-border/30 shadow-sm">
+                                  <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg flex-shrink-0">
+                                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62-4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                                      </svg>
+                                    </div>
+                                    <div className="flex-1">
+                                      <h3 className="text-lg font-semibold mb-2 text-foreground">
+                                        Contenuto video disponibile
+                                      </h3>
+                                      <p className="text-sm text-muted-foreground mb-4">
+                                        Approfondisci l'argomento guardando il video correlato a questo articolo.
+                                      </p>
+                                      <a
+                                        href={post.youtube_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg group"
+                                      >
+                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                          <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62-4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                                        </svg>
+                                        Guarda su YouTube
+                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             )}
                           </div>
