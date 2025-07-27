@@ -272,8 +272,8 @@ const Blog = () => {
                           </div>
 
                           {/* Article Content */}
-                          <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-p:leading-relaxed">
-                            <div className="text-lg leading-relaxed text-foreground/90 mb-8">
+                          <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-p:leading-relaxed animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+                            <div className="text-lg leading-relaxed text-foreground/90 mb-8 first-letter:text-5xl first-letter:font-bold first-letter:text-primary first-letter:float-left first-letter:mr-3 first-letter:mt-1">
                               {post.excerpt}
                             </div>
 
