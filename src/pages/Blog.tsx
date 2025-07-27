@@ -121,38 +121,65 @@ const Blog = () => {
             ) : filteredPosts.map((post, index) => (
               <Card
                 key={post.id}
-                className="group hover:shadow-elegant transition-all duration-300 hover:-translate-y-2 border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up overflow-hidden"
+                className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:scale-[1.02] border-0 bg-card/90 backdrop-blur-sm animate-fade-in-up overflow-hidden cursor-pointer"
                 style={{animationDelay: `${0.3 + index * 0.1}s`}}
+                onClick={() => setOpenPostId(post.id)}
               >
-                {post.copertina_url ? (
-                  <img src={post.copertina_url} alt="copertina" className="aspect-video w-full object-cover" />
-                ) : (
-                  <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                    <div className="text-4xl opacity-50">📰</div>
-                  </div>
-                )}
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge className={getCategoryColor(post.categoria)}>
+                <div className="relative overflow-hidden">
+                  {post.copertina_url ? (
+                    <img
+                      src={post.copertina_url}
+                      alt="copertina"
+                      className="aspect-video w-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="aspect-video bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20 flex items-center justify-center group-hover:from-primary/30 group-hover:via-accent/30 group-hover:to-heart/30 transition-all duration-500">
+                      <div className="text-4xl opacity-50 group-hover:opacity-70 transition-opacity">📰</div>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  {/* Floating Category Badge */}
+                  <div className="absolute top-3 left-3">
+                    <Badge className={`${getCategoryColor(post.categoria)} shadow-lg border-0 group-hover:scale-105 transition-transform duration-300`}>
                       {post.categoria}
                     </Badge>
                   </div>
-                  <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
+
+                  {/* Reading Time Badge */}
+                  <div className="absolute top-3 right-3">
+                    <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-foreground shadow-lg border-0 group-hover:scale-105 transition-transform duration-300">
+                      <Clock className="w-3 h-3 mr-1" />
+                      {calculateReadTime(post.excerpt || "")} min
+                    </Badge>
+                  </div>
+                </div>
+
+                <CardHeader className="pb-3">
+                  <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors duration-300 text-lg leading-tight">
                     {post.titolo}
                   </CardTitle>
                 </CardHeader>
+
                 <CardContent>
-                  <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
+                  <p className="text-muted-foreground text-sm line-clamp-3 mb-6 leading-relaxed">
                     {post.excerpt}
                   </p>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                    <div className="flex items-center">
-                      <User className="w-4 h-4 mr-1" />
-                      <span>{post.autore}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT') : "-"}</span>
+
+                  {/* Meta Information */}
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center">
+                        <User className="w-3 h-3 mr-1" />
+                        <span className="font-medium">{post.autore}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT', {
+                          day: 'numeric',
+                          month: 'short'
+                        }) : "-"}</span>
+                      </div>
                     </div>
                   </div>
                   <Dialog open={openPostId === post.id} onOpenChange={(open) => setOpenPostId(open ? post.id : null)}>
