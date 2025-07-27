@@ -228,16 +228,14 @@ const Blog = () => {
                         )}
 
                         {/* Close Button */}
-                        <DialogClose asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setOpenPostId(null)}
-                            className="absolute top-4 right-4 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-200 w-10 h-10"
-                          >
-                            <X className="w-5 h-5" />
-                          </Button>
-                        </DialogClose>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setOpenPostId(null)}
+                          className="absolute top-4 right-4 z-50 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg w-10 h-10"
+                        >
+                          <X className="w-5 h-5" />
+                        </Button>
 
                         {/* Category Badge */}
                         <div className="absolute top-4 left-4">
