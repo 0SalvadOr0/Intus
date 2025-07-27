@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar, User, Search, Filter, ArrowRight } from "lucide-react";
+import { Calendar, User, Search, Filter, ArrowRight, X, Clock, Share2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { BlogCardSkeleton } from "@/components/ui/loading-skeleton";
 
 interface BlogPost {
   id: number;
@@ -26,6 +27,14 @@ const Blog = () => {
 
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // Calcola tempo di lettura stimato (basato su 200 parole al minuto)
+  const calculateReadTime = (text: string) => {
+    const wordsPerMinute = 200;
+    const words = text.split(' ').length;
+    const minutes = Math.ceil(words / wordsPerMinute);
+    return minutes;
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -109,81 +118,240 @@ const Blog = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading ? (
-              <div className="text-center py-16 animate-fade-in-up">Caricamento...</div>
+              <>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <BlogCardSkeleton key={i} />
+                ))}
+              </>
             ) : filteredPosts.map((post, index) => (
               <Card
                 key={post.id}
-                className="group hover:shadow-elegant transition-all duration-300 hover:-translate-y-2 border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up overflow-hidden"
+                className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:scale-[1.02] border-0 bg-card/90 backdrop-blur-sm animate-fade-in-up overflow-hidden cursor-pointer"
                 style={{animationDelay: `${0.3 + index * 0.1}s`}}
+                onClick={() => setOpenPostId(post.id)}
               >
-                {post.copertina_url ? (
-                  <img src={post.copertina_url} alt="copertina" className="aspect-video w-full object-cover" />
-                ) : (
-                  <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                    <div className="text-4xl opacity-50">📰</div>
-                  </div>
-                )}
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge className={getCategoryColor(post.categoria)}>
+                <div className="relative overflow-hidden">
+                  {post.copertina_url ? (
+                    <img
+                      src={post.copertina_url}
+                      alt="copertina"
+                      className="aspect-video w-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="aspect-video bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20 flex items-center justify-center group-hover:from-primary/30 group-hover:via-accent/30 group-hover:to-heart/30 transition-all duration-500">
+                      <div className="text-4xl opacity-50 group-hover:opacity-70 transition-opacity">📰</div>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  {/* Floating Category Badge */}
+                  <div className="absolute top-3 left-3">
+                    <Badge className={`${getCategoryColor(post.categoria)} shadow-lg border-0 group-hover:scale-105 transition-transform duration-300`}>
                       {post.categoria}
                     </Badge>
                   </div>
-                  <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
+
+                  {/* Reading Time Badge */}
+                  <div className="absolute top-3 right-3">
+                    <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-foreground shadow-lg border-0 group-hover:scale-105 transition-transform duration-300">
+                      <Clock className="w-3 h-3 mr-1" />
+                      {calculateReadTime(post.excerpt || "")} min
+                    </Badge>
+                  </div>
+                </div>
+
+                <CardHeader className="pb-3">
+                  <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors duration-300 text-lg leading-tight">
                     {post.titolo}
                   </CardTitle>
                 </CardHeader>
+
                 <CardContent>
-                  <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
+                  <p className="text-muted-foreground text-sm line-clamp-3 mb-6 leading-relaxed">
                     {post.excerpt}
                   </p>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                    <div className="flex items-center">
-                      <User className="w-4 h-4 mr-1" />
-                      <span>{post.autore}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT') : "-"}</span>
+
+                  {/* Meta Information */}
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center">
+                        <User className="w-3 h-3 mr-1" />
+                        <span className="font-medium">{post.autore}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT', {
+                          day: 'numeric',
+                          month: 'short'
+                        }) : "-"}</span>
+                      </div>
                     </div>
                   </div>
-                  <Dialog open={openPostId === post.id} onOpenChange={(open) => setOpenPostId(open ? post.id : null)}>
-                    <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" onClick={() => setOpenPostId(post.id)}>
-                      Leggi tutto
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  {/* Read More Button */}
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
+                    <Button
+                      variant="ghost"
+                      className="w-full relative border border-border/50 group-hover:border-primary/50 group-hover:bg-primary/5 transition-all duration-300 text-sm font-medium"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenPostId(post.id);
+                      }}
+                    >
+                      Leggi l'articolo completo
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
-                    <DialogContent className="max-w-lg">
-                      <DialogHeader>
+                  </div>
+
+                  <Dialog open={openPostId === post.id} onOpenChange={(open) => setOpenPostId(open ? post.id : null)}>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-background/95 backdrop-blur-md border-0 shadow-2xl">
+                      <DialogHeader className="sr-only">
                         <DialogTitle>{post.titolo}</DialogTitle>
-                        <DialogDescription>{post.categoria}</DialogDescription>
+                        <DialogDescription>Articolo nella categoria {post.categoria}</DialogDescription>
                       </DialogHeader>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-                        <User className="w-4 h-4 mr-1" />
-                        <span>{post.autore}</span>
-                        <Calendar className="w-4 h-4 ml-4 mr-1" />
-                        <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT') : "-"}</span>
-                      </div>
-                      <div className="mb-4">
-                        <Badge className={getCategoryColor(post.categoria)}>{post.categoria}</Badge>
-                      </div>
-                      <div className="prose max-w-none">
-                        <p>{post.excerpt}</p>
-                        {Array.isArray(post.immagini) && post.immagini.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-4">
-                            {post.immagini.map((img, i) => (
-                              <img key={i} src={img} alt="img" className="w-24 h-24 object-cover rounded border" />
-                            ))}
+
+                      {/* Hero Section */}
+                      <div className="relative">
+                        {post.copertina_url ? (
+                          <div className="relative h-64 md:h-80 overflow-hidden">
+                            <img
+                              src={post.copertina_url}
+                              alt={post.titolo}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                          </div>
+                        ) : (
+                          <div className="h-64 md:h-80 bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20 flex items-center justify-center">
+                            <div className="text-8xl opacity-30">📰</div>
                           </div>
                         )}
-                        {post.youtube_url && (
-                          <div className="mt-4">
-                            <a href={post.youtube_url} target="_blank" rel="noopener noreferrer" className="text-primary underline">Guarda su YouTube</a>
-                          </div>
-                        )}
+
+                        {/* Close Button */}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setOpenPostId(null)}
+                          className="absolute top-4 right-4 z-50 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg w-10 h-10"
+                        >
+                          <X className="w-5 h-5" />
+                        </Button>
+
+                        {/* Category Badge */}
+                        <div className="absolute top-4 left-4">
+                          <Badge className={`${getCategoryColor(post.categoria)} shadow-lg`}>
+                            {post.categoria}
+                          </Badge>
+                        </div>
                       </div>
-                      <DialogClose asChild>
-                        <Button variant="ghost" className="mt-4 w-full">Chiudi</Button>
-                      </DialogClose>
+
+                      {/* Content Section */}
+                      <div className="p-8 md:p-12">
+                          {/* Header */}
+                          <div className="mb-8">
+                            <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4 text-foreground">
+                              {post.titolo}
+                            </h1>
+
+                            {/* Meta Info */}
+                            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-l-4 border-primary/20 pl-4 py-3 bg-muted/30 rounded-r backdrop-blur-sm">
+                              <div className="flex items-center gap-2">
+                                <User className="w-4 h-4" />
+                                <span className="font-medium">{post.autore}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Calendar className="w-4 h-4" />
+                                <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                }) : "-"}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4" />
+                                <span>{calculateReadTime(post.excerpt || "")} min di lettura</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Article Content */}
+                          <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-p:leading-relaxed animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+                            <div className="text-lg leading-relaxed text-foreground/90 mb-8 first-letter:text-5xl first-letter:font-bold first-letter:text-primary first-letter:float-left first-letter:mr-3 first-letter:mt-1">
+                              {post.excerpt}
+                            </div>
+
+                            {/* Images Gallery */}
+                            {Array.isArray(post.immagini) && post.immagini.length > 0 && (
+                              <div className="my-8">
+                                <h3 className="text-xl font-semibold mb-4 text-foreground">Galleria</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                  {post.immagini.map((img, i) => (
+                                    <div key={i} className="group relative overflow-hidden rounded-lg aspect-square">
+                                      <img
+                                        src={img}
+                                        alt={`Immagine ${i + 1}`}
+                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                      />
+                                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Media Section - Professional Design */}
+                            {post.youtube_url && (
+                              <div className="my-8">
+                                <div className="bg-gradient-to-r from-background to-muted/50 rounded-2xl p-6 border border-border/30 shadow-sm">
+                                  <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg flex-shrink-0">
+                                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62-4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                                      </svg>
+                                    </div>
+                                    <div className="flex-1">
+                                      <h3 className="text-lg font-semibold mb-2 text-foreground">
+                                        Contenuto video disponibile
+                                      </h3>
+                                      <p className="text-sm text-muted-foreground mb-4">
+                                        Approfondisci l'argomento guardando il video correlato a questo articolo.
+                                      </p>
+                                      <a
+                                        href={post.youtube_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg group"
+                                      >
+                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                          <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62-4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                                        </svg>
+                                        Guarda su YouTube
+                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Footer Actions */}
+                        <div className="px-8 md:px-12 pb-8">
+                          <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/50">
+                            <Button
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => setOpenPostId(null)}
+                            >
+                              Chiudi articolo
+                            </Button>
+                            <Button className="flex-1 bg-primary hover:bg-primary/90">
+                              Condividi articolo
+                              <Share2 className="w-4 h-4 ml-2" />
+                            </Button>
+                          </div>
+                      </div>
                     </DialogContent>
                   </Dialog>
                 </CardContent>
