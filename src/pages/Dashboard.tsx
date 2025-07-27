@@ -1,0 +1,755 @@
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  Plus, 
+  Edit, 
+  Trash2, 
+  Eye, 
+  FileText, 
+  Calendar,
+  User,
+  BarChart3,
+  TrendingUp,
+  FolderOpen,
+  Youtube,
+  MapPin,
+  Users
+} from "lucide-react";
+import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
+import BlogImageUploader from "@/components/BlogImageUploader";
+import { supabase } from "@/lib/supabaseClient";
+import { useEffect } from "react";
+
+interface DraftPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  category: string;
+  status: "draft" | "published";
+  lastModified: string;
+  youtubeUrl?: string;
+}
+
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  location: string;
+  date: string;
+  participants: number;
+  youtubeUrl?: string;
+  status: "completed" | "ongoing" | "planned";
+}
+
+const Dashboard = () => {
+  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("overview");
+  const [blogPosts, setBlogPosts] = useState<any[]>([]);
+  const [blogLoading, setBlogLoading] = useState(false);
+
+  useEffect(() => {
+    if (["blog-manage", "drafts", "create"].includes(activeTab)) {
+      fetchBlogPosts();
+    }
+    // eslint-disable-next-line
+  }, [activeTab]);
+
+  const fetchBlogPosts = async () => {
+    setBlogLoading(true);
+    const { data, error } = await supabase
+      .from("blog_posts")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error) setBlogPosts(data || []);
+    setBlogLoading(false);
+  };
+
+  // Pubblica un articolo
+  const handlePublish = async (id: number) => {
+    const { error } = await supabase
+      .from("blog_posts")
+      .update({ pubblicato: true })
+      .eq("id", id);
+    if (error) {
+      toast({ title: "Errore pubblicazione", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Articolo pubblicato!" });
+      fetchBlogPosts();
+    }
+  };
+
+  // Elimina un articolo
+  const handleDelete = async (id: number) => {
+    if (!window.confirm("Sei sicuro di voler eliminare questo articolo?")) return;
+    const { error } = await supabase
+      .from("blog_posts")
+      .delete()
+      .eq("id", id);
+    if (error) {
+      toast({ title: "Errore eliminazione", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Articolo eliminato" });
+      fetchBlogPosts();
+    }
+  };
+
+  // Mostra anteprima articolo
+  const handlePreview = (post: any) => {
+    window.open(`/blog/preview/${post.id}`, "_blank");
+  };
+
+  const [newPost, setNewPost] = useState({
+    titolo: "",
+    contenuto: "",
+    categoria: "",
+    excerpt: "",
+    autore: "",
+    immagini: [] as string[],
+    copertina_url: "",
+    youtubeUrl: ""
+  });
+  const [newProject, setNewProject] = useState({
+    title: "",
+    description: "",
+    category: "",
+    location: "",
+    date: "",
+    participants: 0,
+    youtubeUrl: "",
+    status: "planned" as const
+  });
+
+  // Mock data
+  const draftPosts: DraftPost[] = [
+    {
+      id: 1,
+      title: "Progetto Sostenibilità 2024",
+      excerpt: "Nuove iniziative per un territorio più verde...",
+      category: "Territorio",
+      status: "draft",
+      lastModified: "2024-01-20"
+    },
+    {
+      id: 2,
+      title: "Workshop Digital Skills",
+      excerpt: "Formazione digitale per i giovani...",
+      category: "Politiche Giovanili", 
+      status: "draft",
+      lastModified: "2024-01-18",
+      youtubeUrl: "https://www.youtube.com/watch?v=example2"
+    }
+  ];
+
+  const draftProjects: Project[] = [
+    {
+      id: 1,
+      title: "Pulizia Parco Comunale",
+      description: "Giornata di volontariato per la pulizia e manutenzione del parco comunale...",
+      category: "Territorio",
+      location: "Parco Centrale",
+      date: "2024-02-15",
+      participants: 25,
+      status: "planned"
+    },
+    {
+      id: 2,
+      title: "Corso di Formazione Civica",
+      description: "Workshop sui diritti e doveri del cittadino...",
+      category: "Cittadinanza Attiva",
+      location: "Sala Conferenze",
+      date: "2024-02-20",
+      participants: 40,
+      youtubeUrl: "https://www.youtube.com/watch?v=example3",
+      status: "ongoing"
+    }
+  ];
+
+  const stats = [
+    {
+      title: "Articoli Pubblicati",
+      value: "24",
+      change: "+12%",
+      icon: FileText,
+      color: "text-primary"
+    },
+    {
+      title: "Visualizzazioni Totali",
+      value: "8.5K",
+      change: "+25%", 
+      icon: Eye,
+      color: "text-accent"
+    },
+    {
+      title: "Articoli in Bozza",
+      value: "6",
+      change: "+2",
+      icon: Edit,
+      color: "text-heart"
+    },
+    {
+      title: "Engagement Rate",
+      value: "68%",
+      change: "+8%",
+      icon: TrendingUp,
+      color: "text-primary"
+    }
+  ];
+
+  const handlePostImageUpload = (url: string) => {
+    setNewPost((prev) => ({ ...prev, immagini: [...prev.immagini, url] }));
+    if (!newPost.copertina_url) {
+      setNewPost((prev) => ({ ...prev, copertina_url: url }));
+    }
+  };
+
+  const handleSubmitPost = async () => {
+    if (!newPost.titolo || !newPost.contenuto || !newPost.categoria) {
+      toast({
+        title: "Errore",
+        description: "Compila tutti i campi obbligatori",
+        variant: "destructive"
+      });
+      return;
+    }
+    const { error } = await supabase.from("blog_posts").insert([
+      {
+        titolo: newPost.titolo,
+        contenuto: newPost.contenuto,
+        excerpt: newPost.excerpt,
+        autore: newPost.autore,
+        categoria: newPost.categoria,
+        immagini: newPost.immagini,
+        copertina_url: newPost.copertina_url,
+        youtube_url: newPost.youtubeUrl,
+        pubblicato: false
+      }
+    ]);
+    if (error) {
+      toast({ title: "Errore salvataggio", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Articolo salvato come bozza!" });
+      setNewPost({ titolo: "", contenuto: "", categoria: "", excerpt: "", autore: "", immagini: [], copertina_url: "", youtubeUrl: "" });
+      fetchBlogPosts();
+    }
+  };
+
+  const handleSubmitProject = () => {
+    if (!newProject.title || !newProject.description || !newProject.category) {
+      toast({
+        title: "Errore",
+        description: "Compila tutti i campi obbligatori",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: "Successo!",
+      description: "Progetto salvato come bozza",
+    });
+
+    setNewProject({
+      title: "",
+      description: "",
+      category: "",
+      location: "",
+      date: "",
+      participants: 0,
+      youtubeUrl: "",
+      status: "planned"
+    });
+  };
+
+  const TabButton = ({ id, label, icon: Icon }: { id: string, label: string, icon: any }) => (
+    <button
+      onClick={() => setActiveTab(id)}
+      className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+        activeTab === id 
+          ? "bg-primary text-primary-foreground shadow-md" 
+          : "text-muted-foreground hover:text-primary hover:bg-muted"
+      }`}
+    >
+      <Icon className="w-4 h-4" />
+      <span>{label}</span>
+    </button>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background pt-24">
+      {/* Header */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto">
+          <h1 className="text-4xl font-bold mb-2 animate-fade-in-up">
+            Dashboard <span className="text-primary">Intus</span>
+          </h1>
+          <p className="text-muted-foreground animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+            Gestisci i contenuti e monitora le performance del blog
+          </p>
+        </div>
+      </section>
+
+      {/* Navigation Tabs */}
+      <section className="px-4 mb-8">
+        <div className="container mx-auto">
+          <div className="flex flex-wrap gap-2 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+            <TabButton id="overview" label="Panoramica" icon={BarChart3} />
+            <TabButton id="create" label="Nuovo Articolo" icon={Plus} />
+            <TabButton id="create-project" label="Nuovo Progetto" icon={FolderOpen} />
+            <TabButton id="drafts" label="Bozze Articoli" icon={Edit} />
+            <TabButton id="project-drafts" label="Bozze Progetti" icon={FileText} />
+            <TabButton id="richieste-call-idee" label="Richieste Call Idee" icon={Eye} />
+            <TabButton id="blog-manage" label="Gestione Blog" icon={FileText} />
+        {activeTab === "blog-manage" && (
+          <div className="space-y-8">
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="w-5 h-5 mr-2 text-primary" />
+                  Articoli Blog
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {blogLoading ? (
+                  <div className="text-center text-muted-foreground">Caricamento...</div>
+                ) : blogPosts.length === 0 ? (
+                  <div className="text-center text-muted-foreground">Nessun articolo presente.</div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {blogPosts.filter(p => p.pubblicato === true).map((post) => (
+                      <div key={post.id} className="rounded-xl border border-border/50 bg-white/90 dark:bg-card/90 shadow-lg p-4 flex flex-col min-h-[320px] relative group">
+                        {post.copertina_url && <img src={post.copertina_url} alt="copertina" className="w-full h-40 object-cover rounded mb-2" />}
+                        <h3 className="font-bold text-lg mb-1 line-clamp-2">{post.titolo}</h3>
+                        <div className="text-xs text-muted-foreground mb-1">{post.categoria} • {post.autore}</div>
+                        <div className="text-sm mb-2 line-clamp-3">{post.excerpt}</div>
+                        <div className="flex flex-wrap gap-1 mt-auto">
+                          {Array.isArray(post.immagini) && post.immagini.map((img: string, i: number) => (
+                            <img key={i} src={img} alt="img" className="w-10 h-10 object-cover rounded border" />
+                          ))}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-2">Creato il {new Date(post.created_at).toLocaleDateString('it-IT')}</div>
+                        <button onClick={() => handleDelete(post.id)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-destructive text-white rounded-full p-1"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+        {activeTab === "richieste-call-idee" && (
+          <RichiesteCallIdeeTab />
+        )}
+          </div>
+        </div>
+      </section>
+
+      <div className="container mx-auto px-4 pb-16">
+        {/* Overview Tab */}
+        {activeTab === "overview" && (
+          <div className="space-y-8">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {stats.map((stat, index) => (
+                <Card 
+                  key={index}
+                  className="border-0 bg-card/80 backdrop-blur-sm hover:shadow-elegant transition-all duration-300 animate-fade-in-up"
+                  style={{animationDelay: `${0.3 + index * 0.1}s`}}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">{stat.title}</p>
+                        <div className="flex items-baseline space-x-2">
+                          <span className="text-2xl font-bold">{stat.value}</span>
+                          <span className="text-sm text-green-600 font-medium">{stat.change}</span>
+                        </div>
+                      </div>
+                      <stat.icon className={`w-8 h-8 ${stat.color}`} />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Recent Activity */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up" style={{animationDelay: '0.7s'}}>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Calendar className="w-5 h-5 mr-2 text-primary" />
+                  Attività Recente
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { action: "Pubblicato", title: "Youth Hub: uno spazio per i giovani", time: "2 ore fa" },
+                    { action: "Modificato", title: "Valorizzazione del centro storico", time: "1 giorno fa" },
+                    { action: "Creato", title: "Progetto Sostenibilità 2024", time: "3 giorni fa" }
+                  ].map((activity, index) => (
+                    <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        <div>
+                          <span className="font-medium">{activity.action}</span>
+                          <span className="text-muted-foreground"> "{activity.title}"</span>
+                        </div>
+                      </div>
+                      <span className="text-sm text-muted-foreground">{activity.time}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Create New Post Tab */}
+        {activeTab === "create" && (
+          <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Plus className="w-5 h-5 mr-2 text-primary" />
+                Crea Nuovo Articolo
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="titolo">Titolo *</Label>
+                  <Input
+                    id="titolo"
+                    placeholder="Inserisci il titolo dell'articolo"
+                    value={newPost.titolo}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, titolo: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="categoria">Categoria *</Label>
+                  <Input
+                    id="categoria"
+                    placeholder="Categoria"
+                    value={newPost.categoria}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, categoria: e.target.value }))}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="autore">Autore</Label>
+                <Input
+                  id="autore"
+                  placeholder="Nome autore"
+                  value={newPost.autore}
+                  onChange={(e) => setNewPost(prev => ({ ...prev, autore: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="excerpt">Anteprima</Label>
+                <Input
+                  id="excerpt"
+                  placeholder="Breve descrizione dell'articolo (opzionale)"
+                  value={newPost.excerpt}
+                  onChange={(e) => setNewPost(prev => ({ ...prev, excerpt: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="youtubeUrl">Link YouTube (opzionale)</Label>
+                <Input
+                  id="youtubeUrl"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  value={newPost.youtubeUrl}
+                  onChange={(e) => setNewPost(prev => ({ ...prev, youtubeUrl: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contenuto">Contenuto *</Label>
+                <Textarea
+                  id="contenuto"
+                  placeholder="Scrivi qui il contenuto dell'articolo..."
+                  value={newPost.contenuto}
+                  onChange={(e) => setNewPost(prev => ({ ...prev, contenuto: e.target.value }))}
+                  className="min-h-[200px]"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Immagini</Label>
+                <BlogImageUploader onUpload={handlePostImageUpload} />
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {newPost.immagini.map((img, i) => (
+                    <img key={i} src={img} alt="img" className="w-20 h-20 object-cover rounded border" />
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <Button onClick={handleSubmitPost} className="shadow-md">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Salva come Bozza
+                </Button>
+                <Button variant="outline">
+                  <Eye className="w-4 h-4 mr-2" />
+                  Anteprima
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Create Project Tab */}
+        {activeTab === "create-project" && (
+          <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <FolderOpen className="w-5 h-5 mr-2 text-primary" />
+                Crea Nuovo Progetto
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="project-title">Titolo *</Label>
+                  <Input
+                    id="project-title"
+                    placeholder="Inserisci il titolo del progetto"
+                    value={newProject.title}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, title: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-category">Categoria *</Label>
+                  <Select value={newProject.category} onValueChange={(value) => setNewProject(prev => ({ ...prev, category: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleziona categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Cittadinanza Attiva">Cittadinanza Attiva</SelectItem>
+                      <SelectItem value="Territorio">Territorio</SelectItem>
+                      <SelectItem value="Politiche Giovanili">Politiche Giovanili</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="project-location">Luogo</Label>
+                  <Input
+                    id="project-location"
+                    placeholder="Dove si svolge"
+                    value={newProject.location}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, location: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-date">Data</Label>
+                  <Input
+                    id="project-date"
+                    type="date"
+                    value={newProject.date}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, date: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-participants">Partecipanti</Label>
+                  <Input
+                    id="project-participants"
+                    type="number"
+                    placeholder="Numero stimato"
+                    value={newProject.participants || ""}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, participants: parseInt(e.target.value) || 0 }))}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="project-status">Stato</Label>
+                  <Select value={newProject.status} onValueChange={(value: any) => setNewProject(prev => ({ ...prev, status: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleziona stato" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="planned">Pianificato</SelectItem>
+                      <SelectItem value="ongoing">In Corso</SelectItem>
+                      <SelectItem value="completed">Completato</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-youtube">Link YouTube (opzionale)</Label>
+                  <Input
+                    id="project-youtube"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    value={newProject.youtubeUrl}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, youtubeUrl: e.target.value }))}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="project-description">Descrizione *</Label>
+                <Textarea
+                  id="project-description"
+                  placeholder="Descrivi il progetto..."
+                  value={newProject.description}
+                  onChange={(e) => setNewProject(prev => ({ ...prev, description: e.target.value }))}
+                  className="min-h-[150px]"
+                />
+              </div>
+
+              <div className="flex gap-4">
+                <Button onClick={handleSubmitProject} className="shadow-md">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Salva Progetto
+                </Button>
+                <Button variant="outline">
+                  <Eye className="w-4 h-4 mr-2" />
+                  Anteprima
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Drafts Tab */}
+        {activeTab === "drafts" && (
+          <div className="space-y-6">
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Edit className="w-5 h-5 mr-2 text-primary" />
+                  Bozze ({blogPosts.filter(p => p.pubblicato === false).length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {blogPosts.filter(p => p.pubblicato === false).map((post, index) => (
+                    <div 
+                      key={post.id}
+                      className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
+                      style={{animationDelay: `${0.1 + index * 0.1}s`}}
+                    >
+                      <div className="flex-grow">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="font-semibold">{post.titolo}</h3>
+                          <Badge variant="outline" className="text-xs">
+                            {post.categoria}
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            Bozza
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-1">{post.excerpt}</p>
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <div className="flex items-center">
+                            <User className="w-3 h-3 mr-1" />
+                            <span>Creato il {post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT') : "-"}</span>
+                          </div>
+                          {post.youtube_url && (
+                            <div className="flex items-center">
+                              <Youtube className="w-3 h-3 mr-1 text-red-500" />
+                              <span>Video</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button size="sm" variant="outline" onClick={() => handlePreview(post)}>
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => handlePublish(post.id)}>
+                          <FileText className="w-4 h-4 text-green-600" />
+                        </Button>
+                        <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => handleDelete(post.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Project Drafts Tab */}
+        {activeTab === "project-drafts" && (
+          <div className="space-y-6">
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FolderOpen className="w-5 h-5 mr-2 text-primary" />
+                  Progetti in Bozza ({draftProjects.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {draftProjects.map((project, index) => (
+                    <div 
+                      key={project.id}
+                      className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
+                      style={{animationDelay: `${0.1 + index * 0.1}s`}}
+                    >
+                      <div className="flex-grow">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="font-semibold">{project.title}</h3>
+                          <Badge variant="outline" className="text-xs">
+                            {project.category}
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            {project.status === "planned" ? "Pianificato" : 
+                             project.status === "ongoing" ? "In Corso" : "Completato"}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{project.description}</p>
+                        <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                          <div className="flex items-center">
+                            <MapPin className="w-3 h-3 mr-1" />
+                            <span>{project.location || "Da definire"}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            <span>{project.date ? new Date(project.date).toLocaleDateString('it-IT') : "Da pianificare"}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Users className="w-3 h-3 mr-1" />
+                            <span>{project.participants} partecipanti</span>
+                          </div>
+                          {project.youtubeUrl && (
+                            <div className="flex items-center">
+                              <Youtube className="w-3 h-3 mr-1 text-red-500" />
+                              <span>Video</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button size="sm" variant="outline">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="outline" className="text-destructive hover:text-destructive">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
