@@ -232,6 +232,7 @@ const Blog = () => {
                           <Button
                             variant="ghost"
                             size="icon"
+                            onClick={() => setOpenPostId(null)}
                             className="absolute top-4 right-4 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-200 w-10 h-10"
                           >
                             <X className="w-5 h-5" />
