@@ -182,11 +182,23 @@ const Blog = () => {
                       </div>
                     </div>
                   </div>
-                  <Dialog open={openPostId === post.id} onOpenChange={(open) => setOpenPostId(open ? post.id : null)}>
-                    <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" onClick={() => setOpenPostId(post.id)}>
-                      Leggi tutto
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  {/* Read More Button */}
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
+                    <Button
+                      variant="ghost"
+                      className="w-full relative border border-border/50 group-hover:border-primary/50 group-hover:bg-primary/5 transition-all duration-300 text-sm font-medium"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenPostId(post.id);
+                      }}
+                    >
+                      Leggi l'articolo completo
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
+                  </div>
+
+                  <Dialog open={openPostId === post.id} onOpenChange={(open) => setOpenPostId(open ? post.id : null)}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0 gap-0 bg-background/95 backdrop-blur-md border-0 shadow-2xl">
                       {/* Hero Section */}
                       <div className="relative">
