@@ -204,7 +204,7 @@ const Blog = () => {
                   </div>
 
                   <Dialog open={openPostId === post.id} onOpenChange={(open) => setOpenPostId(open ? post.id : null)}>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0 gap-0 bg-background/95 backdrop-blur-md border-0 shadow-2xl">
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-background/95 backdrop-blur-md border-0 shadow-2xl">
                       <DialogHeader className="sr-only">
                         <DialogTitle>{post.titolo}</DialogTitle>
                         <DialogDescription>Articolo nella categoria {post.categoria}</DialogDescription>
@@ -304,7 +304,7 @@ const Blog = () => {
                             {post.youtube_url && (
                               <div className="my-8 p-6 bg-gradient-to-r from-red-500/10 to-red-600/10 rounded-xl border border-red-500/20">
                                 <h3 className="text-xl font-semibold mb-3 text-foreground flex items-center gap-2">
-                                  <span className="text-red-500">📺</span>
+                                  <span className="text-red-500">����</span>
                                   Video correlato
                                 </h3>
                                 <a
