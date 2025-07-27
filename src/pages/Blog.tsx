@@ -242,7 +242,7 @@ const Blog = () => {
                       </div>
 
                       {/* Content Section */}
-                      <div className="overflow-y-auto max-h-[60vh]">
+                      <div className="overflow-y-auto max-h-[60vh] scroll-smooth">
                         <div className="p-8 md:p-12">
                           {/* Header */}
                           <div className="mb-8">
