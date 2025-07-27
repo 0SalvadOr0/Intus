@@ -246,8 +246,7 @@ const Blog = () => {
                       </div>
 
                       {/* Content Section */}
-                      <div className="overflow-y-auto max-h-[60vh] scroll-smooth">
-                        <div className="p-8 md:p-12">
+                      <div className="p-8 md:p-12">
                           {/* Header */}
                           <div className="mb-8">
                             <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4 text-foreground">
@@ -352,7 +351,6 @@ const Blog = () => {
                               <Share2 className="w-4 h-4 ml-2" />
                             </Button>
                           </div>
-                        </div>
                       </div>
                     </DialogContent>
                   </Dialog>
