@@ -177,7 +177,7 @@ const Blog = () => {
                             size="icon"
                             className="absolute top-4 right-4 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-200 w-10 h-10"
                           >
-                            <ArrowRight className="w-5 h-5 rotate-45" />
+                            <X className="w-5 h-5" />
                           </Button>
                         </DialogClose>
 
