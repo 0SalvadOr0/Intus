@@ -205,6 +205,11 @@ const Blog = () => {
 
                   <Dialog open={openPostId === post.id} onOpenChange={(open) => setOpenPostId(open ? post.id : null)}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0 gap-0 bg-background/95 backdrop-blur-md border-0 shadow-2xl">
+                      <DialogHeader className="sr-only">
+                        <DialogTitle>{post.titolo}</DialogTitle>
+                        <DialogDescription>Articolo nella categoria {post.categoria}</DialogDescription>
+                      </DialogHeader>
+
                       {/* Hero Section */}
                       <div className="relative">
                         {post.copertina_url ? (
