@@ -4,13 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar, User, Search, Filter, ArrowRight, X, Clock, Share2 } from "lucide-react";
+import { Calendar, User, Search, Filter, ArrowRight, X, Clock, Share2, Check, Copy } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { BlogCardSkeleton } from "@/components/ui/loading-skeleton";
+import { toast } from "@/hooks/use-toast";
 
 interface BlogPost {
   id: number;
   titolo: string;
+  contenuto: string; // 📝 Added missing content field
   excerpt: string;
   autore: string;
   created_at: string;
@@ -24,11 +26,11 @@ const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [openPostId, setOpenPostId] = useState<number|null>(null);
-
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false); // 🎯 Share functionality state
 
-  // Calcola tempo di lettura stimato (basato su 200 parole al minuto)
+  // 📊 Calculate reading time (based on 200 words per minute)
   const calculateReadTime = (text: string) => {
     const wordsPerMinute = 200;
     const words = text.split(' ').length;
@@ -36,25 +38,80 @@ const Blog = () => {
     return minutes;
   };
 
+  // 🔗 Share functionality implementation
+  const handleShare = async (post: BlogPost) => {
+    const shareData = {
+      title: post.titolo,
+      text: post.excerpt,
+      url: window.location.href + `?post=${post.id}`
+    };
+
+    try {
+      // 📱 Native Web Share API (mobile/modern browsers)
+      if (navigator.share) {
+        await navigator.share(shareData);
+        toast({
+          title: "Condivisione completata! ✅",
+          description: "L'articolo è stato condiviso con successo."
+        });
+      } else {
+        // 📋 Fallback: Copy to clipboard
+        await navigator.clipboard.writeText(`${post.titolo}\n\n${post.excerpt}\n\n${shareData.url}`);
+        setCopySuccess(true);
+        toast({
+          title: "Link copiato! 📋",
+          description: "Il link dell'articolo è stato copiato negli appunti."
+        });
+        
+        // Reset copy success state after 2 seconds
+        setTimeout(() => setCopySuccess(false), 2000);
+      }
+    } catch (error) {
+      console.error('Errore nella condivisione:', error);
+      toast({
+        title: "Errore nella condivisione ❌",
+        description: "Si è verificato un problema durante la condivisione.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // 🗂️ Enhanced data fetching with content field
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
       const { data, error } = await supabase
         .from("blog_posts")
-        .select("*")
+        .select("id, titolo, contenuto, excerpt, autore, created_at, categoria, immagini, copertina_url, youtube_url") // 📝 Include contenuto
         .eq("pubblicato", true)
         .order("created_at", { ascending: false });
-      if (!error && data) setBlogPosts(data as BlogPost[]);
+      
+      if (!error && data) {
+        setBlogPosts(data as BlogPost[]);
+      } else if (error) {
+        toast({
+          title: "Errore nel caricamento ❌",
+          description: "Impossibile caricare gli articoli del blog.",
+          variant: "destructive"
+        });
+      }
       setLoading(false);
     };
     fetchPosts();
   }, []);
 
+  // 🎨 Enhanced close modal functionality
+  const handleCloseModal = () => {
+    setOpenPostId(null);
+    setCopySuccess(false); // Reset share state
+  };
+
   const categories = ["all", "Cittadinanza Attiva", "Territorio", "Politiche Giovanili"];
 
   const filteredPosts = blogPosts.filter(post => {
     const matchesSearch = post.titolo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (post.excerpt || "").toLowerCase().includes(searchTerm.toLowerCase());
+                         (post.excerpt || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (post.contenuto || "").toLowerCase().includes(searchTerm.toLowerCase()); // 🔍 Search in content too
     const matchesCategory = selectedCategory === "all" || post.categoria === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -67,6 +124,21 @@ const Blog = () => {
       default: return "bg-muted text-muted-foreground";
     }
   };
+
+  // 📝 Format content for display (basic HTML rendering)
+  const formatContent = (content: string) => {
+    if (!content) return "";
+    
+    // Basic formatting: convert line breaks to paragraphs
+    return content
+      .split('\n\n')
+      .filter(paragraph => paragraph.trim())
+      .map(paragraph => paragraph.trim())
+      .join('</p><p>');
+  };
+
+  // 🎯 Get current post for modal
+  const currentPost = blogPosts.find(post => post.id === openPostId);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background pt-24">
@@ -155,7 +227,7 @@ const Blog = () => {
                   <div className="absolute top-3 right-3">
                     <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-foreground shadow-lg border-0 group-hover:scale-105 transition-transform duration-300">
                       <Clock className="w-3 h-3 mr-1" />
-                      {calculateReadTime(post.excerpt || "")} min
+                      {calculateReadTime((post.contenuto || post.excerpt) || "")} min
                     </Badge>
                   </div>
                 </div>
@@ -187,6 +259,7 @@ const Blog = () => {
                       </div>
                     </div>
                   </div>
+
                   {/* Read More Button */}
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
@@ -202,158 +275,6 @@ const Blog = () => {
                       <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
                   </div>
-
-                  <Dialog open={openPostId === post.id} onOpenChange={(open) => setOpenPostId(open ? post.id : null)}>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-background/95 backdrop-blur-md border-0 shadow-2xl">
-                      <DialogHeader className="sr-only">
-                        <DialogTitle>{post.titolo}</DialogTitle>
-                        <DialogDescription>Articolo nella categoria {post.categoria}</DialogDescription>
-                      </DialogHeader>
-
-                      {/* Hero Section */}
-                      <div className="relative">
-                        {post.copertina_url ? (
-                          <div className="relative h-64 md:h-80 overflow-hidden">
-                            <img
-                              src={post.copertina_url}
-                              alt={post.titolo}
-                              className="w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                          </div>
-                        ) : (
-                          <div className="h-64 md:h-80 bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20 flex items-center justify-center">
-                            <div className="text-8xl opacity-30">📰</div>
-                          </div>
-                        )}
-
-                        {/* Close Button */}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setOpenPostId(null)}
-                          className="absolute top-4 right-4 z-50 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg w-10 h-10"
-                        >
-                          <X className="w-5 h-5" />
-                        </Button>
-
-                        {/* Category Badge */}
-                        <div className="absolute top-4 left-4">
-                          <Badge className={`${getCategoryColor(post.categoria)} shadow-lg`}>
-                            {post.categoria}
-                          </Badge>
-                        </div>
-                      </div>
-
-                      {/* Content Section */}
-                      <div className="p-8 md:p-12">
-                          {/* Header */}
-                          <div className="mb-8">
-                            <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4 text-foreground">
-                              {post.titolo}
-                            </h1>
-
-                            {/* Meta Info */}
-                            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-l-4 border-primary/20 pl-4 py-3 bg-muted/30 rounded-r backdrop-blur-sm">
-                              <div className="flex items-center gap-2">
-                                <User className="w-4 h-4" />
-                                <span className="font-medium">{post.autore}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4" />
-                                <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric'
-                                }) : "-"}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Clock className="w-4 h-4" />
-                                <span>{calculateReadTime(post.excerpt || "")} min di lettura</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Article Content */}
-                          <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-p:leading-relaxed animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-                            <div className="text-lg leading-relaxed text-foreground/90 mb-8 first-letter:text-5xl first-letter:font-bold first-letter:text-primary first-letter:float-left first-letter:mr-3 first-letter:mt-1">
-                              {post.excerpt}
-                            </div>
-
-                            {/* Images Gallery */}
-                            {Array.isArray(post.immagini) && post.immagini.length > 0 && (
-                              <div className="my-8">
-                                <h3 className="text-xl font-semibold mb-4 text-foreground">Galleria</h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                  {post.immagini.map((img, i) => (
-                                    <div key={i} className="group relative overflow-hidden rounded-lg aspect-square">
-                                      <img
-                                        src={img}
-                                        alt={`Immagine ${i + 1}`}
-                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                                      />
-                                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Media Section - Professional Design */}
-                            {post.youtube_url && (
-                              <div className="my-8">
-                                <div className="bg-gradient-to-r from-background to-muted/50 rounded-2xl p-6 border border-border/30 shadow-sm">
-                                  <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg flex-shrink-0">
-                                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62-4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-                                      </svg>
-                                    </div>
-                                    <div className="flex-1">
-                                      <h3 className="text-lg font-semibold mb-2 text-foreground">
-                                        Contenuto video disponibile
-                                      </h3>
-                                      <p className="text-sm text-muted-foreground mb-4">
-                                        Approfondisci l'argomento guardando il video correlato a questo articolo.
-                                      </p>
-                                      <a
-                                        href={post.youtube_url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg group"
-                                      >
-                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                          <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62-4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-                                        </svg>
-                                        Guarda su YouTube
-                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Footer Actions */}
-                        <div className="px-8 md:px-12 pb-8">
-                          <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/50">
-                            <Button
-                              variant="outline"
-                              className="flex-1"
-                              onClick={() => setOpenPostId(null)}
-                            >
-                              Chiudi articolo
-                            </Button>
-                            <Button className="flex-1 bg-primary hover:bg-primary/90">
-                              Condividi articolo
-                              <Share2 className="w-4 h-4 ml-2" />
-                            </Button>
-                          </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
                 </CardContent>
               </Card>
             ))}
@@ -368,6 +289,190 @@ const Blog = () => {
           )}
         </div>
       </section>
+
+      {/* 🔧 Enhanced Modal Dialog */}
+      {currentPost && (
+        <Dialog open={openPostId === currentPost.id} onOpenChange={(open) => !open && handleCloseModal()}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-background/95 backdrop-blur-md border-0 shadow-2xl">
+            <DialogHeader className="sr-only">
+              <DialogTitle>{currentPost.titolo}</DialogTitle>
+              <DialogDescription>Articolo nella categoria {currentPost.categoria}</DialogDescription>
+            </DialogHeader>
+
+            {/* Hero Section */}
+            <div className="relative">
+              {currentPost.copertina_url ? (
+                <div className="relative h-64 md:h-80 overflow-hidden">
+                  <img
+                    src={currentPost.copertina_url}
+                    alt={currentPost.titolo}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                </div>
+              ) : (
+                <div className="h-64 md:h-80 bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20 flex items-center justify-center">
+                  <div className="text-8xl opacity-30">📰</div>
+                </div>
+              )}
+
+              {/* ❌ Enhanced Close Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCloseModal}
+                className="absolute top-4 right-4 z-50 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg w-10 h-10 hover:border-red-400/50 transition-all duration-200"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+
+              {/* Category Badge */}
+              <div className="absolute top-4 left-4">
+                <Badge className={`${getCategoryColor(currentPost.categoria)} shadow-lg`}>
+                  {currentPost.categoria}
+                </Badge>
+              </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="p-8 md:p-12">
+              {/* Header */}
+              <div className="mb-8">
+                <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4 text-foreground">
+                  {currentPost.titolo}
+                </h1>
+
+                {/* Meta Info */}
+                <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-l-4 border-primary/20 pl-4 py-3 bg-muted/30 rounded-r backdrop-blur-sm">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    <span className="font-medium">{currentPost.autore}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    <span>{currentPost.created_at ? new Date(currentPost.created_at).toLocaleDateString('it-IT', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    }) : "-"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    <span>{calculateReadTime((currentPost.contenuto || currentPost.excerpt) || "")} min di lettura</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 📝 Enhanced Article Content */}
+              <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-p:leading-relaxed animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+                {/* Excerpt as intro */}
+                {currentPost.excerpt && (
+                  <div className="text-lg leading-relaxed text-foreground/90 mb-8 first-letter:text-5xl first-letter:font-bold first-letter:text-primary first-letter:float-left first-letter:mr-3 first-letter:mt-1 border-l-4 border-primary/20 pl-6 py-4 bg-muted/20 rounded-r-lg">
+                    {currentPost.excerpt}
+                  </div>
+                )}
+
+                {/* 📄 Main Content from Supabase */}
+                {currentPost.contenuto && (
+                  <div className="text-base leading-relaxed text-foreground/90 mb-8">
+                    <div 
+                      dangerouslySetInnerHTML={{
+                        __html: `<p>${formatContent(currentPost.contenuto)}</p>`
+                      }}
+                      className="space-y-4"
+                    />
+                  </div>
+                )}
+
+                {/* Images Gallery */}
+                {Array.isArray(currentPost.immagini) && currentPost.immagini.length > 0 && (
+                  <div className="my-8">
+                    <h3 className="text-xl font-semibold mb-4 text-foreground">Galleria</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {currentPost.immagini.map((img, i) => (
+                        <div key={i} className="group relative overflow-hidden rounded-lg aspect-square">
+                          <img
+                            src={img}
+                            alt={`Immagine ${i + 1}`}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Media Section - Professional Design */}
+                {currentPost.youtube_url && (
+                  <div className="my-8">
+                    <div className="bg-gradient-to-r from-background to-muted/50 rounded-2xl p-6 border border-border/30 shadow-sm">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg flex-shrink-0">
+                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62-4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold mb-2 text-foreground">
+                            Contenuto video disponibile
+                          </h3>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Approfondisci l'argomento guardando il video correlato a questo articolo.
+                          </p>
+                          <a
+                            href={currentPost.youtube_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg group"
+                          >
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62-4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                            </svg>
+                            Guarda su YouTube
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 🎯 Enhanced Footer Actions */}
+            <div className="px-8 md:px-12 pb-8">
+              <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/50">
+                <Button
+                  variant="outline"
+                  className="flex-1 hover:bg-muted/50 transition-all duration-200"
+                  onClick={handleCloseModal}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Chiudi articolo
+                </Button>
+                <Button 
+                  className="flex-1 bg-primary hover:bg-primary/90 transition-all duration-200 hover:shadow-lg"
+                  onClick={() => handleShare(currentPost)}
+                  disabled={copySuccess}
+                >
+                  {copySuccess ? (
+                    <>
+                      <Check className="w-4 h-4 mr-2" />
+                      Copiato!
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Condividi articolo
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Newsletter CTA */}
       <section className="py-16 px-4 bg-gradient-to-r from-primary/10 to-accent/10">
