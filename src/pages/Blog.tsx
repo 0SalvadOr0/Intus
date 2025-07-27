@@ -246,7 +246,7 @@ const Blog = () => {
                             </h1>
 
                             {/* Meta Info */}
-                            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-l-4 border-primary/20 pl-4 py-2 bg-muted/30 rounded-r">
+                            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-l-4 border-primary/20 pl-4 py-3 bg-muted/30 rounded-r backdrop-blur-sm">
                               <div className="flex items-center gap-2">
                                 <User className="w-4 h-4" />
                                 <span className="font-medium">{post.autore}</span>
@@ -258,6 +258,10 @@ const Blog = () => {
                                   month: 'long',
                                   day: 'numeric'
                                 }) : "-"}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4" />
+                                <span>{calculateReadTime(post.excerpt || "")} min di lettura</span>
                               </div>
                             </div>
                           </div>
