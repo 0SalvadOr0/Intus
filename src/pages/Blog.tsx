@@ -322,7 +322,7 @@ const Blog = () => {
                             </DialogClose>
                             <Button className="flex-1 bg-primary hover:bg-primary/90">
                               Condividi articolo
-                              <ArrowRight className="w-4 h-4 ml-2" />
+                              <Share2 className="w-4 h-4 ml-2" />
                             </Button>
                           </div>
                         </div>
