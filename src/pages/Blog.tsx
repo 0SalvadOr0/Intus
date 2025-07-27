@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar, User, Search, Filter, ArrowRight, X, Clock, Share2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { BlogCardSkeleton } from "@/components/ui/loading-skeleton";
 
 interface BlogPost {
   id: number;
