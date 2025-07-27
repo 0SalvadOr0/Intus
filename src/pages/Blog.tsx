@@ -118,7 +118,11 @@ const Blog = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading ? (
-              <div className="text-center py-16 animate-fade-in-up">Caricamento...</div>
+              <>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <BlogCardSkeleton key={i} />
+                ))}
+              </>
             ) : filteredPosts.map((post, index) => (
               <Card
                 key={post.id}
