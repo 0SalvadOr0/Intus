@@ -152,38 +152,130 @@ const Blog = () => {
                       Leggi tutto
                       <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
-                    <DialogContent className="max-w-lg">
-                      <DialogHeader>
-                        <DialogTitle>{post.titolo}</DialogTitle>
-                        <DialogDescription>{post.categoria}</DialogDescription>
-                      </DialogHeader>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-                        <User className="w-4 h-4 mr-1" />
-                        <span>{post.autore}</span>
-                        <Calendar className="w-4 h-4 ml-4 mr-1" />
-                        <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT') : "-"}</span>
-                      </div>
-                      <div className="mb-4">
-                        <Badge className={getCategoryColor(post.categoria)}>{post.categoria}</Badge>
-                      </div>
-                      <div className="prose max-w-none">
-                        <p>{post.excerpt}</p>
-                        {Array.isArray(post.immagini) && post.immagini.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-4">
-                            {post.immagini.map((img, i) => (
-                              <img key={i} src={img} alt="img" className="w-24 h-24 object-cover rounded border" />
-                            ))}
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0 gap-0 bg-background/95 backdrop-blur-md border-0 shadow-2xl">
+                      {/* Hero Section */}
+                      <div className="relative">
+                        {post.copertina_url ? (
+                          <div className="relative h-64 md:h-80 overflow-hidden">
+                            <img
+                              src={post.copertina_url}
+                              alt={post.titolo}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                          </div>
+                        ) : (
+                          <div className="h-64 md:h-80 bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20 flex items-center justify-center">
+                            <div className="text-8xl opacity-30">📰</div>
                           </div>
                         )}
-                        {post.youtube_url && (
-                          <div className="mt-4">
-                            <a href={post.youtube_url} target="_blank" rel="noopener noreferrer" className="text-primary underline">Guarda su YouTube</a>
-                          </div>
-                        )}
+
+                        {/* Close Button */}
+                        <DialogClose asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-4 right-4 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-200 w-10 h-10"
+                          >
+                            <ArrowRight className="w-5 h-5 rotate-45" />
+                          </Button>
+                        </DialogClose>
+
+                        {/* Category Badge */}
+                        <div className="absolute top-4 left-4">
+                          <Badge className={`${getCategoryColor(post.categoria)} shadow-lg`}>
+                            {post.categoria}
+                          </Badge>
+                        </div>
                       </div>
-                      <DialogClose asChild>
-                        <Button variant="ghost" className="mt-4 w-full">Chiudi</Button>
-                      </DialogClose>
+
+                      {/* Content Section */}
+                      <div className="overflow-y-auto max-h-[60vh]">
+                        <div className="p-8 md:p-12">
+                          {/* Header */}
+                          <div className="mb-8">
+                            <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4 text-foreground">
+                              {post.titolo}
+                            </h1>
+
+                            {/* Meta Info */}
+                            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-l-4 border-primary/20 pl-4 py-2 bg-muted/30 rounded-r">
+                              <div className="flex items-center gap-2">
+                                <User className="w-4 h-4" />
+                                <span className="font-medium">{post.autore}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Calendar className="w-4 h-4" />
+                                <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                }) : "-"}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Article Content */}
+                          <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-p:leading-relaxed">
+                            <div className="text-lg leading-relaxed text-foreground/90 mb-8">
+                              {post.excerpt}
+                            </div>
+
+                            {/* Images Gallery */}
+                            {Array.isArray(post.immagini) && post.immagini.length > 0 && (
+                              <div className="my-8">
+                                <h3 className="text-xl font-semibold mb-4 text-foreground">Galleria</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                  {post.immagini.map((img, i) => (
+                                    <div key={i} className="group relative overflow-hidden rounded-lg aspect-square">
+                                      <img
+                                        src={img}
+                                        alt={`Immagine ${i + 1}`}
+                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                      />
+                                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* YouTube Video */}
+                            {post.youtube_url && (
+                              <div className="my-8 p-6 bg-gradient-to-r from-red-500/10 to-red-600/10 rounded-xl border border-red-500/20">
+                                <h3 className="text-xl font-semibold mb-3 text-foreground flex items-center gap-2">
+                                  <span className="text-red-500">📺</span>
+                                  Video correlato
+                                </h3>
+                                <a
+                                  href={post.youtube_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 text-red-500 hover:text-red-600 font-medium transition-colors group"
+                                >
+                                  Guarda su YouTube
+                                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Footer Actions */}
+                        <div className="px-8 md:px-12 pb-8">
+                          <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/50">
+                            <DialogClose asChild>
+                              <Button variant="outline" className="flex-1">
+                                Chiudi articolo
+                              </Button>
+                            </DialogClose>
+                            <Button className="flex-1 bg-primary hover:bg-primary/90">
+                              Condividi articolo
+                              <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     </DialogContent>
                   </Dialog>
                 </CardContent>
