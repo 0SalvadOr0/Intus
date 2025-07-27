@@ -324,11 +324,13 @@ const Blog = () => {
                         {/* Footer Actions */}
                         <div className="px-8 md:px-12 pb-8">
                           <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/50">
-                            <DialogClose asChild>
-                              <Button variant="outline" className="flex-1">
-                                Chiudi articolo
-                              </Button>
-                            </DialogClose>
+                            <Button
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => setOpenPostId(null)}
+                            >
+                              Chiudi articolo
+                            </Button>
                             <Button className="flex-1 bg-primary hover:bg-primary/90">
                               Condividi articolo
                               <Share2 className="w-4 h-4 ml-2" />
