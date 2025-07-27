@@ -27,6 +27,14 @@ const Blog = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Calcola tempo di lettura stimato (basato su 200 parole al minuto)
+  const calculateReadTime = (text: string) => {
+    const wordsPerMinute = 200;
+    const words = text.split(' ').length;
+    const minutes = Math.ceil(words / wordsPerMinute);
+    return minutes;
+  };
+
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
