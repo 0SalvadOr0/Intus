@@ -122,32 +122,40 @@ const RichiesteCallIdeeTab = () => {
     setFilteredRichieste(filtered);
   }, [richieste, searchTerm, categoryFilter]);
 
-  // 📊 Export Functionality
-  const exportToCSV = async () => {
+// 📊 Export Functionality
+  const exportToCSV = async (singleRequest?: Richiesta) => {
     setExporting(true);
     try {
-      // Prepare CSV data
-      const csvData = filteredRichieste.map(r => ({
+      const dataToExport = singleRequest ? [singleRequest] : filteredRichieste;
+      
+      // Prepare CSV data with ALL database fields
+      const csvData = dataToExport.map(r => ({
         ID: r.id,
         "Titolo Progetto": r.titolo_progetto,
-        Categoria: r.categoria,
-        "Tipo Evento": r.tipo_evento,
+        "Descrizione Progetto": r.descrizione_progetto,
+        "Data Inizio": r.data_inizio,
+        "Data Fine": r.data_fine,
         "Referente Nome": r.referente_nome,
         "Referente Cognome": r.referente_cognome,
         "Referente Email": r.referente_email,
         "Referente Telefono": r.referente_telefono,
-        "Data Nascita": r.referente_data_nascita,
-        "Luogo Svolgimento": r.luogo_svolgimento,
-        "Data Inizio": r.data_inizio,
-        "Data Fine": r.data_fine,
+        "Referente Data Nascita": r.referente_data_nascita,
         "Numero Partecipanti": r.numero_partecipanti,
-        "Descrizione Progetto": r.descrizione_progetto,
+        "Luogo Svolgimento": r.luogo_svolgimento,
+        "Categoria": r.categoria,
+        "Categoria Descrizione": r.categoria_descrizione || '',
+        "Tipo Evento": r.tipo_evento,
+        "Descrizione Evento": r.descrizione_evento || '',
+        "Altro": r.altro || '',
+        "Partecipanti JSON": JSON.stringify(r.partecipanti || []),
         "Totale Spese Attrezzature": r.spese_attrezzature?.reduce((sum, s) => sum + (s.costo * s.quantita), 0) || 0,
         "Totale Spese Servizi": r.spese_servizi?.reduce((sum, s) => sum + (s.costo * s.quantita), 0) || 0,
         "SIAE": r.spese_generali?.siae || 0,
         "Assicurazione": r.spese_generali?.assicurazione || 0,
         "Rimborso Spese": r.spese_generali?.rimborsoSpese || 0,
-        "Data Creazione": new Date(r.created_at).toLocaleDateString('it-IT')
+        "Totale Complessivo": calculateTotalCost(r),
+        "Data Creazione": new Date(r.created_at).toLocaleDateString('it-IT'),
+        "Timestamp Creazione": r.created_at
       }));
 
       // Convert to CSV
@@ -162,7 +170,12 @@ const RichiesteCallIdeeTab = () => {
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', `richieste_call_idee_${new Date().toISOString().split('T')[0]}.csv`);
+      
+      const fileName = singleRequest 
+        ? `richiesta_${singleRequest.titolo_progetto.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`
+        : `richieste_call_idee_${new Date().toISOString().split('T')[0]}.csv`;
+      
+      link.setAttribute('download', fileName);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
@@ -173,7 +186,6 @@ const RichiesteCallIdeeTab = () => {
       setExporting(false);
     }
   };
-
   // ⚡ Helper Functions
   const toggleCardExpansion = (id: string) => {
     const newExpanded = new Set(expandedCards);
@@ -233,7 +245,7 @@ const RichiesteCallIdeeTab = () => {
             {/* 🎯 Action Buttons */}
             <div className="flex gap-2">
               <Button 
-                onClick={exportToCSV}
+                onClick={() => exportToCSV()}
                 disabled={exporting || filteredRichieste.length === 0}
                 className="bg-green-600 hover:bg-green-700 text-white shadow-md"
               >
