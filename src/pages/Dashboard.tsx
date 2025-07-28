@@ -7,12 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  FileText, 
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
+  FileText,
   Calendar,
   User,
   BarChart3,
@@ -20,7 +21,8 @@ import {
   FolderOpen,
   Youtube,
   MapPin,
-  Users
+  Users,
+  LogOut
 } from "lucide-react";
 import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
 import BlogImageUploader from "@/components/BlogImageUploader";
