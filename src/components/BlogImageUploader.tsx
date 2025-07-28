@@ -87,9 +87,37 @@ const BlogImageUploader = ({ onUpload }: BlogImageUploaderProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <input type="file" accept="image/*" onChange={handleFileChange} disabled={uploading} />
-      {uploading && <span className="text-xs text-muted-foreground">Caricamento...</span>}
-      {error && <span className="text-xs text-destructive">{error}</span>}
+      <div className="space-y-2">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          disabled={uploading}
+          className="text-sm"
+        />
+        <div className="text-xs text-muted-foreground">
+          Le immagini saranno automaticamente compresse per ottimizzare lo spazio di storage
+        </div>
+      </div>
+
+      {compressionStatus && (
+        <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+          {compressionStatus}
+        </div>
+      )}
+
+      {uploading && (
+        <div className="text-xs text-muted-foreground flex items-center gap-2">
+          <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+          Elaborazione in corso...
+        </div>
+      )}
+
+      {error && (
+        <div className="text-xs text-destructive bg-red-50 p-2 rounded">
+          {error}
+        </div>
+      )}
     </div>
   );
 };
