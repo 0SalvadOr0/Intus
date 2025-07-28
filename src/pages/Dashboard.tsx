@@ -318,12 +318,31 @@ const Dashboard = () => {
       {/* Header */}
       <section className="py-8 px-4">
         <div className="container mx-auto">
-          <h1 className="text-4xl font-bold mb-2 animate-fade-in-up">
-            Dashboard <span className="text-primary">Intus</span>
-          </h1>
-          <p className="text-muted-foreground animate-fade-in-up" style={{animationDelay: '0.1s'}}>
-            Gestisci i contenuti e monitora le performance del blog
-          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 animate-fade-in-up">
+                Dashboard <span className="text-primary">Intus</span>
+              </h1>
+              <p className="text-muted-foreground animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+                Gestisci i contenuti e monitora le performance del blog
+              </p>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+              <div className="text-right">
+                <p className="text-sm font-medium">{user?.email}</p>
+                <p className="text-xs text-muted-foreground">Amministratore</p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={signOut}
+                className="flex items-center space-x-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Esci</span>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
