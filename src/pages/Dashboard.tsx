@@ -53,6 +53,7 @@ interface Project {
 
 const Dashboard = () => {
   const { toast } = useToast();
+  const { user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
