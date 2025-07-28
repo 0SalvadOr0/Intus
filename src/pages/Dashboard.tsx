@@ -7,12 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  FileText, 
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
+  FileText,
   Calendar,
   User,
   BarChart3,
@@ -20,7 +21,8 @@ import {
   FolderOpen,
   Youtube,
   MapPin,
-  Users
+  Users,
+  LogOut
 } from "lucide-react";
 import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
 import BlogImageUploader from "@/components/BlogImageUploader";
@@ -51,16 +53,26 @@ interface Project {
 
 const Dashboard = () => {
   const { toast } = useToast();
+  const { user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [callIdeeRequests, setCallIdeeRequests] = useState<any[]>([]);
   const [blogLoading, setBlogLoading] = useState(false);
+  const [stats, setStats] = useState({
+    totalPosts: 0,
+    publishedPosts: 0,
+    draftPosts: 0,
+    totalProjects: 0,
+    totalViews: 0
+  });
 
   useEffect(() => {
-    if (["blog-manage", "drafts", "create"].includes(activeTab)) {
-      fetchBlogPosts();
-    }
+    fetchBlogPosts();
+    fetchProjects();
+    fetchCallIdeeRequests();
     // eslint-disable-next-line
-  }, [activeTab]);
+  }, []);
 
   const fetchBlogPosts = async () => {
     setBlogLoading(true);
@@ -68,8 +80,44 @@ const Dashboard = () => {
       .from("blog_posts")
       .select("*")
       .order("created_at", { ascending: false });
-    if (!error) setBlogPosts(data || []);
+    if (!error && data) {
+      setBlogPosts(data);
+      updateStats(data);
+    }
     setBlogLoading(false);
+  };
+
+  const fetchProjects = async () => {
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error && data) {
+      setProjects(data);
+    }
+  };
+
+  const fetchCallIdeeRequests = async () => {
+    const { data, error } = await supabase
+      .from("call_idee_requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error && data) {
+      setCallIdeeRequests(data);
+    }
+  };
+
+  const updateStats = (posts: any[]) => {
+    const publishedPosts = posts.filter(p => p.pubblicato === true).length;
+    const draftPosts = posts.filter(p => p.pubblicato === false).length;
+
+    setStats({
+      totalPosts: posts.length,
+      publishedPosts,
+      draftPosts,
+      totalProjects: projects.length,
+      totalViews: posts.reduce((sum, post) => sum + (post.views || 0), 0)
+    });
   };
 
   // Pubblica un articolo
@@ -127,78 +175,61 @@ const Dashboard = () => {
     status: "planned" as const
   });
 
-  // Mock data
-  const draftPosts: DraftPost[] = [
-    {
-      id: 1,
-      title: "Progetto Sostenibilità 2024",
-      excerpt: "Nuove iniziative per un territorio più verde...",
-      category: "Territorio",
-      status: "draft",
-      lastModified: "2024-01-20"
-    },
-    {
-      id: 2,
-      title: "Workshop Digital Skills",
-      excerpt: "Formazione digitale per i giovani...",
-      category: "Politiche Giovanili", 
-      status: "draft",
-      lastModified: "2024-01-18",
-      youtubeUrl: "https://www.youtube.com/watch?v=example2"
-    }
-  ];
+  const getRecentActivity = () => {
+    const activities = [];
 
-  const draftProjects: Project[] = [
-    {
-      id: 1,
-      title: "Pulizia Parco Comunale",
-      description: "Giornata di volontariato per la pulizia e manutenzione del parco comunale...",
-      category: "Territorio",
-      location: "Parco Centrale",
-      date: "2024-02-15",
-      participants: 25,
-      status: "planned"
-    },
-    {
-      id: 2,
-      title: "Corso di Formazione Civica",
-      description: "Workshop sui diritti e doveri del cittadino...",
-      category: "Cittadinanza Attiva",
-      location: "Sala Conferenze",
-      date: "2024-02-20",
-      participants: 40,
-      youtubeUrl: "https://www.youtube.com/watch?v=example3",
-      status: "ongoing"
-    }
-  ];
+    // Aggiungi attività recenti dai blog posts
+    const recentPosts = blogPosts.slice(0, 3);
+    recentPosts.forEach(post => {
+      activities.push({
+        action: post.pubblicato ? "Pubblicato" : "Creato",
+        title: post.titolo,
+        time: new Date(post.created_at).toLocaleDateString('it-IT'),
+        type: "post"
+      });
+    });
 
-  const stats = [
+    // Aggiungi attività recenti dai progetti
+    const recentProjects = projects.slice(0, 2);
+    recentProjects.forEach(project => {
+      activities.push({
+        action: "Creato progetto",
+        title: project.title || project.titolo,
+        time: new Date(project.created_at).toLocaleDateString('it-IT'),
+        type: "project"
+      });
+    });
+
+    return activities.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 5);
+  };
+
+  const statsCards = [
     {
       title: "Articoli Pubblicati",
-      value: "24",
-      change: "+12%",
+      value: stats.publishedPosts.toString(),
+      change: stats.totalPosts > 0 ? `+${Math.round((stats.publishedPosts / stats.totalPosts) * 100)}%` : "+0%",
       icon: FileText,
       color: "text-primary"
     },
     {
       title: "Visualizzazioni Totali",
-      value: "8.5K",
-      change: "+25%", 
+      value: stats.totalViews > 1000 ? `${(stats.totalViews / 1000).toFixed(1)}K` : stats.totalViews.toString(),
+      change: "+15%",
       icon: Eye,
       color: "text-accent"
     },
     {
       title: "Articoli in Bozza",
-      value: "6",
-      change: "+2",
+      value: stats.draftPosts.toString(),
+      change: `+${stats.draftPosts}`,
       icon: Edit,
       color: "text-heart"
     },
     {
-      title: "Engagement Rate",
-      value: "68%",
-      change: "+8%",
-      icon: TrendingUp,
+      title: "Progetti Totali",
+      value: projects.length.toString(),
+      change: "+100%",
+      icon: FolderOpen,
       color: "text-primary"
     }
   ];
@@ -287,12 +318,31 @@ const Dashboard = () => {
       {/* Header */}
       <section className="py-8 px-4">
         <div className="container mx-auto">
-          <h1 className="text-4xl font-bold mb-2 animate-fade-in-up">
-            Dashboard <span className="text-primary">Intus</span>
-          </h1>
-          <p className="text-muted-foreground animate-fade-in-up" style={{animationDelay: '0.1s'}}>
-            Gestisci i contenuti e monitora le performance del blog
-          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 animate-fade-in-up">
+                Dashboard <span className="text-primary">Intus</span>
+              </h1>
+              <p className="text-muted-foreground animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+                Gestisci i contenuti e monitora le performance del blog
+              </p>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+              <div className="text-right">
+                <p className="text-sm font-medium">{user?.email}</p>
+                <p className="text-xs text-muted-foreground">Amministratore</p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={signOut}
+                className="flex items-center space-x-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Esci</span>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -301,26 +351,25 @@ const Dashboard = () => {
         <div className="container mx-auto">
           <div className="flex flex-wrap gap-2 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
             <TabButton id="overview" label="Panoramica" icon={BarChart3} />
+            <TabButton id="content" label="Gestione Contenuti" icon={FileText} />
             <TabButton id="create" label="Nuovo Articolo" icon={Plus} />
             <TabButton id="create-project" label="Nuovo Progetto" icon={FolderOpen} />
-            <TabButton id="drafts" label="Bozze Articoli" icon={Edit} />
-            <TabButton id="project-drafts" label="Bozze Progetti" icon={FileText} />
             <TabButton id="richieste-call-idee" label="Richieste Call Idee" icon={Eye} />
-            <TabButton id="blog-manage" label="Gestione Blog" icon={FileText} />
-        {activeTab === "blog-manage" && (
+        {activeTab === "content" && (
           <div className="space-y-8">
+            {/* Articoli Pubblicati */}
             <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FileText className="w-5 h-5 mr-2 text-primary" />
-                  Articoli Blog
+                  Articoli Pubblicati ({blogPosts.filter(p => p.pubblicato === true).length})
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {blogLoading ? (
                   <div className="text-center text-muted-foreground">Caricamento...</div>
-                ) : blogPosts.length === 0 ? (
-                  <div className="text-center text-muted-foreground">Nessun articolo presente.</div>
+                ) : blogPosts.filter(p => p.pubblicato === true).length === 0 ? (
+                  <div className="text-center text-muted-foreground">Nessun articolo pubblicato.</div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {blogPosts.filter(p => p.pubblicato === true).map((post) => (
@@ -342,6 +391,118 @@ const Dashboard = () => {
                 )}
               </CardContent>
             </Card>
+
+            {/* Bozze Articoli */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Edit className="w-5 h-5 mr-2 text-primary" />
+                  Bozze Articoli ({blogPosts.filter(p => p.pubblicato === false).length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {blogPosts.filter(p => p.pubblicato === false).map((post, index) => (
+                    <div
+                      key={post.id}
+                      className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
+                      style={{animationDelay: `${0.1 + index * 0.1}s`}}
+                    >
+                      <div className="flex-grow">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="font-semibold">{post.titolo}</h3>
+                          <Badge variant="outline" className="text-xs">
+                            {post.categoria}
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            Bozza
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-1">{post.excerpt}</p>
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <div className="flex items-center">
+                            <User className="w-3 h-3 mr-1" />
+                            <span>Creato il {post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT') : "-"}</span>
+                          </div>
+                          {post.youtube_url && (
+                            <div className="flex items-center">
+                              <Youtube className="w-3 h-3 mr-1 text-red-500" />
+                              <span>Video</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button size="sm" variant="outline" onClick={() => handlePreview(post)}>
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => handlePublish(post.id)}>
+                          <FileText className="w-4 h-4 text-green-600" />
+                        </Button>
+                        <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => handleDelete(post.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Progetti */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FolderOpen className="w-5 h-5 mr-2 text-primary" />
+                  Progetti ({projects.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {projects.length === 0 ? (
+                    <div className="text-center text-muted-foreground">Nessun progetto presente.</div>
+                  ) : (
+                    projects.map((project, index) => (
+                      <div
+                        key={project.id}
+                        className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
+                        style={{animationDelay: `${0.1 + index * 0.1}s`}}
+                      >
+                        <div className="flex-grow">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h3 className="font-semibold">{project.title || project.titolo}</h3>
+                            <Badge variant="outline" className="text-xs">
+                              {project.category || project.categoria}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">{project.description || project.descrizione}</p>
+                          <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                            <div className="flex items-center">
+                              <Calendar className="w-3 h-3 mr-1" />
+                              <span>{project.created_at ? new Date(project.created_at).toLocaleDateString('it-IT') : "Da pianificare"}</span>
+                            </div>
+                            {project.location && (
+                              <div className="flex items-center">
+                                <MapPin className="w-3 h-3 mr-1" />
+                                <span>{project.location}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button size="sm" variant="outline">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
         {activeTab === "richieste-call-idee" && (
@@ -357,8 +518,8 @@ const Dashboard = () => {
           <div className="space-y-8">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <Card 
+              {statsCards.map((stat, index) => (
+                <Card
                   key={index}
                   className="border-0 bg-card/80 backdrop-blur-sm hover:shadow-elegant transition-all duration-300 animate-fade-in-up"
                   style={{animationDelay: `${0.3 + index * 0.1}s`}}
@@ -389,22 +550,24 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    { action: "Pubblicato", title: "Youth Hub: uno spazio per i giovani", time: "2 ore fa" },
-                    { action: "Modificato", title: "Valorizzazione del centro storico", time: "1 giorno fa" },
-                    { action: "Creato", title: "Progetto Sostenibilità 2024", time: "3 giorni fa" }
-                  ].map((activity, index) => (
-                    <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <div>
-                          <span className="font-medium">{activity.action}</span>
-                          <span className="text-muted-foreground"> "{activity.title}"</span>
+                  {getRecentActivity().length === 0 ? (
+                    <div className="text-center text-muted-foreground">Nessuna attività recente</div>
+                  ) : (
+                    getRecentActivity().map((activity, index) => (
+                      <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-2 h-2 rounded-full ${
+                            activity.type === 'post' ? 'bg-primary' : 'bg-accent'
+                          }`}></div>
+                          <div>
+                            <span className="font-medium">{activity.action}</span>
+                            <span className="text-muted-foreground"> "{activity.title}"</span>
+                          </div>
                         </div>
+                        <span className="text-sm text-muted-foreground">{activity.time}</span>
                       </div>
-                      <span className="text-sm text-muted-foreground">{activity.time}</span>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -617,136 +780,7 @@ const Dashboard = () => {
           </Card>
         )}
 
-        {/* Drafts Tab */}
-        {activeTab === "drafts" && (
-          <div className="space-y-6">
-            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Edit className="w-5 h-5 mr-2 text-primary" />
-                  Bozze ({blogPosts.filter(p => p.pubblicato === false).length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {blogPosts.filter(p => p.pubblicato === false).map((post, index) => (
-                    <div 
-                      key={post.id}
-                      className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
-                      style={{animationDelay: `${0.1 + index * 0.1}s`}}
-                    >
-                      <div className="flex-grow">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="font-semibold">{post.titolo}</h3>
-                          <Badge variant="outline" className="text-xs">
-                            {post.categoria}
-                          </Badge>
-                          <Badge variant="secondary" className="text-xs">
-                            Bozza
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-1">{post.excerpt}</p>
-                        <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <div className="flex items-center">
-                            <User className="w-3 h-3 mr-1" />
-                            <span>Creato il {post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT') : "-"}</span>
-                          </div>
-                          {post.youtube_url && (
-                            <div className="flex items-center">
-                              <Youtube className="w-3 h-3 mr-1 text-red-500" />
-                              <span>Video</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => handlePreview(post)}>
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={() => handlePublish(post.id)}>
-                          <FileText className="w-4 h-4 text-green-600" />
-                        </Button>
-                        <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => handleDelete(post.id)}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
-        {/* Project Drafts Tab */}
-        {activeTab === "project-drafts" && (
-          <div className="space-y-6">
-            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <FolderOpen className="w-5 h-5 mr-2 text-primary" />
-                  Progetti in Bozza ({draftProjects.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {draftProjects.map((project, index) => (
-                    <div 
-                      key={project.id}
-                      className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
-                      style={{animationDelay: `${0.1 + index * 0.1}s`}}
-                    >
-                      <div className="flex-grow">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="font-semibold">{project.title}</h3>
-                          <Badge variant="outline" className="text-xs">
-                            {project.category}
-                          </Badge>
-                          <Badge variant="secondary" className="text-xs">
-                            {project.status === "planned" ? "Pianificato" : 
-                             project.status === "ongoing" ? "In Corso" : "Completato"}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">{project.description}</p>
-                        <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                          <div className="flex items-center">
-                            <MapPin className="w-3 h-3 mr-1" />
-                            <span>{project.location || "Da definire"}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Calendar className="w-3 h-3 mr-1" />
-                            <span>{project.date ? new Date(project.date).toLocaleDateString('it-IT') : "Da pianificare"}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Users className="w-3 h-3 mr-1" />
-                            <span>{project.participants} partecipanti</span>
-                          </div>
-                          {project.youtubeUrl && (
-                            <div className="flex items-center">
-                              <Youtube className="w-3 h-3 mr-1 text-red-500" />
-                              <span>Video</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="outline" className="text-destructive hover:text-destructive">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
       </div>
     </div>
   );
