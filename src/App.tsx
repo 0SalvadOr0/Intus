@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navigation from "./components/navigation";
 import { WelcomeToast } from "./components/ui/welcome-toast";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import ChiSiamo from "./pages/ChiSiamo";
 import LeNostreAttivita from "./pages/LeNostreAttivita";
