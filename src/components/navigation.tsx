@@ -6,6 +6,7 @@ import { Home, Users, FileText, Settings, FolderOpen, Menu, X, DollarSign, Bell,
 import { Button } from "./ui/button";
 import { SearchDialog } from "./ui/search-dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navigation = () => {
   const location = useLocation();
