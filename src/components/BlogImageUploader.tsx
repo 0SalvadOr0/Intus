@@ -20,23 +20,26 @@ const BlogImageUploader = ({ onUpload }: BlogImageUploaderProps) => {
 
     setUploading(true);
     setError(null);
-    setCompressionStatus("");
+    setUploadStatus("");
 
     try {
+      // Ottieni impostazioni ottimali per il file
+      const settings = getOptimalSettings(file);
+
       // Comprimi l'immagine
-      const compressedFile = await compressImage(file);
+      const result = await compressImage(file, settings);
 
       // Crea nome file con timestamp
-      const fileExtension = compressedFile.type === 'image/jpeg' ? 'jpg' : 'png';
+      const fileExtension = result.compressedFile.type === 'image/jpeg' ? 'jpg' : 'png';
       const fileName = file.name.split('.')[0];
       const filePath = `${Date.now()}-${fileName}.${fileExtension}`;
 
-      setCompressionStatus("Upload in corso...");
+      setUploadStatus("Upload in corso...");
 
       const { error: uploadError } = await supabase.storage
         .from("blog-images")
-        .upload(filePath, compressedFile, {
-          contentType: compressedFile.type,
+        .upload(filePath, result.compressedFile, {
+          contentType: result.compressedFile.type,
           cacheControl: '3600'
         });
 
@@ -49,7 +52,7 @@ const BlogImageUploader = ({ onUpload }: BlogImageUploaderProps) => {
       const { data } = supabase.storage.from("blog-images").getPublicUrl(filePath);
       if (data?.publicUrl) {
         onUpload(data.publicUrl);
-        setCompressionStatus("Upload completato!");
+        setUploadStatus(`✅ Upload completato! Risparmio: ${result.savings}%`);
       } else {
         setError("Errore nel recupero URL pubblico");
       }
