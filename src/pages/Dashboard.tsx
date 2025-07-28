@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
 import BlogImageUploader from "@/components/BlogImageUploader";
+import { StorageStats } from "@/components/StorageStats";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect } from "react";
 
