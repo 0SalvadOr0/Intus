@@ -541,37 +541,43 @@ const Dashboard = () => {
               ))}
             </div>
 
-            {/* Recent Activity */}
-            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up" style={{animationDelay: '0.7s'}}>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Calendar className="w-5 h-5 mr-2 text-primary" />
-                  Attività Recente
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {getRecentActivity().length === 0 ? (
-                    <div className="text-center text-muted-foreground">Nessuna attività recente</div>
-                  ) : (
-                    getRecentActivity().map((activity, index) => (
-                      <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-2 h-2 rounded-full ${
-                            activity.type === 'post' ? 'bg-primary' : 'bg-accent'
-                          }`}></div>
-                          <div>
-                            <span className="font-medium">{activity.action}</span>
-                            <span className="text-muted-foreground"> "{activity.title}"</span>
+            {/* Storage Stats and Recent Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Storage Statistics */}
+              <StorageStats className="animate-fade-in-up" style={{animationDelay: '0.7s'}} />
+
+              {/* Recent Activity */}
+              <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up" style={{animationDelay: '0.8s'}}>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Calendar className="w-5 h-5 mr-2 text-primary" />
+                    Attività Recente
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {getRecentActivity().length === 0 ? (
+                      <div className="text-center text-muted-foreground">Nessuna attività recente</div>
+                    ) : (
+                      getRecentActivity().map((activity, index) => (
+                        <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-2 h-2 rounded-full ${
+                              activity.type === 'post' ? 'bg-primary' : 'bg-accent'
+                            }`}></div>
+                            <div>
+                              <span className="font-medium">{activity.action}</span>
+                              <span className="text-muted-foreground"> "{activity.title}"</span>
+                            </div>
                           </div>
+                          <span className="text-sm text-muted-foreground">{activity.time}</span>
                         </div>
-                        <span className="text-sm text-muted-foreground">{activity.time}</span>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
 
