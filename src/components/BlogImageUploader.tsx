@@ -64,36 +64,43 @@ const BlogImageUploader = ({ onUpload }: BlogImageUploaderProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       <div className="space-y-2">
         <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          disabled={uploading}
-          className="text-sm"
+          disabled={uploading || isCompressing}
+          className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
         />
         <div className="text-xs text-muted-foreground">
-          Le immagini saranno automaticamente compresse per ottimizzare lo spazio di storage
+          ✨ Compressione automatica per ottimizzare lo spazio storage (max 800KB)
         </div>
       </div>
 
-      {compressionStatus && (
-        <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
-          {compressionStatus}
+      {(isCompressing || compressionProgress) && (
+        <div className="text-xs text-blue-600 bg-blue-50 dark:bg-blue-950 p-2 rounded flex items-center gap-2">
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+          {compressionProgress}
         </div>
       )}
 
-      {uploading && (
+      {uploadStatus && (
+        <div className="text-xs text-green-600 bg-green-50 dark:bg-green-950 p-2 rounded">
+          {uploadStatus}
+        </div>
+      )}
+
+      {(uploading && !isCompressing) && (
         <div className="text-xs text-muted-foreground flex items-center gap-2">
           <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-          Elaborazione in corso...
+          Upload in corso...
         </div>
       )}
 
       {error && (
-        <div className="text-xs text-destructive bg-red-50 p-2 rounded">
-          {error}
+        <div className="text-xs text-destructive bg-red-50 dark:bg-red-950 p-2 rounded">
+          ❌ {error}
         </div>
       )}
     </div>
