@@ -11,8 +11,9 @@ import { useAuth } from "@/contexts/AuthContext";
 const Navigation = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isAdmin } = useAuth();
 
-  const navItems = [
+  const allNavItems = [
     { path: "/", label: "Home", icon: Home },
     { path: "/chi-siamo", label: "Chi Siamo", icon: Users },
     { path: "/le-nostre-attivita", label: "Le Nostre Attività", icon: FolderOpen },
@@ -20,6 +21,11 @@ const Navigation = () => {
     { path: "/blog", label: "Blog", icon: FileText },
     { path: "/dashboard", label: "Dashboard", icon: Settings },
   ];
+
+  // Filtra gli elementi di navigazione - mostra Dashboard solo agli admin
+  const navItems = allNavItems.filter(item =>
+    item.path !== "/dashboard" || isAdmin
+  );
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-background/95 via-background/90 to-background/95 backdrop-blur-xl border-b border-border/50 shadow-elegant">
