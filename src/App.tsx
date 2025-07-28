@@ -19,24 +19,30 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <WelcomeToast />
-      <BrowserRouter>
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/chi-siamo" element={<ChiSiamo />} />
-          <Route path="/le-nostre-attivita" element={<LeNostreAttivita />} />
-          <Route path="/presenta-progetto" element={<PresentaProgetto />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <WelcomeToast />
+        <BrowserRouter>
+          <Navigation />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/chi-siamo" element={<ChiSiamo />} />
+            <Route path="/le-nostre-attivita" element={<LeNostreAttivita />} />
+            <Route path="/presenta-progetto" element={<PresentaProgetto />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute requireAdmin={true}>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
