@@ -34,9 +34,14 @@ const Home = () => {
             <div className="flex justify-center mb-6 md:mb-8">
               <AnimatedIntusLogo className="w-64 h-auto md:w-80 lg:w-96" />
             </div>
-            <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-              INTUS CORLEONE APS, fondata nel 1997 durante la “Primavera Corleonese”, promuove la legalità, i diritti umani e la cittadinanza attiva. L’associazione forma educatori e sostiene progetti giovanili, sociali ed ecologici a livello locale ed europeo. È attiva nel turismo responsabile e nella valorizzazione della memoria antimafia attraverso l’arte.
-            </p>
+            <div className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed px-4 space-y-4">
+              <p>
+                <strong className="text-foreground">INTUS CORLEONE APS</strong>, fondata nel <strong className="text-primary">1997</strong> durante la <em>"Primavera Corleonese"</em>, promuove la <strong className="text-accent">legalità</strong>, i <strong className="text-primary">diritti umani</strong> e la <strong className="text-accent">cittadinanza attiva</strong>.
+              </p>
+              <p>
+                L'associazione forma educatori e sostiene progetti giovanili, sociali ed ecologici a livello locale ed europeo. È attiva nel <strong className="text-primary">turismo responsabile</strong> e nella valorizzazione della <strong className="text-accent">memoria antimafia</strong> attraverso l'arte.
+              </p>
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up px-4" style={{animationDelay: '0.2s'}}>
             <Button asChild size="lg" className="text-base md:text-lg px-6 md:px-8 py-4 md:py-6 shadow-elegant hover:shadow-2xl transition-all duration-300">

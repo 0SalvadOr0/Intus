@@ -165,20 +165,31 @@ const ChiSiamo = () => {
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               Chi <span className="text-primary">Siamo</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              INTUS CORLEONE APS nasce a Corleone nel 1997, nel cuore di quella che è stata definita la “Primavera Corleonese”, come segno di rinascita culturale e civile. Nata dall’energia di quattro giovani formatisi alla scuola di Daniele Novara presso il Centro Psicopedagogico per la Pace di Piacenza, l’associazione affonda le radici nei valori dell’educazione alla pace, ai diritti umani e alla convivenza democratica ed ecologica.
+            <div className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed space-y-6">
+              <p>
+                <strong className="text-foreground">INTUS CORLEONE APS</strong> nasce a Corleone nel <strong className="text-primary">1997</strong>, nel cuore di quella che è stata definita la <em>"Primavera Corleonese"</em>, come segno di rinascita culturale e civile.
+              </p>
+              
+              <p>
+                Nata dall'energia di quattro giovani formatisi alla scuola di <strong className="text-foreground">Daniele Novara</strong> presso il Centro Psicopedagogico per la Pace di Piacenza, l'associazione affonda le radici nei valori dell'<strong className="text-primary">educazione alla pace</strong>, ai diritti umani e alla convivenza democratica ed ecologica.
+              </p>
 
+              <p>
+                Sin dall'inizio, la nostra missione ha ruotato attorno all'<strong className="text-accent">educazione alla legalità</strong>, promuovendo strumenti di cittadinanza attiva come i <em>Consigli Comunali dei Ragazzi (CCR)</em>, e formando educatori e animatori impegnati nella crescita civile delle nuove generazioni.
+              </p>
 
-Sin dall’inizio, la nostra missione ha ruotato attorno all’educazione alla legalità, promuovendo strumenti di cittadinanza attiva come i Consigli Comunali dei Ragazzi (CCR), e formando educatori e animatori impegnati nella crescita civile delle nuove generazioni.
+              <p>
+                Negli anni, ci siamo evoluti in un <strong className="text-primary">laboratorio permanente di politiche sociali e giovanili</strong>, coinvolgendo giovani, donne e soggetti fragili. Siamo tra i fondatori della rete nazionale <strong className="text-accent">I.T.E.R.</strong>, che connette enti pubblici e realtà del Terzo Settore attivi sulle politiche giovanili, con progetti sviluppati a livello locale, nazionale ed europeo.
+              </p>
+              
+              <p>
+                Promuoviamo il territorio attraverso il <strong className="text-primary">turismo responsabile</strong> in collaborazione con <em>Addiopizzo Travel</em> e <em>Palma Nana</em>, e siamo soci fondatori del <strong className="text-accent">Laboratorio della Legalità</strong>, museo ospitato in un bene confiscato alla mafia, che racconta — attraverso l'arte — la storia della resistenza alla mafia.
+              </p>
 
-
-Negli anni, ci siamo evoluti in un laboratorio permanente di politiche sociali e giovanili, coinvolgendo giovani, donne e soggetti fragili. Siamo tra i fondatori della rete nazionale I.T.E.R., che connette enti pubblici e realtà del Terzo Settore attivi sulle politiche giovanili, con progetti sviluppati a livello locale, nazionale ed europeo.
-Promuoviamo il territorio attraverso il turismo responsabile in collaborazione con Addiopizzo Travel e Palma Nana, e siamo soci fondatori del Laboratorio della Legalità, museo ospitato in un bene confiscato alla mafia, che racconta — attraverso l’arte — la storia della resistenza alla mafia.
-
-
-INTUS è uno spazio aperto, in continua evoluzione, dove educazione, memoria e partecipazione diventano strumenti per costruire un futuro condiviso.
-
-            </p>
+              <p className="text-xl font-medium text-foreground border-l-4 border-primary pl-6 italic">
+                INTUS è uno spazio aperto, in continua evoluzione, dove educazione, memoria e partecipazione diventano strumenti per costruire un futuro condiviso.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -192,7 +203,7 @@ INTUS è uno spazio aperto, in continua evoluzione, dove educazione, memoria e p
                 <Target className="w-12 h-12 text-primary mb-6" />
                 <h3 className="text-2xl font-bold mb-4">La Nostra Missione</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Promuoviamo una cultura della legalità, della pace e della partecipazione attiva, attraverso percorsi educativi, sociali e culturali rivolti soprattutto ai giovani. Lavoriamo per costruire comunità più consapevoli, inclusive e solidali, dove ogni persona possa contribuire al bene comune, nel rispetto dei diritti umani e dell’ambiente.
+                  Promuoviamo una cultura della legalità, della pace e della partecipazione attiva, attraverso percorsi educativi, sociali e culturali rivolti soprattutto ai giovani. Lavoriamo per costruire comunità più consapevoli, inclusive e solidali, dove ogni persona possa contribuire al bene comune, nel rispetto dei diritti umani e dell'ambiente.
                 </p>
               </CardContent>
             </Card>
@@ -202,7 +213,7 @@ INTUS è uno spazio aperto, in continua evoluzione, dove educazione, memoria e p
                 <Users className="w-12 h-12 text-accent mb-6" />
                 <h3 className="text-2xl font-bold mb-4">La Nostra Visione</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Immaginiamo un territorio in cui la memoria diventa azione, l’educazione genera cambiamento e la cittadinanza attiva è il cuore pulsante di una società giusta, libera dalle mafie e fondata sulla dignità delle persone.
+                  Immaginiamo un territorio in cui la memoria diventa azione, l'educazione genera cambiamento e la cittadinanza attiva è il cuore pulsante di una società giusta, libera dalle mafie e fondata sulla dignità delle persone.
                 </p>
               </CardContent>
             </Card>
