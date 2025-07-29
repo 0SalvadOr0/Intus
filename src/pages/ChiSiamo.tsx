@@ -166,7 +166,18 @@ const ChiSiamo = () => {
               Chi <span className="text-primary">Siamo</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Siamo un gruppo di persone appassionate che crede nel potere della comunità e nell'importanza di costruire insieme un futuro migliore.
+              INTUS CORLEONE APS nasce a Corleone nel 1997, nel cuore di quella che è stata definita la “Primavera Corleonese”, come segno di rinascita culturale e civile. Nata dall’energia di quattro giovani formatisi alla scuola di Daniele Novara presso il Centro Psicopedagogico per la Pace di Piacenza, l’associazione affonda le radici nei valori dell’educazione alla pace, ai diritti umani e alla convivenza democratica ed ecologica.
+
+
+Sin dall’inizio, la nostra missione ha ruotato attorno all’educazione alla legalità, promuovendo strumenti di cittadinanza attiva come i Consigli Comunali dei Ragazzi (CCR), e formando educatori e animatori impegnati nella crescita civile delle nuove generazioni.
+
+
+Negli anni, ci siamo evoluti in un laboratorio permanente di politiche sociali e giovanili, coinvolgendo giovani, donne e soggetti fragili. Siamo tra i fondatori della rete nazionale I.T.E.R., che connette enti pubblici e realtà del Terzo Settore attivi sulle politiche giovanili, con progetti sviluppati a livello locale, nazionale ed europeo.
+Promuoviamo il territorio attraverso il turismo responsabile in collaborazione con Addiopizzo Travel e Palma Nana, e siamo soci fondatori del Laboratorio della Legalità, museo ospitato in un bene confiscato alla mafia, che racconta — attraverso l’arte — la storia della resistenza alla mafia.
+
+
+INTUS è uno spazio aperto, in continua evoluzione, dove educazione, memoria e partecipazione diventano strumenti per costruire un futuro condiviso.
+
             </p>
           </div>
         </div>
@@ -181,7 +192,7 @@ const ChiSiamo = () => {
                 <Target className="w-12 h-12 text-primary mb-6" />
                 <h3 className="text-2xl font-bold mb-4">La Nostra Missione</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Promuovere la partecipazione attiva dei cittadini, valorizzare il territorio e creare opportunità concrete per i giovani attraverso progetti innovativi e collaborativi.
+                  Promuoviamo una cultura della legalità, della pace e della partecipazione attiva, attraverso percorsi educativi, sociali e culturali rivolti soprattutto ai giovani. Lavoriamo per costruire comunità più consapevoli, inclusive e solidali, dove ogni persona possa contribuire al bene comune, nel rispetto dei diritti umani e dell’ambiente.
                 </p>
               </CardContent>
             </Card>
@@ -191,7 +202,7 @@ const ChiSiamo = () => {
                 <Users className="w-12 h-12 text-accent mb-6" />
                 <h3 className="text-2xl font-bold mb-4">La Nostra Visione</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Una comunità dove ogni cittadino si sente parte attiva del cambiamento, dove il territorio è valorizzato e i giovani hanno gli strumenti per realizzare i propri sogni.
+                  Immaginiamo un territorio in cui la memoria diventa azione, l’educazione genera cambiamento e la cittadinanza attiva è il cuore pulsante di una società giusta, libera dalle mafie e fondata sulla dignità delle persone.
                 </p>
               </CardContent>
             </Card>

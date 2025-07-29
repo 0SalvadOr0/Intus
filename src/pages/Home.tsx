@@ -35,7 +35,7 @@ const Home = () => {
               <AnimatedIntusLogo className="w-64 h-auto md:w-80 lg:w-96" />
             </div>
             <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-              Un cuore pulsante per la comunità. Uniamo cittadinanza attiva, valorizzazione del territorio e politiche giovanili per costruire insieme il futuro.
+              INTUS CORLEONE APS, fondata nel 1997 durante la “Primavera Corleonese”, promuove la legalità, i diritti umani e la cittadinanza attiva. L’associazione forma educatori e sostiene progetti giovanili, sociali ed ecologici a livello locale ed europeo. È attiva nel turismo responsabile e nella valorizzazione della memoria antimafia attraverso l’arte.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up px-4" style={{animationDelay: '0.2s'}}>
