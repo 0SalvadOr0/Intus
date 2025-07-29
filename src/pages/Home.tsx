@@ -36,7 +36,7 @@ const Home = () => {
             </div>
             <div className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed px-4 space-y-4">
               <p>
-                <strong className="text-foreground">INTUS CORLEONE APS</strong>, fondata nel <strong className="text-primary">1997</strong> durante la <em>"Primavera Corleonese"</em>, promuove la <strong className="text-accent">legalità</strong>, i <strong className="text-primary">diritti umani</strong> e la <strong className="text-accent">cittadinanza attiva</strong>.
+                Fondata nel <strong className="text-primary">1997</strong> durante la <em>"Primavera Corleonese"</em>, promuove la <strong className="text-accent">legalità</strong>, i <strong className="text-primary">diritti umani</strong> e la <strong className="text-accent">cittadinanza attiva</strong>.
               </p>
               <p>
                 L'associazione forma educatori e sostiene progetti giovanili, sociali ed ecologici a livello locale ed europeo. È attiva nel <strong className="text-primary">turismo responsabile</strong> e nella valorizzazione della <strong className="text-accent">memoria antimafia</strong> attraverso l'arte.

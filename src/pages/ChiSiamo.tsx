@@ -732,6 +732,18 @@ const ChiSiamo = () => {
           </h2>
           <div className="flex flex-col md:flex-row items-center justify-center gap-8">
             <a
+              href="https://reteiter.it/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-primary/20"
+            >
+              <img src="https://reteiter.it/wp-content/uploads/2023/07/logo_ITER-copia-copia.png" alt="Rete Iter" className="w-16 h-16 object-contain rounded-full bg-white" />
+              <div>
+                <div className="font-bold text-lg text-primary">Associazione Reteiter</div>
+                <div className="text-muted-foreground text-sm">www.reteiter.it</div>
+              </div>
+            </a>
+            <a
               href="https://www.sipuofare.net/"
               target="_blank"
               rel="noopener noreferrer"
