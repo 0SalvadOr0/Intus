@@ -177,6 +177,8 @@ const CallIdeeGiovani = () => {
           </div>
         </div>
 
+        <CallIdeeNotice />
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {/* Informazioni Progetto */}
