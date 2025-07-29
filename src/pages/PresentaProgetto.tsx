@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Send, Plus, Trash2, DollarSign, MapPin, Calendar, FileText, User, Users, AlertCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import CallIdeeNotice from "@/components/CallIdeeNotice";
 
 const partecipanteSchema = z.object({
   nome: z.string().min(2, "Nome richiesto"),
@@ -175,6 +176,8 @@ const CallIdeeGiovani = () => {
             </div>
           </div>
         </div>
+
+        <CallIdeeNotice />
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
