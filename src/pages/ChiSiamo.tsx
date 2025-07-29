@@ -2,11 +2,102 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Target, Users, Calendar, MapPin, Zap } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { 
+  Heart, 
+  Target, 
+  Users, 
+  Calendar, 
+  MapPin, 
+  GraduationCap,
+  BookOpen,
+  Globe,
+  Lightbulb,
+  Award,
+  Building,
+  Network,
+  FileText,
+  Microscope,
+  Camera,
+  Shield,
+  TreePine,
+  Music,
+  ChevronDown,
+  ChevronRight,
+  BarChart3,
+  TrendingUp,
+  Users2,
+  Clock
+} from "lucide-react";
 
-// Timeline Component with Scroll Animation
+// Statistiche Strategy
+const StatisticsSection = () => {
+  const stats = [
+    {
+      title: "Anni di Attività",
+      value: "28",
+      subtitle: "Dal 1997 ad oggi",
+      icon: Clock,
+      color: "text-primary"
+    },
+    {
+      title: "Progetti Realizzati",
+      value: "40+",
+      subtitle: "In diversi ambiti",
+      icon: Award,
+      color: "text-accent"
+    },
+    {
+      title: "Giovani Coinvolti",
+      value: "1000+",
+      subtitle: "Nelle varie iniziative",
+      icon: Users2,
+      color: "text-heart"
+    },
+    {
+      title: "Partner Attivi",
+      value: "50+",
+      subtitle: "Enti e istituzioni",
+      icon: Network,
+      color: "text-primary"
+    }
+  ];
+
+  return (
+    <section className="py-16 px-4 bg-gradient-to-r from-primary/5 via-accent/5 to-heart/5">
+      <div className="container mx-auto max-w-6xl">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 animate-fade-in-up">
+          I Nostri <span className="text-primary">Numeri</span>
+        </h2>
+        
+        <div className="grid md:grid-cols-4 gap-6">
+          {stats.map((stat, index) => {
+            const StatIcon = stat.icon;
+            return (
+              <Card 
+                key={index}
+                className="border-0 bg-card/80 backdrop-blur-sm hover:shadow-elegant transition-all duration-300 hover:-translate-y-2 animate-fade-in-up text-center"
+                style={{animationDelay: `${index * 0.1}s`}}
+              >
+                <CardContent className="p-6">
+                  <StatIcon className={`w-12 h-12 mx-auto mb-4 ${stat.color}`} />
+                  <div className="text-3xl font-bold mb-2">{stat.value}</div>
+                  <h3 className="font-semibold mb-1">{stat.title}</h3>
+                  <p className="text-sm text-muted-foreground">{stat.subtitle}</p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Timeline Component with Scroll Animation and Expandable Years
 const TimelineComponent = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [expandedYears, setExpandedYears] = useState<string[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,7 +107,6 @@ const TimelineComponent = () => {
         const windowHeight = window.innerHeight;
         const elementHeight = rect.height;
         
-        // Calculate how much of the timeline is visible
         const visibleTop = Math.max(0, windowHeight - rect.top);
         const visibleBottom = Math.min(elementHeight, windowHeight - rect.bottom + elementHeight);
         const visibleHeight = Math.max(0, visibleTop - Math.max(0, -visibleBottom));
@@ -27,46 +117,361 @@ const TimelineComponent = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial call
+    handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const timelineItems = [
+  const toggleYear = (year: string) => {
+    setExpandedYears(prev => 
+      prev.includes(year) 
+        ? prev.filter(y => y !== year)
+        : [...prev, year]
+    );
+  };
+
+  const timelineData = [
     {
-      year: "2021",
-      title: "Fondazione dell'Associazione",
-      description: "Nasce Intus con l'obiettivo di unire le energie della comunità e promuovere la cittadinanza attiva.",
+      year: "1997",
+      title: "Fondazione e Prime Iniziative",
+      description: "Nasce INTUS nella 'Primavera Corleonese' con i primi progetti di educazione alla legalità",
       icon: Heart,
-      color: "bg-primary"
+      color: "bg-primary",
+      projects: [
+        {
+          title: "CONSIGLI DA RAGAZZI",
+          description: "Percorso di educazione alla legalità per la costituzione del Consiglio Comunale dei Ragazzi",
+          destinatari: "Alunni Istituto G. Vasi Corleone",
+          ente: "Comune di Corleone"
+        },
+        {
+          title: "ECOLOGIOCHI", 
+          description: "Educazione ambientale attraverso giochi di squadra per le scuole",
+          destinatari: "Alunni Istituto G. Vasi",
+          ente: "Comune di Corleone"
+        }
+      ]
     },
     {
-      year: "2022", 
-      title: "Primo Progetto Giovani",
-      description: "Lancio dello Youth Hub: uno spazio di aggregazione e crescita per i giovani del territorio.",
+      year: "1998",
+      title: "Espansione nell'Educazione",
+      description: "Ampliamento delle attività formative e creazione di spazi educativi per minori",
+      icon: GraduationCap,
+      color: "bg-accent",
+      projects: [
+        {
+          title: "FORMARE PER IN-FORMARE",
+          description: "Educazione alla legalità nelle scuole superiori con costituzione consulta giovanile",
+          destinatari: "Alunni scuole superiori",
+          ente: "Comune di Corleone"
+        },
+        {
+          title: "LUDOTECA",
+          description: "Creazione di spazi educativi per minori a rischio",
+          destinatari: "Minori fragili",
+          ente: "Segretariato Sociale"
+        }
+      ]
+    },
+    {
+      year: "1999",
+      title: "Formazione Educatori",
+      description: "Focus sulla formazione di operatori e interventi in zone a rischio",
       icon: Users,
-      color: "bg-accent"
+      color: "bg-heart",
+      projects: [
+        {
+          title: "LARGO AI RAGAZZI O RAGAZZI AL LARGO",
+          description: "Formazione di 20 educatori e animatori per il Consiglio Comunale dei Ragazzi",
+          destinatari: "Educatori",
+          ente: "Comune di Misilmeri"
+        },
+        {
+          title: "UNA CHANCE AI MARGINI PER CORLEONE",
+          description: "Animazione culturale in zone a rischio del territorio",
+          destinatari: "Minori e famiglie svantaggiate",
+          ente: "Ministero Interni/Comune Corleone"
+        },
+        {
+          title: "LA SCUOLA",
+          description: "Monitoraggio dispersione scolastica e integrazione sociale",
+          destinatari: "Scuole di ogni ordine e grado",
+          ente: "Patto Territoriale Alto Belice"
+        }
+      ]
     },
     {
-      year: "2023",
-      title: "Valorizzazione del Territorio", 
-      description: "Restauro di siti storici e promozione del turismo sostenibile con il coinvolgimento della comunità.",
+      year: "2000",
+      title: "Inclusione Sociale e Ricerca",
+      description: "Progetti per l'imprenditoria femminile e ricerca europea sull'esclusione sociale",
+      icon: Globe,
+      color: "bg-primary",
+      projects: [
+        {
+          title: "LE DONNE DI CORLEONE",
+          description: "Sostegno all'imprenditoria femminile per donne di fasce deboli",
+          destinatari: "28 donne appartenenti a fasce deboli",
+          ente: "FSE Dipartimento Politiche Giovanili"
+        },
+        {
+          title: "INFORMATION ABOUT SOCIAL EXCLUSION",
+          description: "Ricerca europea con 6 città su nuove povertà",
+          destinatari: "Coordinamento Sicilia",
+          ente: "Dipartimento Affari Sociali"
+        }
+      ]
+    },
+    {
+      year: "2001-2003",
+      title: "Economia Solidale e Ricerca",
+      description: "Progetti su consumo critico, dispersione scolastica e cultura civica",
+      icon: BookOpen,
+      color: "bg-accent",
+      projects: [
+        {
+          title: "CITTADINI DEL MONDO",
+          description: "Formazione su economia solidale, mercato internazionale e consumo critico",
+          destinatari: "Alunni e docenti istituti superiori",
+          ente: "Istituti Superiori Corleone"
+        },
+        {
+          title: "PREVENZIONE DISPERSIONE SCOLASTICA",
+          description: "Progettazione contro dispersione scolastica nel territorio",
+          destinatari: "Istituti del territorio",
+          ente: "PON Obiettivo 1"
+        },
+        {
+          title: "CULTURA CIVICA DEI GIOVANI",
+          description: "Ricerca su cultura civica dei giovani corleonesi",
+          destinatari: "Studenti superiori",
+          ente: "IMES Catania/Università Torino"
+        }
+      ]
+    },
+    {
+      year: "2004-2008",
+      title: "Reti Territoriali",
+      description: "Costruzione reti tra comuni e ricerca transnazionale su criminalità minorile",
+      icon: Network,
+      color: "bg-heart",
+      projects: [
+        {
+          title: "BILLY THE KID",
+          description: "Ricerca su minori a rischio criminalità in contesto transnazionale",
+          destinatari: "Minori a rischio",
+          ente: "Programma UE anti-emarginazione"
+        },
+        {
+          title: "RETE MADONIE",
+          description: "Convenzione per politiche welfare e giovanili nell'area madonita",
+          destinatari: "Enti locali basse Madonie",
+          ente: "Comune di Caltavuturo"
+        }
+      ]
+    },
+    {
+      year: "2009-2010",
+      title: "Centri e Laboratori",
+      description: "Costituzione associazioni di rete e fondazione Laboratorio della Legalità",
+      icon: Building,
+      color: "bg-primary",
+      projects: [
+        {
+          title: "ASSOCIAZIONE IO GIO.CO",
+          description: "Costituzione associazione di associazioni per Centro Multimediale",
+          destinatari: "Enti terzo settore",
+          ente: "Comune di Corleone"
+        },
+        {
+          title: "LABORATORIO DELLA LEGALITÀ",
+          description: "Cofondazione laboratorio in bene confiscato con percorsi formativi nazionali",
+          destinatari: "Scuole territorio italiano",
+          ente: "Ministero Interni/Regione Sicilia"
+        }
+      ]
+    },
+    {
+      year: "2012-2016",
+      title: "Innovazione e Tecnologia",
+      description: "Grande progetto di valorizzazione culturale con tecnologie innovative",
+      icon: Lightbulb,
+      color: "bg-accent",
+      projects: [
+        {
+          title: "PROGETTO INTUS",
+          description: "Sistema innovativo di valorizzazione patrimonio culturale con tecnologie intelligenti",
+          destinatari: "Territorio e giovani",
+          ente: "MIUR PON04a3_00476"
+        }
+      ]
+    },
+    {
+      year: "2017",
+      title: "Utopie e Performance",
+      description: "Progetti sperimentali su immaginario utopico e attività artistiche",
+      icon: Music,
+      color: "bg-heart",
+      projects: [
+        {
+          title: "IL GIOCO DELLE 100 UTOPIE",
+          description: "Esplorazione immaginario utopico bambini 6-11 anni",
+          destinatari: "20 bambini classe V elementare",
+          ente: "Università di Pisa/Istituto G. Vasi"
+        },
+        {
+          title: "U MALU PASSU",
+          description: "Laboratori estivi teatro, musica, audiovisivo con performance finale",
+          destinatari: "60 ragazzi Istituto G. Vasi",
+          ente: "Piano Nazionale Dispersione Scolastica"
+        },
+        {
+          title: "FARE STORIA NEL PAESAGGIO",
+          description: "Scienza geo-storica del paesaggio ed educazione cittadinanza",
+          destinatari: "Dirigenti, insegnanti, docenti universitari",
+          ente: "AISO/Università Palermo"
+        },
+        {
+          title: "LUOGHI COMUNI",
+          description: "Laboratori legalità con festival culturale per centenario Bernardino Verro",
+          destinatari: "Studenti corleonesi ogni ordine",
+          ente: "Dipartimento Gioventù Presidenza Consiglio"
+        }
+      ]
+    },
+    {
+      year: "2017-2018",
+      title: "Dimensione Europea",
+      description: "Scambi internazionali e progetti europei per la legalità",
+      icon: Globe,
+      color: "bg-primary",
+      projects: [
+        {
+          title: "YOUNG PEOPLE FOR LEGALITY IN EUROPE",
+          description: "Scambio giovanile europeo su legalità con metodologie attive",
+          destinatari: "30 giovani Europa dell'est",
+          ente: "ERASMUS+ YOUTH IN ACTION"
+        },
+        {
+          title: "YOUNG PEOPLE MOVER",
+          description: "Partecipazione giovanile nella pianificazione spazi pubblici",
+          destinatari: "Giovani 16-35 anni",
+          ente: "Comune Prato/Talent Garden"
+        },
+        {
+          title: "PORTE APERTE ALLA LEGALITÀ",
+          description: "PCTO per promozione territoriale e narrazione museo",
+          destinatari: "Studenti liceo scientifico",
+          ente: "Istituto Don G. Colletto"
+        },
+        {
+          title: "CAMPO PROTEZIONE CIVILE",
+          description: "Campo estivo protezione civile per ragazzi",
+          destinatari: "20 ragazzi 11-14 anni",
+          ente: "ProcivArci Grifone"
+        }
+      ]
+    },
+    {
+      year: "2018-2019",
+      title: "Protagonismo Giovanile",
+      description: "Progetti per aggregazione giovanile e biblioteca diffusa",
+      icon: Users,
+      color: "bg-accent",
+      projects: [
+        {
+          title: "PERCORSI VIRTUOSI",
+          description: "Protagonismo sociale giovani per prevenire disagio e devianza",
+          destinatari: "Giovani 14-16 anni territorio Consorzio",
+          ente: "Giovani per il Sociale"
+        },
+        {
+          title: "LIBRI BENE COMUNE",
+          description: "Biblioteca diffusa con 7000 testi per promozione lettura solidale",
+          destinatari: "Cittadinanza corleonese",
+          ente: "Centro sociale Di Matteo/vari partner"
+        }
+      ]
+    },
+    {
+      year: "2016-oggi",
+      title: "Turismo e Narrazione",
+      description: "Promozione territoriale attraverso percorsi di legalità e storia",
       icon: MapPin,
-      color: "bg-heart"
+      color: "bg-heart",
+      projects: [
+        {
+          title: "LE STRADE E LA STORIA",
+          description: "Promozione territoriale con percorsi educazione legalità e narrazione",
+          destinatari: "Scuole italiane e straniere",
+          ente: "AddioPizzo Travel/Palma Nana"
+        }
+      ]
     },
     {
-      year: "2024",
-      title: "Espansione e Crescita",
-      description: "Nuovi progetti e collaborazioni per ampliare l'impatto sulla comunità locale.",
-      icon: Target,
-      color: "bg-accent"
+      year: "2021-2022",
+      title: "Reti e Multimedia",
+      description: "Costituzione reti territoriali e progetti audiovisivi educativi",
+      icon: Camera,
+      color: "bg-primary",
+      projects: [
+        {
+          title: "FUORI ORARIO",
+          description: "Rafforzamento CCR e alfabetizzazione culturale studenti",
+          destinatari: "Alunni Istituto G. Vasi",
+          ente: "Contrasto Povertà Educativa"
+        },
+        {
+          title: "RETE GSL",
+          description: "Rete Giovani Sviluppo Locale tra istituzioni scolastiche",
+          destinatari: "Istituti Distretti 38 e 40",
+          ente: "Rete Scolastica"
+        },
+        {
+          title: "RETE PRO.G.eT.",
+          description: "Rete territoriale Progetto Giovani e Territorio con 16 enti",
+          destinatari: "Adolescenti e giovani",
+          ente: "Cantiere Politiche Giovanili"
+        },
+        {
+          title: "RIGENERAZIONE",
+          description: "Officine dei Saperi con pedagogia interdisciplinare innovativa",
+          destinatari: "Studenti a rischio",
+          ente: "Istituto G. Vasi"
+        },
+        {
+          title: "CASA DEL RIONE SANITÀ",
+          description: "Laboratori storia orale e promozione territorio napoletano",
+          destinatari: "Comunità territoriale",
+          ente: "Napoli inVita/Piano Azione Coesione"
+        },
+        {
+          title: "È ARRIVATA LA FELICITÀ",
+          description: "Formazione linguaggio cinematografico e audiovisivo educativo",
+          destinatari: "Studenti reti scolastiche",
+          ente: "Ministero Istruzione/Cultura"
+        }
+      ]
     },
     {
-      year: "2025",
-      title: "Oggi e Futuro",
-      description: "Intus continua a crescere, creando nuove opportunità e rafforzando il senso di appartenenza nella comunità.",
-      icon: Zap,
-      color: "bg-primary"
+      year: "2024-2025",
+      title: "Futuro e Comunità",
+      description: "Microprogetti per giovani e sviluppo delle comunità locali",
+      icon: TrendingUp,
+      color: "bg-accent",
+      projects: [
+        {
+          title: "SI PUÒ FARE",
+          description: "Supporto e contributi per iniziative giovanili di sviluppo comunitario",
+          destinatari: "Giovani 16-30 anni",
+          ente: "Ministero Lavoro/Cantiere Giovani"
+        },
+        {
+          title: "GIOVANI PER LE COMUNITÀ LOCALI",
+          description: "Microprogetti per sviluppo comunità con contributi economici",
+          destinatari: "Giovani 16-30 anni",
+          ente: "Assessorato Famiglia Regione Sicilia"
+        }
+      ]
     }
   ];
 
@@ -94,10 +499,12 @@ const TimelineComponent = () => {
       </div>
 
       {/* Timeline items */}
-      <div className="space-y-12 pl-20">
-        {timelineItems.map((item, index) => {
+      <div className="space-y-8 pl-20">
+        {timelineData.map((item, index) => {
           const ItemIcon = item.icon;
-          const isVisible = scrollProgress > (index / timelineItems.length) * 100;
+          const isVisible = scrollProgress > (index / timelineData.length) * 100;
+          const isExpanded = expandedYears.includes(item.year);
+          const hasMultipleProjects = item.projects && item.projects.length > 1;
           
           return (
             <div 
@@ -116,10 +523,65 @@ const TimelineComponent = () => {
                     <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold text-lg">
                       {item.year}
                     </span>
+                    {hasMultipleProjects && (
+                      <Badge variant="secondary" className="text-xs">
+                        {item.projects.length} progetti
+                      </Badge>
+                    )}
                   </div>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed mb-4">
                     {item.description}
                   </p>
+                  
+                  {hasMultipleProjects ? (
+                    <Collapsible open={isExpanded} onOpenChange={() => toggleYear(item.year)}>
+                      <CollapsibleTrigger className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+                        {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                        <span className="font-medium">
+                          {isExpanded ? 'Nascondi dettagli' : 'Mostra tutti i progetti'}
+                        </span>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-4 space-y-4">
+                        {item.projects.map((project, projectIndex) => (
+                          <Card key={projectIndex} className="border-l-4 border-primary bg-muted/30">
+                            <CardContent className="p-4">
+                              <h4 className="font-bold text-foreground mb-2">{project.title}</h4>
+                              <p className="text-sm text-muted-foreground mb-2">{project.description}</p>
+                              <div className="flex flex-wrap gap-2 text-xs">
+                                <Badge variant="outline" className="bg-background/50">
+                                  <Users className="w-3 h-3 mr-1" />
+                                  {project.destinatari}
+                                </Badge>
+                                <Badge variant="outline" className="bg-background/50">
+                                  <Building className="w-3 h-3 mr-1" />
+                                  {project.ente}
+                                </Badge>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    item.projects && item.projects.length === 1 && (
+                      <Card className="border-l-4 border-primary bg-muted/30">
+                        <CardContent className="p-4">
+                          <h4 className="font-bold text-foreground mb-2">{item.projects[0].title}</h4>
+                          <p className="text-sm text-muted-foreground mb-2">{item.projects[0].description}</p>
+                          <div className="flex flex-wrap gap-2 text-xs">
+                            <Badge variant="outline" className="bg-background/50">
+                              <Users className="w-3 h-3 mr-1" />
+                              {item.projects[0].destinatari}
+                            </Badge>
+                            <Badge variant="outline" className="bg-background/50">
+                              <Building className="w-3 h-3 mr-1" />
+                              {item.projects[0].ente}
+                            </Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -193,6 +655,9 @@ const ChiSiamo = () => {
           </div>
         </div>
       </section>
+
+      {/* Statistiche */}
+      <StatisticsSection />
 
       {/* Mission & Vision */}
       <section className="py-16 px-4">
@@ -294,14 +759,14 @@ const ChiSiamo = () => {
         </div>
       </section>
 
-      {/* Timeline Section - La Nostra Storia Animata */}
+      {/* Timeline Section - La Nostra Storia Completa */}
       <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-muted/10 via-background to-muted/10">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-5xl">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 animate-fade-in-up">
             La Nostra <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Storia</span>
           </h2>
-          <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-            Scopri il nostro percorso e guarda come il pallino si muove mentre scorri la pagina
+          <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto">
+            28 anni di impegno per la legalità, l'educazione e lo sviluppo del territorio. Clicca sui progetti per espandere i dettagli.
           </p>
           
           <TimelineComponent />
