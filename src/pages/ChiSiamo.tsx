@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +29,234 @@ import {
   Users2,
   Clock
 } from "lucide-react";
+
+// Componente immersivo a schermo intero per la descrizione
+const ImmersiveDescription = () => {
+  const [currentSentence, setCurrentSentence] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastScrollTime = useRef<number>(0);
+  const sentences = [
+    {
+      text: "INTUS CORLEONE APS nasce a Corleone nel 1997",
+      accent: "nel cuore di quella che è stata definita la \"Primavera Corleonese\", come segno di rinascita culturale e civile",
+      gradient: "from-primary to-accent"
+    },
+    {
+      text: "Nata dall'energia di quattro giovani formatisi alla scuola di Daniele Novara",
+      accent: "presso il Centro Psicopedagogico per la Pace di Piacenza, l'associazione affonda le radici nei valori dell'educazione alla pace, ai diritti umani e alla convivenza democratica ed ecologica",
+      gradient: "from-accent to-heart"
+    },
+    {
+      text: "Sin dall'inizio, la nostra missione ha ruotato attorno all'educazione alla legalità",
+      accent: "promuovendo strumenti di cittadinanza attiva come i Consigli Comunali dei Ragazzi (CCR), e formando educatori e animatori impegnati nella crescita civile delle nuove generazioni",
+      gradient: "from-heart to-primary"
+    },
+    {
+      text: "Negli anni, ci siamo evoluti in un laboratorio permanente di politiche sociali e giovanili",
+      accent: "coinvolgendo giovani, donne e soggetti fragili. Siamo tra i fondatori della rete nazionale I.T.E.R., che connette enti pubblici e realtà del Terzo Settore attivi sulle politiche giovanili",
+      gradient: "from-primary to-accent"
+    },
+    {
+      text: "Promuoviamo il territorio attraverso il turismo responsabile",
+      accent: "in collaborazione con Addiopizzo Travel e Palma Nana, e siamo soci fondatori del Laboratorio della Legalità, museo ospitato in un bene confiscato alla mafia",
+      gradient: "from-accent to-heart"
+    },
+    {
+      text: "INTUS è uno spazio aperto, in continua evoluzione",
+      accent: "dove educazione, memoria e partecipazione diventano strumenti per costruire un futuro condiviso",
+      gradient: "from-heart to-primary",
+      isQuote: true,
+      isLast: true
+    }
+  ];
+
+  const closeImmersive = useCallback(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.style.transform = 'translateY(-100%)';
+      container.style.transition = 'transform 800ms ease-in-out';
+      setTimeout(() => {
+        container.style.display = 'none';
+        setCurrentSentence(0); // Reset per la prossima volta
+      }, 800);
+    }
+  }, []);
+
+  const handleScroll = useCallback((e: Event) => {
+    e.preventDefault();
+    const now = Date.now();
+
+    if (now - lastScrollTime.current < 1000 || isTransitioning) return;
+
+    lastScrollTime.current = now;
+    setIsTransitioning(true);
+
+    setTimeout(() => {
+      setCurrentSentence(prev => {
+        const next = prev + 1;
+        if (next >= sentences.length) {
+          // Se è l'ultima frase, aspetta 3 secondi e chiudi
+          setTimeout(() => {
+            closeImmersive();
+          }, 3000);
+          return prev; // Rimane sull'ultima frase
+        }
+        return next;
+      });
+      setIsTransitioning(false);
+    }, 300);
+  }, [isTransitioning, sentences.length, closeImmersive]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let startY = 0;
+    let startX = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      startY = e.touches[0].clientY;
+      startX = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      const endY = e.changedTouches[0].clientY;
+      const endX = e.changedTouches[0].clientX;
+      const diffY = startY - endY;
+      const diffX = Math.abs(startX - endX);
+
+      // Solo se è uno swipe verticale (non orizzontale)
+      if (diffY > 50 && diffX < 100) {
+        handleScroll(e as any);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        handleScroll(e as any);
+      }
+      if (e.key === 'Escape') {
+        closeImmersive();
+      }
+    };
+
+    container.addEventListener('wheel', handleScroll, { passive: false });
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchend', handleTouchEnd);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      container.removeEventListener('wheel', handleScroll);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleScroll, closeImmersive]);
+
+  const currentData = sentences[currentSentence];
+
+  return (
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-40 bg-gradient-to-br from-background via-background/95 to-background items-center justify-center overflow-hidden"
+      style={{
+        height: '100vh',
+        width: '100vw',
+        display: 'none',
+        transform: 'translateY(-100%)',
+        transition: 'transform 800ms ease-in-out'
+      }}
+    >
+      {/* Background animated gradient */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${currentData.gradient} opacity-5 transition-all duration-1000 ease-out`}
+      />
+
+      {/* Controls hint */}
+      <div className="absolute top-8 left-8 text-xs text-muted-foreground/70 space-y-1">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border border-muted-foreground/30 rounded flex items-center justify-center text-[10px]">⌘</div>
+          <span>Scroll, Space, ↓ per avanzare</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border border-muted-foreground/30 rounded flex items-center justify-center text-[10px]">⎋</div>
+          <span>Esc per uscire</span>
+        </div>
+      </div>
+
+      {/* Content container */}
+      <div className="relative z-10 max-w-6xl mx-auto px-8 text-center">
+        {/* Main sentence */}
+        <div
+          className={`transition-all duration-700 ease-out ${
+            isTransitioning
+              ? 'opacity-0 transform translate-y-8 scale-95'
+              : 'opacity-100 transform translate-y-0 scale-100'
+          }`}
+        >
+          <h2
+            className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight ${
+              currentData.isQuote ? 'italic' : ''
+            }`}
+          >
+            <span className={`bg-gradient-to-r ${currentData.gradient} bg-clip-text text-transparent`}>
+              {currentData.text}
+            </span>
+          </h2>
+
+          {/* Accent text */}
+          <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground leading-relaxed max-w-4xl mx-auto">
+            {currentData.accent}
+          </p>
+        </div>
+
+        {/* Progress indicator */}
+        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex items-center gap-3">
+          {sentences.map((_, index) => (
+            <div
+              key={index}
+              className={`h-2 rounded-full transition-all duration-500 ${
+                index === currentSentence
+                  ? `w-8 bg-gradient-to-r ${currentData.gradient}`
+                  : 'w-2 bg-muted-foreground/30'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Scroll hint */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground flex items-center gap-2">
+          {currentSentence < sentences.length - 1 ? (
+            <>
+              <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
+              <span>Scrolla per continuare</span>
+              <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
+            </>
+          ) : (
+            <>
+              <div className="w-1 h-1 bg-primary rounded-full animate-pulse" />
+              <span className="text-primary font-medium">Si chiuderà automaticamente...</span>
+              <div className="w-1 h-1 bg-primary rounded-full animate-pulse" />
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Exit button */}
+      <button
+        onClick={closeImmersive}
+        className="absolute top-8 right-8 w-12 h-12 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background hover:scale-110 transition-all duration-300 border border-border/50 group"
+      >
+        <svg width="20" height="20" className="w-5 h-5 group-hover:w-6 group-hover:h-6 transition-all duration-300">
+          <path d="m18 6-12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="m6 6 12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+    </div>
+  );
+};
 
 // Statistiche Strategy
 const StatisticsSection = () => {
@@ -627,34 +855,34 @@ const ChiSiamo = () => {
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               Chi <span className="text-primary">Siamo</span>
             </h1>
-            <div className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed space-y-6">
-              <p>
-                <strong className="text-foreground">INTUS CORLEONE APS</strong> nasce a Corleone nel <strong className="text-primary">1997</strong>, nel cuore di quella che è stata definita la <em>"Primavera Corleonese"</em>, come segno di rinascita culturale e civile.
-              </p>
-              
-              <p>
-                Nata dall'energia di quattro giovani formatisi alla scuola di <strong className="text-foreground">Daniele Novara</strong> presso il Centro Psicopedagogico per la Pace di Piacenza, l'associazione affonda le radici nei valori dell'<strong className="text-primary">educazione alla pace</strong>, ai diritti umani e alla convivenza democratica ed ecologica.
-              </p>
-
-              <p>
-                Sin dall'inizio, la nostra missione ha ruotato attorno all'<strong className="text-accent">educazione alla legalità</strong>, promuovendo strumenti di cittadinanza attiva come i <em>Consigli Comunali dei Ragazzi (CCR)</em>, e formando educatori e animatori impegnati nella crescita civile delle nuove generazioni.
-              </p>
-
-              <p>
-                Negli anni, ci siamo evoluti in un <strong className="text-primary">laboratorio permanente di politiche sociali e giovanili</strong>, coinvolgendo giovani, donne e soggetti fragili. Siamo tra i fondatori della rete nazionale <strong className="text-accent">I.T.E.R.</strong>, che connette enti pubblici e realtà del Terzo Settore attivi sulle politiche giovanili, con progetti sviluppati a livello locale, nazionale ed europeo.
-              </p>
-              
-              <p>
-                Promuoviamo il territorio attraverso il <strong className="text-primary">turismo responsabile</strong> in collaborazione con <em>Addiopizzo Travel</em> e <em>Palma Nana</em>, e siamo soci fondatori del <strong className="text-accent">Laboratorio della Legalità</strong>, museo ospitato in un bene confiscato alla mafia, che racconta — attraverso l'arte — la storia della resistenza alla mafia.
-              </p>
-
-              <p className="text-xl font-medium text-foreground border-l-4 border-primary pl-6 italic">
-                INTUS è uno spazio aperto, in continua evoluzione, dove educazione, memoria e partecipazione diventano strumenti per costruire un futuro condiviso.
-              </p>
+            <div className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              <p>Scopri la nostra storia attraverso un'esperienza immersiva</p>
             </div>
+            <button
+              onClick={() => {
+                const immersiveEl = document.querySelector('.fixed.inset-0');
+                if (immersiveEl) {
+                  (immersiveEl as HTMLElement).style.display = 'flex';
+                  setTimeout(() => {
+                    (immersiveEl as HTMLElement).style.transform = 'translateY(0)';
+                  }, 50);
+                }
+              }}
+              className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-primary to-accent text-primary-foreground px-8 py-4 rounded-full font-semibold hover:shadow-xl hover:shadow-primary/25 hover:scale-105 transition-all duration-500 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <span className="relative z-10">Inizia il Viaggio</span>
+              <svg width="20" height="20" className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">
+                <path d="M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="m12 5 7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
           </div>
         </div>
       </section>
+
+      {/* Immersive Description Component */}
+      <ImmersiveDescription />
 
       {/* Statistiche */}
       <StatisticsSection />
