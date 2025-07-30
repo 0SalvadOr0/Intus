@@ -71,6 +71,18 @@ const ImmersiveDescription = () => {
     }
   ];
 
+  const closeImmersive = useCallback(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.style.transform = 'translateY(-100%)';
+      container.style.transition = 'transform 800ms ease-in-out';
+      setTimeout(() => {
+        container.style.display = 'none';
+        setCurrentSentence(0); // Reset per la prossima volta
+      }, 800);
+    }
+  }, []);
+
   const handleScroll = useCallback((e: Event) => {
     e.preventDefault();
     const now = Date.now();
@@ -81,10 +93,20 @@ const ImmersiveDescription = () => {
     setIsTransitioning(true);
 
     setTimeout(() => {
-      setCurrentSentence(prev => (prev + 1) % sentences.length);
+      setCurrentSentence(prev => {
+        const next = prev + 1;
+        if (next >= sentences.length) {
+          // Se è l'ultima frase, aspetta 3 secondi e chiudi
+          setTimeout(() => {
+            closeImmersive();
+          }, 3000);
+          return prev; // Rimane sull'ultima frase
+        }
+        return next;
+      });
       setIsTransitioning(false);
     }, 300);
-  }, [isTransitioning, sentences.length]);
+  }, [isTransitioning, sentences.length, closeImmersive]);
 
   useEffect(() => {
     const container = containerRef.current;
