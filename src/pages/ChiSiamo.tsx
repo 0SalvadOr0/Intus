@@ -735,31 +735,7 @@ const ChiSiamo = () => {
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               Chi <span className="text-primary">Siamo</span>
             </h1>
-            <div className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed space-y-6">
-              <p>
-                <strong className="text-foreground">INTUS CORLEONE APS</strong> nasce a Corleone nel <strong className="text-primary">1997</strong>, nel cuore di quella che è stata definita la <em>"Primavera Corleonese"</em>, come segno di rinascita culturale e civile.
-              </p>
-              
-              <p>
-                Nata dall'energia di quattro giovani formatisi alla scuola di <strong className="text-foreground">Daniele Novara</strong> presso il Centro Psicopedagogico per la Pace di Piacenza, l'associazione affonda le radici nei valori dell'<strong className="text-primary">educazione alla pace</strong>, ai diritti umani e alla convivenza democratica ed ecologica.
-              </p>
-
-              <p>
-                Sin dall'inizio, la nostra missione ha ruotato attorno all'<strong className="text-accent">educazione alla legalità</strong>, promuovendo strumenti di cittadinanza attiva come i <em>Consigli Comunali dei Ragazzi (CCR)</em>, e formando educatori e animatori impegnati nella crescita civile delle nuove generazioni.
-              </p>
-
-              <p>
-                Negli anni, ci siamo evoluti in un <strong className="text-primary">laboratorio permanente di politiche sociali e giovanili</strong>, coinvolgendo giovani, donne e soggetti fragili. Siamo tra i fondatori della rete nazionale <strong className="text-accent">I.T.E.R.</strong>, che connette enti pubblici e realtà del Terzo Settore attivi sulle politiche giovanili, con progetti sviluppati a livello locale, nazionale ed europeo.
-              </p>
-              
-              <p>
-                Promuoviamo il territorio attraverso il <strong className="text-primary">turismo responsabile</strong> in collaborazione con <em>Addiopizzo Travel</em> e <em>Palma Nana</em>, e siamo soci fondatori del <strong className="text-accent">Laboratorio della Legalità</strong>, museo ospitato in un bene confiscato alla mafia, che racconta — attraverso l'arte — la storia della resistenza alla mafia.
-              </p>
-
-              <p className="text-xl font-medium text-foreground border-l-4 border-primary pl-6 italic">
-                INTUS è uno spazio aperto, in continua evoluzione, dove educazione, memoria e partecipazione diventano strumenti per costruire un futuro condiviso.
-              </p>
-            </div>
+            <InfiniteScrollDescription />
           </div>
         </div>
       </section>
