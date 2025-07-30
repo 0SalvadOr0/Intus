@@ -777,10 +777,31 @@ const ChiSiamo = () => {
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               Chi <span className="text-primary">Siamo</span>
             </h1>
-            <ImmersiveDescription />
+            <div className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              <p>Scopri la nostra storia attraverso un'esperienza immersiva</p>
+            </div>
+            <button
+              onClick={() => {
+                const immersiveEl = document.querySelector('.fixed.inset-0');
+                if (immersiveEl) {
+                  (immersiveEl as HTMLElement).style.display = 'flex';
+                  (immersiveEl as HTMLElement).style.transform = 'translateY(0)';
+                }
+              }}
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-accent text-primary-foreground px-8 py-4 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300"
+            >
+              <span>Inizia il Viaggio</span>
+              <svg width="20" height="20" className="lucide lucide-arrow-right">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       </section>
+
+      {/* Immersive Description Component */}
+      <ImmersiveDescription />
 
       {/* Statistiche */}
       <StatisticsSection />
