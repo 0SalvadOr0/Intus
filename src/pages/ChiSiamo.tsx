@@ -174,6 +174,18 @@ const ImmersiveDescription = () => {
         className={`absolute inset-0 bg-gradient-to-br ${currentData.gradient} opacity-5 transition-all duration-1000 ease-out`}
       />
 
+      {/* Controls hint */}
+      <div className="absolute top-8 left-8 text-xs text-muted-foreground/70 space-y-1">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border border-muted-foreground/30 rounded flex items-center justify-center text-[10px]">⌘</div>
+          <span>Scroll, Space, ↓ per avanzare</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border border-muted-foreground/30 rounded flex items-center justify-center text-[10px]">⎋</div>
+          <span>Esc per uscire</span>
+        </div>
+      </div>
+
       {/* Content container */}
       <div className="relative z-10 max-w-6xl mx-auto px-8 text-center">
         {/* Main sentence */}
