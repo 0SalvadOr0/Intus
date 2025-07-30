@@ -112,12 +112,48 @@ const ImmersiveDescription = () => {
     const container = containerRef.current;
     if (!container) return;
 
+    let startY = 0;
+    let startX = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      startY = e.touches[0].clientY;
+      startX = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      const endY = e.changedTouches[0].clientY;
+      const endX = e.changedTouches[0].clientX;
+      const diffY = startY - endY;
+      const diffX = Math.abs(startX - endX);
+
+      // Solo se è uno swipe verticale (non orizzontale)
+      if (diffY > 50 && diffX < 100) {
+        handleScroll(e as any);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        handleScroll(e as any);
+      }
+      if (e.key === 'Escape') {
+        closeImmersive();
+      }
+    };
+
     container.addEventListener('wheel', handleScroll, { passive: false });
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchend', handleTouchEnd);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
       container.removeEventListener('wheel', handleScroll);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleScroll]);
+  }, [handleScroll, closeImmersive]);
 
   const currentData = sentences[currentSentence];
 
