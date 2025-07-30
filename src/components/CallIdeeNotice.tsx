@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { X, AlertCircle } from "lucide-react";
+import { X, AlertCircle, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useHref } from "react-router-dom";
 
 const CallIdeeNotice = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -39,13 +40,17 @@ const CallIdeeNotice = () => {
               </Button>
             </div>
 
-            <div className="bg-white dark:bg-card rounded-lg p-4 border border-amber-200 dark:border-amber-800">
-              <img
-                src="https://cdn.builder.io/o/assets%2Fdf0d428b1b4f437cb1da37157eccd7a2%2F1cea630613d94640aabed01ec2d12814?alt=media&token=40158524-a9f6-464e-b700-0bc2a0024821&apiKey=df0d428b1b4f437cb1da37157eccd7a2"
-                alt="Avviso Call di Idee Giovani"
-                className="w-full h-auto rounded-md shadow-sm"
-                loading="lazy"
-              />
+            <div className="bg-white dark:bg-card rounded-lg p-4 border border-amber-200 dark:border-amber-800 flex items-center gap-2">
+              <a
+                  href="/files/avvisi/avviso_partecipazione.docx"
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-amber-600 dark:text-amber-400 hover:underline"
+                >
+              <Download   className="w-5 h-5 mr-1"/>
+              </a>
+                  Scarica il documento informativo
             </div>
 
             <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400">
