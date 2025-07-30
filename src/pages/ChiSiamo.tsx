@@ -101,8 +101,14 @@ const ImmersiveDescription = () => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-40 bg-gradient-to-br from-background via-background/95 to-background flex items-center justify-center overflow-hidden"
-      style={{ height: '100vh', width: '100vw' }}
+      className="fixed inset-0 z-40 bg-gradient-to-br from-background via-background/95 to-background items-center justify-center overflow-hidden"
+      style={{
+        height: '100vh',
+        width: '100vw',
+        display: 'none',
+        transform: 'translateY(-100%)',
+        transition: 'transform 800ms ease-in-out'
+      }}
     >
       {/* Background animated gradient */}
       <div
