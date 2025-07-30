@@ -39,34 +39,35 @@ const ImmersiveDescription = () => {
   const sentences = [
     {
       text: "INTUS CORLEONE APS nasce a Corleone nel 1997",
-      accent: "nel cuore della Primavera Corleonese",
+      accent: "nel cuore di quella che è stata definita la \"Primavera Corleonese\", come segno di rinascita culturale e civile",
       gradient: "from-primary to-accent"
     },
     {
-      text: "Quattro giovani formatisi alla scuola di Daniele Novara",
-      accent: "con radici nell'educazione alla pace",
+      text: "Nata dall'energia di quattro giovani formatisi alla scuola di Daniele Novara",
+      accent: "presso il Centro Psicopedagogico per la Pace di Piacenza, l'associazione affonda le radici nei valori dell'educazione alla pace, ai diritti umani e alla convivenza democratica ed ecologica",
       gradient: "from-accent to-heart"
     },
     {
-      text: "La nostra missione: educazione alla legalità",
-      accent: "attraverso i Consigli Comunali dei Ragazzi",
+      text: "Sin dall'inizio, la nostra missione ha ruotato attorno all'educazione alla legalità",
+      accent: "promuovendo strumenti di cittadinanza attiva come i Consigli Comunali dei Ragazzi (CCR), e formando educatori e animatori impegnati nella crescita civile delle nuove generazioni",
       gradient: "from-heart to-primary"
     },
     {
-      text: "Un laboratorio permanente di politiche giovanili",
-      accent: "fondatori della rete nazionale I.T.E.R.",
+      text: "Negli anni, ci siamo evoluti in un laboratorio permanente di politiche sociali e giovanili",
+      accent: "coinvolgendo giovani, donne e soggetti fragili. Siamo tra i fondatori della rete nazionale I.T.E.R., che connette enti pubblici e realtà del Terzo Settore attivi sulle politiche giovanili",
       gradient: "from-primary to-accent"
     },
     {
-      text: "Turismo responsabile con Addiopizzo Travel",
-      accent: "e il Laboratorio della Legalità",
+      text: "Promuoviamo il territorio attraverso il turismo responsabile",
+      accent: "in collaborazione con Addiopizzo Travel e Palma Nana, e siamo soci fondatori del Laboratorio della Legalità, museo ospitato in un bene confiscato alla mafia",
       gradient: "from-accent to-heart"
     },
     {
-      text: "INTUS è uno spazio aperto",
-      accent: "dove educazione, memoria e partecipazione costruiscono il futuro",
+      text: "INTUS è uno spazio aperto, in continua evoluzione",
+      accent: "dove educazione, memoria e partecipazione diventano strumenti per costruire un futuro condiviso",
       gradient: "from-heart to-primary",
-      isQuote: true
+      isQuote: true,
+      isLast: true
     }
   ];
 
