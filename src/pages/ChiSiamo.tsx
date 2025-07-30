@@ -815,15 +815,18 @@ const ChiSiamo = () => {
                 const immersiveEl = document.querySelector('.fixed.inset-0');
                 if (immersiveEl) {
                   (immersiveEl as HTMLElement).style.display = 'flex';
-                  (immersiveEl as HTMLElement).style.transform = 'translateY(0)';
+                  setTimeout(() => {
+                    (immersiveEl as HTMLElement).style.transform = 'translateY(0)';
+                  }, 50);
                 }
               }}
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-accent text-primary-foreground px-8 py-4 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300"
+              className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-primary to-accent text-primary-foreground px-8 py-4 rounded-full font-semibold hover:shadow-xl hover:shadow-primary/25 hover:scale-105 transition-all duration-500 overflow-hidden"
             >
-              <span>Inizia il Viaggio</span>
-              <svg width="20" height="20" className="lucide lucide-arrow-right">
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
+              <div className="absolute inset-0 bg-gradient-to-r from-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <span className="relative z-10">Inizia il Viaggio</span>
+              <svg width="20" height="20" className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">
+                <path d="M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="m12 5 7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>
