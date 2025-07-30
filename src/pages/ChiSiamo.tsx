@@ -30,110 +30,152 @@ import {
   Clock
 } from "lucide-react";
 
-// Componente per infinite scroll della descrizione
-const InfiniteScrollDescription = () => {
-  const [visibleParagraphs, setVisibleParagraphs] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+// Componente immersivo a schermo intero per la descrizione
+const ImmersiveDescription = () => {
+  const [currentSentence, setCurrentSentence] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const lastParagraphRef = useRef<HTMLDivElement>(null);
-
-  const paragraphs = [
+  const lastScrollTime = useRef<number>(0);
+  const sentences = [
     {
-      text: "INTUS CORLEONE APS nasce a Corleone nel 1997, nel cuore di quella che è stata definita la \"Primavera Corleonese\", come segno di rinascita culturale e civile.",
-      highlight: ["INTUS CORLEONE APS", "1997", "Primavera Corleonese"]
+      text: "INTUS CORLEONE APS nasce a Corleone nel 1997",
+      accent: "nel cuore della Primavera Corleonese",
+      gradient: "from-primary to-accent"
     },
     {
-      text: "Nata dall'energia di quattro giovani formatisi alla scuola di Daniele Novara presso il Centro Psicopedagogico per la Pace di Piacenza, l'associazione affonda le radici nei valori dell'educazione alla pace, ai diritti umani e alla convivenza democratica ed ecologica.",
-      highlight: ["Daniele Novara", "educazione alla pace"]
+      text: "Quattro giovani formatisi alla scuola di Daniele Novara",
+      accent: "con radici nell'educazione alla pace",
+      gradient: "from-accent to-heart"
     },
     {
-      text: "Sin dall'inizio, la nostra missione ha ruotato attorno all'educazione alla legalità, promuovendo strumenti di cittadinanza attiva come i Consigli Comunali dei Ragazzi (CCR), e formando educatori e animatori impegnati nella crescita civile delle nuove generazioni.",
-      highlight: ["educazione alla legalità", "Consigli Comunali dei Ragazzi (CCR)"]
+      text: "La nostra missione: educazione alla legalità",
+      accent: "attraverso i Consigli Comunali dei Ragazzi",
+      gradient: "from-heart to-primary"
     },
     {
-      text: "Negli anni, ci siamo evoluti in un laboratorio permanente di politiche sociali e giovanili, coinvolgendo giovani, donne e soggetti fragili. Siamo tra i fondatori della rete nazionale I.T.E.R., che connette enti pubblici e realtà del Terzo Settore attivi sulle politiche giovanili, con progetti sviluppati a livello locale, nazionale ed europeo.",
-      highlight: ["laboratorio permanente di politiche sociali e giovanili", "I.T.E.R."]
+      text: "Un laboratorio permanente di politiche giovanili",
+      accent: "fondatori della rete nazionale I.T.E.R.",
+      gradient: "from-primary to-accent"
     },
     {
-      text: "Promuoviamo il territorio attraverso il turismo responsabile in collaborazione con Addiopizzo Travel e Palma Nana, e siamo soci fondatori del Laboratorio della Legalità, museo ospitato in un bene confiscato alla mafia, che racconta — attraverso l'arte — la storia della resistenza alla mafia.",
-      highlight: ["turismo responsabile", "Addiopizzo Travel", "Palma Nana", "Laboratorio della Legalità"]
+      text: "Turismo responsabile con Addiopizzo Travel",
+      accent: "e il Laboratorio della Legalità",
+      gradient: "from-accent to-heart"
     },
     {
-      text: "INTUS è uno spazio aperto, in continua evoluzione, dove educazione, memoria e partecipazione diventano strumenti per costruire un futuro condiviso.",
-      highlight: ["spazio aperto", "educazione, memoria e partecipazione"],
+      text: "INTUS è uno spazio aperto",
+      accent: "dove educazione, memoria e partecipazione costruiscono il futuro",
+      gradient: "from-heart to-primary",
       isQuote: true
     }
   ];
 
-  const highlightText = (text: string, highlights: string[]) => {
-    let result = text;
-    highlights.forEach(highlight => {
-      const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-      result = result.replace(regex, '<strong class="text-primary">$1</strong>');
-    });
-    return result;
-  };
+  const handleScroll = useCallback((e: Event) => {
+    e.preventDefault();
+    const now = Date.now();
 
-  const handleScroll = useCallback(() => {
-    if (!lastParagraphRef.current || isLoading || visibleParagraphs >= paragraphs.length) return;
+    if (now - lastScrollTime.current < 1000 || isTransitioning) return;
 
-    const rect = lastParagraphRef.current.getBoundingClientRect();
-    const threshold = window.innerHeight * 0.8;
+    lastScrollTime.current = now;
+    setIsTransitioning(true);
 
-    if (rect.bottom <= threshold) {
-      setIsLoading(true);
-
-      setTimeout(() => {
-        setVisibleParagraphs(prev => Math.min(prev + 1, paragraphs.length));
-        setIsLoading(false);
-      }, 800);
-    }
-  }, [isLoading, visibleParagraphs, paragraphs.length]);
+    setTimeout(() => {
+      setCurrentSentence(prev => (prev + 1) % sentences.length);
+      setIsTransitioning(false);
+    }, 300);
+  }, [isTransitioning, sentences.length]);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.addEventListener('wheel', handleScroll, { passive: false });
+
+    return () => {
+      container.removeEventListener('wheel', handleScroll);
+    };
   }, [handleScroll]);
 
+  const currentData = sentences[currentSentence];
+
   return (
-    <div ref={containerRef} className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed space-y-6">
-      {paragraphs.slice(0, visibleParagraphs).map((paragraph, index) => (
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-40 bg-gradient-to-br from-background via-background/95 to-background flex items-center justify-center overflow-hidden"
+      style={{ height: '100vh', width: '100vw' }}
+    >
+      {/* Background animated gradient */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${currentData.gradient} opacity-5 transition-all duration-1000 ease-out`}
+      />
+
+      {/* Content container */}
+      <div className="relative z-10 max-w-6xl mx-auto px-8 text-center">
+        {/* Main sentence */}
         <div
-          key={index}
-          ref={index === visibleParagraphs - 1 ? lastParagraphRef : null}
           className={`transition-all duration-700 ease-out ${
-            paragraph.isQuote
-              ? 'text-xl font-medium text-foreground border-l-4 border-primary pl-6 italic'
-              : ''
-          } animate-fade-in-up`}
-          style={{ animationDelay: `${index * 0.2}s` }}
+            isTransitioning
+              ? 'opacity-0 transform translate-y-8 scale-95'
+              : 'opacity-100 transform translate-y-0 scale-100'
+          }`}
         >
-          <p
-            dangerouslySetInnerHTML={{
-              __html: highlightText(paragraph.text, paragraph.highlight || [])
-            }}
-          />
-        </div>
-      ))}
+          <h2
+            className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight ${
+              currentData.isQuote ? 'italic' : ''
+            }`}
+          >
+            <span className={`bg-gradient-to-r ${currentData.gradient} bg-clip-text text-transparent`}>
+              {currentData.text}
+            </span>
+          </h2>
 
-      {isLoading && visibleParagraphs < paragraphs.length && (
-        <div className="flex justify-center items-center py-8">
-          <div className="flex items-center gap-3 text-primary">
-            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-sm font-medium">Caricamento...</span>
-          </div>
+          {/* Accent text */}
+          <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground leading-relaxed max-w-4xl mx-auto">
+            {currentData.accent}
+          </p>
         </div>
-      )}
 
-      {visibleParagraphs >= paragraphs.length && (
-        <div className="text-center py-6">
-          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-            <div className="w-2 h-2 bg-primary rounded-full"></div>
-            <span>Continua a scorrere per scoprire di più</span>
-            <div className="w-2 h-2 bg-primary rounded-full"></div>
-          </div>
+        {/* Progress indicator */}
+        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex items-center gap-3">
+          {sentences.map((_, index) => (
+            <div
+              key={index}
+              className={`h-2 rounded-full transition-all duration-500 ${
+                index === currentSentence
+                  ? `w-8 bg-gradient-to-r ${currentData.gradient}`
+                  : 'w-2 bg-muted-foreground/30'
+              }`}
+            />
+          ))}
         </div>
-      )}
+
+        {/* Scroll hint */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground flex items-center gap-2">
+          <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
+          <span>Scrolla per continuare</span>
+          <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
+        </div>
+      </div>
+
+      {/* Exit button */}
+      <button
+        onClick={() => {
+          const container = containerRef.current;
+          if (container) {
+            container.style.transform = 'translateY(-100%)';
+            container.style.transition = 'transform 800ms ease-in-out';
+            setTimeout(() => {
+              container.style.display = 'none';
+            }, 800);
+          }
+        }}
+        className="absolute top-8 right-8 w-12 h-12 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors border border-border/50"
+      >
+        <svg width="24" height="24" className="lucide lucide-x w-6 h-6">
+          <path d="m18 6-12 12" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </button>
     </div>
   );
 };
