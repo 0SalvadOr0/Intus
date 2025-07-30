@@ -777,7 +777,7 @@ const ChiSiamo = () => {
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               Chi <span className="text-primary">Siamo</span>
             </h1>
-            <InfiniteScrollDescription />
+            <ImmersiveDescription />
           </div>
         </div>
       </section>
