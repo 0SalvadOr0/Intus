@@ -180,9 +180,19 @@ const ImmersiveDescription = () => {
 
         {/* Scroll hint */}
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground flex items-center gap-2">
-          <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
-          <span>Scrolla per continuare</span>
-          <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
+          {currentSentence < sentences.length - 1 ? (
+            <>
+              <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
+              <span>Scrolla per continuare</span>
+              <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
+            </>
+          ) : (
+            <>
+              <div className="w-1 h-1 bg-primary rounded-full animate-pulse" />
+              <span className="text-primary font-medium">Si chiuderà automaticamente...</span>
+              <div className="w-1 h-1 bg-primary rounded-full animate-pulse" />
+            </>
+          )}
         </div>
       </div>
 
