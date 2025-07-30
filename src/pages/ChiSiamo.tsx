@@ -188,21 +188,12 @@ const ImmersiveDescription = () => {
 
       {/* Exit button */}
       <button
-        onClick={() => {
-          const container = containerRef.current;
-          if (container) {
-            container.style.transform = 'translateY(-100%)';
-            container.style.transition = 'transform 800ms ease-in-out';
-            setTimeout(() => {
-              container.style.display = 'none';
-            }, 800);
-          }
-        }}
-        className="absolute top-8 right-8 w-12 h-12 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors border border-border/50"
+        onClick={closeImmersive}
+        className="absolute top-8 right-8 w-12 h-12 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background hover:scale-110 transition-all duration-300 border border-border/50 group"
       >
-        <svg width="24" height="24" className="lucide lucide-x w-6 h-6">
-          <path d="m18 6-12 12" />
-          <path d="m6 6 12 12" />
+        <svg width="20" height="20" className="w-5 h-5 group-hover:w-6 group-hover:h-6 transition-all duration-300">
+          <path d="m18 6-12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="m6 6 12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
     </div>
