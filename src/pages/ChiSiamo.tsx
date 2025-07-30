@@ -30,6 +30,114 @@ import {
   Clock
 } from "lucide-react";
 
+// Componente per infinite scroll della descrizione
+const InfiniteScrollDescription = () => {
+  const [visibleParagraphs, setVisibleParagraphs] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastParagraphRef = useRef<HTMLDivElement>(null);
+
+  const paragraphs = [
+    {
+      text: "INTUS CORLEONE APS nasce a Corleone nel 1997, nel cuore di quella che è stata definita la \"Primavera Corleonese\", come segno di rinascita culturale e civile.",
+      highlight: ["INTUS CORLEONE APS", "1997", "Primavera Corleonese"]
+    },
+    {
+      text: "Nata dall'energia di quattro giovani formatisi alla scuola di Daniele Novara presso il Centro Psicopedagogico per la Pace di Piacenza, l'associazione affonda le radici nei valori dell'educazione alla pace, ai diritti umani e alla convivenza democratica ed ecologica.",
+      highlight: ["Daniele Novara", "educazione alla pace"]
+    },
+    {
+      text: "Sin dall'inizio, la nostra missione ha ruotato attorno all'educazione alla legalità, promuovendo strumenti di cittadinanza attiva come i Consigli Comunali dei Ragazzi (CCR), e formando educatori e animatori impegnati nella crescita civile delle nuove generazioni.",
+      highlight: ["educazione alla legalità", "Consigli Comunali dei Ragazzi (CCR)"]
+    },
+    {
+      text: "Negli anni, ci siamo evoluti in un laboratorio permanente di politiche sociali e giovanili, coinvolgendo giovani, donne e soggetti fragili. Siamo tra i fondatori della rete nazionale I.T.E.R., che connette enti pubblici e realtà del Terzo Settore attivi sulle politiche giovanili, con progetti sviluppati a livello locale, nazionale ed europeo.",
+      highlight: ["laboratorio permanente di politiche sociali e giovanili", "I.T.E.R."]
+    },
+    {
+      text: "Promuoviamo il territorio attraverso il turismo responsabile in collaborazione con Addiopizzo Travel e Palma Nana, e siamo soci fondatori del Laboratorio della Legalità, museo ospitato in un bene confiscato alla mafia, che racconta — attraverso l'arte — la storia della resistenza alla mafia.",
+      highlight: ["turismo responsabile", "Addiopizzo Travel", "Palma Nana", "Laboratorio della Legalità"]
+    },
+    {
+      text: "INTUS è uno spazio aperto, in continua evoluzione, dove educazione, memoria e partecipazione diventano strumenti per costruire un futuro condiviso.",
+      highlight: ["spazio aperto", "educazione, memoria e partecipazione"],
+      isQuote: true
+    }
+  ];
+
+  const highlightText = (text: string, highlights: string[]) => {
+    let result = text;
+    highlights.forEach(highlight => {
+      const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      result = result.replace(regex, '<strong class="text-primary">$1</strong>');
+    });
+    return result;
+  };
+
+  const handleScroll = useCallback(() => {
+    if (!lastParagraphRef.current || isLoading || visibleParagraphs >= paragraphs.length) return;
+
+    const rect = lastParagraphRef.current.getBoundingClientRect();
+    const threshold = window.innerHeight * 0.8;
+
+    if (rect.bottom <= threshold) {
+      setIsLoading(true);
+
+      setTimeout(() => {
+        setVisibleParagraphs(prev => Math.min(prev + 1, paragraphs.length));
+        setIsLoading(false);
+      }, 800);
+    }
+  }, [isLoading, visibleParagraphs, paragraphs.length]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
+
+  return (
+    <div ref={containerRef} className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed space-y-6">
+      {paragraphs.slice(0, visibleParagraphs).map((paragraph, index) => (
+        <div
+          key={index}
+          ref={index === visibleParagraphs - 1 ? lastParagraphRef : null}
+          className={`transition-all duration-700 ease-out ${
+            paragraph.isQuote
+              ? 'text-xl font-medium text-foreground border-l-4 border-primary pl-6 italic'
+              : ''
+          } animate-fade-in-up`}
+          style={{ animationDelay: `${index * 0.2}s` }}
+        >
+          <p
+            dangerouslySetInnerHTML={{
+              __html: highlightText(paragraph.text, paragraph.highlight || [])
+            }}
+          />
+        </div>
+      ))}
+
+      {isLoading && visibleParagraphs < paragraphs.length && (
+        <div className="flex justify-center items-center py-8">
+          <div className="flex items-center gap-3 text-primary">
+            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-sm font-medium">Caricamento...</span>
+          </div>
+        </div>
+      )}
+
+      {visibleParagraphs >= paragraphs.length && (
+        <div className="text-center py-6">
+          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="w-2 h-2 bg-primary rounded-full"></div>
+            <span>Continua a scorrere per scoprire di più</span>
+            <div className="w-2 h-2 bg-primary rounded-full"></div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Statistiche Strategy
 const StatisticsSection = () => {
   const stats = [
