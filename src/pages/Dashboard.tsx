@@ -918,7 +918,7 @@ const Dashboard = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="project-category">Categoria *</Label>
-                  <Select value={newProject.categoria} onValueChange={(value) => setNewProject(prev => ({ ...prev, categoria: value }))}>
+                  <Select value={getCurrentProject()?.categoria || ""} onValueChange={(value) => updateCurrentProject({ categoria: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleziona categoria" />
                     </SelectTrigger>
@@ -937,8 +937,8 @@ const Dashboard = () => {
                   <Input
                     id="project-location"
                     placeholder="Dove si svolge"
-                    value={newProject.luoghi[0] || ""}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, luoghi: e.target.value ? [e.target.value] : [] }))}
+                    value={getCurrentProject()?.luoghi?.[0] || ""}
+                    onChange={(e) => updateCurrentProject({ luoghi: e.target.value ? [e.target.value] : [] })}
                   />
                 </div>
                 <div className="space-y-2">
@@ -946,8 +946,8 @@ const Dashboard = () => {
                   <Input
                     id="project-date"
                     type="date"
-                    value={newProject.data_inizio}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, data_inizio: e.target.value }))}
+                    value={getCurrentProject()?.data_inizio || ""}
+                    onChange={(e) => updateCurrentProject({ data_inizio: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
@@ -956,8 +956,8 @@ const Dashboard = () => {
                     id="project-participants"
                     type="number"
                     placeholder="Numero stimato"
-                    value={newProject.numero_partecipanti || ""}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, numero_partecipanti: parseInt(e.target.value) || 0 }))}
+                    value={getCurrentProject()?.numero_partecipanti || ""}
+                    onChange={(e) => updateCurrentProject({ numero_partecipanti: parseInt(e.target.value) || 0 })}
                   />
                 </div>
               </div>
