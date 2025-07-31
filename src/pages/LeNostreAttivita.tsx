@@ -149,7 +149,7 @@ const LeNostreAttivita = () => {
                   )}
                   <div className="absolute bottom-4 left-4">
                     <Badge variant="outline" className="bg-card/80 backdrop-blur-sm">
-                      {project.category}
+                      {project.categoria}
                     </Badge>
                   </div>
                 </div>
