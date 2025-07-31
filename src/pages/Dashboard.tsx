@@ -376,7 +376,9 @@ const Dashboard = () => {
   };
 
   const handleSubmitProject = async () => {
-    if (!newProject.titolo || !newProject.descrizione_breve || !newProject.categoria || !newProject.contenuto) {
+    const projectData = isEditingProject ? editingProject : newProject;
+
+    if (!projectData.titolo || !projectData.descrizione_breve || !projectData.categoria || !projectData.contenuto) {
       toast({
         title: "Errore",
         description: "Compila tutti i campi obbligatori (titolo, descrizione breve, contenuto, categoria)",
@@ -386,22 +388,36 @@ const Dashboard = () => {
     }
 
     try {
-      const { error } = await supabase.from("progetti").insert([
-        {
-          titolo: newProject.titolo,
-          descrizione_breve: newProject.descrizione_breve,
-          contenuto: newProject.contenuto,
-          categoria: newProject.categoria,
-          numero_partecipanti: newProject.numero_partecipanti,
-          luoghi: newProject.luoghi,
-          partner: newProject.partner,
-          youtube_url: newProject.youtube_url || null,
-          immagini: newProject.immagini,
-          data_inizio: newProject.data_inizio || null,
-          status: newProject.status,
-          pubblicato: false
-        }
-      ]);
+      const projectPayload = {
+        titolo: projectData.titolo,
+        descrizione_breve: projectData.descrizione_breve,
+        contenuto: projectData.contenuto,
+        categoria: projectData.categoria,
+        numero_partecipanti: projectData.numero_partecipanti,
+        luoghi: projectData.luoghi,
+        partner: projectData.partner,
+        youtube_url: projectData.youtube_url || null,
+        immagini: projectData.immagini,
+        data_inizio: projectData.data_inizio || null,
+        status: projectData.status
+      };
+
+      let error;
+
+      if (isEditingProject) {
+        // Aggiorna progetto esistente
+        const result = await supabase
+          .from("progetti")
+          .update(projectPayload)
+          .eq("id", editingProject.id);
+        error = result.error;
+      } else {
+        // Crea nuovo progetto
+        const result = await supabase
+          .from("progetti")
+          .insert([{ ...projectPayload, pubblicato: false }]);
+        error = result.error;
+      }
 
       if (error) {
         toast({ title: "Errore salvataggio", description: error.message, variant: "destructive" });
