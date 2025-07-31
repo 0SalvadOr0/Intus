@@ -90,7 +90,7 @@ const Dashboard = () => {
 
   const fetchProjects = async () => {
     const { data, error } = await supabase
-      .from("projects")
+      .from("progetti")
       .select("*")
       .order("created_at", { ascending: false });
     if (!error && data) {
