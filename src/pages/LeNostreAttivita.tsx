@@ -123,8 +123,17 @@ const LeNostreAttivita = () => {
                 className="group hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up overflow-hidden"
                 style={{animationDelay: `${0.3 + index * 0.1}s`}}
               >
-                {/* Project Image Placeholder */}
-                <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20 relative overflow-hidden">
+                {/* Project Image */}
+                <div className="h-48 relative overflow-hidden">
+                  {project.immagine_copertina || (project.immagini && project.immagini[0]) ? (
+                    <img
+                      src={project.immagine_copertina || project.immagini[0]}
+                      alt={project.titolo}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20" />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                   <div className="absolute top-4 left-4">
                     <Badge className={`${getStatusColor(project.status)} border-0`}>
