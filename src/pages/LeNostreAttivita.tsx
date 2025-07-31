@@ -156,7 +156,7 @@ const LeNostreAttivita = () => {
 
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                    {project.title}
+                    {project.titolo}
                   </CardTitle>
                 </CardHeader>
 
