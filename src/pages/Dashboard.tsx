@@ -711,13 +711,26 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => handlePreview(post)}>
-                          <Eye className="w-4 h-4" />
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => handleTogglePublishPost(post.id, true)}
+                        >
+                          Pubblica
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => handlePublish(post.id)}>
-                          <FileText className="w-4 h-4 text-green-600" />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEditPost(post)}
+                        >
+                          <Edit className="w-4 h-4" />
                         </Button>
-                        <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => handleDelete(post.id)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => handleDelete(post.id)}
+                        >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
