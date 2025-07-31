@@ -202,6 +202,16 @@ const Dashboard = () => {
   const [editingProject, setEditingProject] = useState<any>(null);
   const [isEditingProject, setIsEditingProject] = useState(false);
 
+  // Helper per gestire i cambiamenti nei form
+  const getCurrentProject = () => isEditingProject ? editingProject : newProject;
+  const updateCurrentProject = (updates: any) => {
+    if (isEditingProject) {
+      setEditingProject((prev: any) => ({ ...prev, ...updates }));
+    } else {
+      setNewProject(prev => ({ ...prev, ...updates }));
+    }
+  };
+
   const getRecentActivity = () => {
     const activities = [];
 
