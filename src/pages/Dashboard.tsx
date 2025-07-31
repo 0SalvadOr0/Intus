@@ -746,8 +746,8 @@ const Dashboard = () => {
                   <Input
                     id="project-location"
                     placeholder="Dove si svolge"
-                    value={newProject.location}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, location: e.target.value }))}
+                    value={newProject.luoghi[0] || ""}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, luoghi: e.target.value ? [e.target.value] : [] }))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -755,8 +755,8 @@ const Dashboard = () => {
                   <Input
                     id="project-date"
                     type="date"
-                    value={newProject.date}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, date: e.target.value }))}
+                    value={newProject.data_inizio}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, data_inizio: e.target.value }))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -765,8 +765,8 @@ const Dashboard = () => {
                     id="project-participants"
                     type="number"
                     placeholder="Numero stimato"
-                    value={newProject.participants || ""}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, participants: parseInt(e.target.value) || 0 }))}
+                    value={newProject.numero_partecipanti || ""}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, numero_partecipanti: parseInt(e.target.value) || 0 }))}
                   />
                 </div>
               </div>
