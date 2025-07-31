@@ -168,11 +168,11 @@ const LeNostreAttivita = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center text-muted-foreground">
                       <CalendarDays className="w-4 h-4 mr-2 text-primary" />
-                      {new Date(project.date).toLocaleDateString('it-IT', {
+                      {project.data_inizio ? new Date(project.data_inizio).toLocaleDateString('it-IT', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
-                      })}
+                      }) : 'Data non specificata'}
                     </div>
                     <div className="flex items-center text-muted-foreground">
                       <MapPin className="w-4 h-4 mr-2 text-primary" />
