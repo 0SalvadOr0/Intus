@@ -116,8 +116,27 @@ const LeNostreAttivita = () => {
       {/* Projects Grid */}
       <section className="px-4 pb-16">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project, index) => (
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1,2,3,4,5,6].map((i) => (
+                <Card key={i} className="animate-pulse">
+                  <div className="h-48 bg-muted"></div>
+                  <CardHeader>
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-muted rounded"></div>
+                      <div className="h-3 bg-muted rounded w-2/3"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredProjects.map((project, index) => (
               <Card 
                 key={project.id}
                 className="group hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up overflow-hidden"
@@ -236,16 +255,18 @@ const LeNostreAttivita = () => {
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
+                ))}
+              </div>
 
-          {filteredProjects.length === 0 && (
-            <div className="text-center py-16 animate-fade-in-up">
-              <h3 className="text-2xl font-semibold mb-4">Nessun progetto trovato</h3>
-              <p className="text-muted-foreground">
-                Non ci sono progetti in questa categoria al momento.
-              </p>
-            </div>
+              {filteredProjects.length === 0 && (
+                <div className="text-center py-16 animate-fade-in-up">
+                  <h3 className="text-2xl font-semibold mb-4">Nessun progetto trovato</h3>
+                  <p className="text-muted-foreground">
+                    Non ci sono progetti in questa categoria al momento.
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
