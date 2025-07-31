@@ -9,15 +9,19 @@ import { supabase } from "@/lib/supabaseClient";
 
 interface Project {
   id: number;
-  title: string;
-  description: string;
-  category: string;
-  location: string;
-  date: string;
-  participants: number;
-  image?: string;
-  youtubeUrl?: string;
+  titolo: string;
+  descrizione_breve: string;
+  contenuto: string;
+  categoria: string;
+  luoghi: string[];
+  numero_partecipanti: number;
+  immagini: string[];
+  immagine_copertina?: string;
+  youtube_url?: string;
   status: "completed" | "ongoing" | "planned";
+  data_inizio?: string;
+  created_at: string;
+  pubblicato: boolean;
 }
 
 const LeNostreAttivita = () => {
