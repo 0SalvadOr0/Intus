@@ -721,13 +721,13 @@ const Dashboard = () => {
                   <Input
                     id="project-title"
                     placeholder="Inserisci il titolo del progetto"
-                    value={newProject.title}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, title: e.target.value }))}
+                    value={newProject.titolo}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, titolo: e.target.value }))}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="project-category">Categoria *</Label>
-                  <Select value={newProject.category} onValueChange={(value) => setNewProject(prev => ({ ...prev, category: value }))}>
+                  <Select value={newProject.categoria} onValueChange={(value) => setNewProject(prev => ({ ...prev, categoria: value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleziona categoria" />
                     </SelectTrigger>
