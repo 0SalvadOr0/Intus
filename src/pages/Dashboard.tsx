@@ -199,7 +199,7 @@ const Dashboard = () => {
     recentProjects.forEach(project => {
       activities.push({
         action: "Creato progetto",
-        title: project.title || project.titolo,
+        title: project.titolo,
         time: new Date(project.created_at).toLocaleDateString('it-IT'),
         type: "project"
       });
