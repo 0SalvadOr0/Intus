@@ -167,16 +167,27 @@ const LeNostreAttivita = () => {
               <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 max-w-lg mx-auto">
                 <h3 className="text-xl font-semibold mb-3 text-destructive">⚠️ Errore di Configurazione</h3>
                 <p className="text-muted-foreground mb-4">{error}</p>
-                <Button
-                  onClick={fetchProjects}
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-                >
-                  Riprova
-                </Button>
-                <p className="text-xs text-muted-foreground mt-4">
-                  Se il problema persiste, contatta l'amministratore del sistema.
-                </p>
+                <div className="space-y-3">
+                  <Button
+                    onClick={fetchProjects}
+                    variant="outline"
+                    className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                  >
+                    🔄 Riprova
+                  </Button>
+
+                  {error.includes('tabella') && (
+                    <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded">
+                      <p className="font-medium">💡 Per risolvere:</p>
+                      <ol className="list-decimal list-inside mt-1 space-y-1">
+                        <li>Accedi al pannello Supabase</li>
+                        <li>Vai in "SQL Editor"</li>
+                        <li>Esegui lo script SQL per creare la tabella "progetti"</li>
+                        <li>Clicca "Riprova" sopra</li>
+                      </ol>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ) : (
