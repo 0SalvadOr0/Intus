@@ -790,21 +790,33 @@ const Dashboard = () => {
                   <Input
                     id="project-youtube"
                     placeholder="https://www.youtube.com/watch?v=..."
-                    value={newProject.youtubeUrl}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, youtubeUrl: e.target.value }))}
+                    value={newProject.youtube_url}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, youtube_url: e.target.value }))}
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="project-description">Descrizione *</Label>
-                <Textarea
-                  id="project-description"
-                  placeholder="Descrivi il progetto..."
-                  value={newProject.description}
-                  onChange={(e) => setNewProject(prev => ({ ...prev, description: e.target.value }))}
-                  className="min-h-[150px]"
-                />
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="project-description-short">Descrizione Breve *</Label>
+                  <Textarea
+                    id="project-description-short"
+                    placeholder="Breve descrizione del progetto..."
+                    value={newProject.descrizione_breve}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, descrizione_breve: e.target.value }))}
+                    className="min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-content">Contenuto Dettagliato *</Label>
+                  <Textarea
+                    id="project-content"
+                    placeholder="Descrizione dettagliata del progetto, obiettivi, attività..."
+                    value={newProject.contenuto}
+                    onChange={(e) => setNewProject(prev => ({ ...prev, contenuto: e.target.value }))}
+                    className="min-h-[150px]"
+                  />
+                </div>
               </div>
 
               <div className="flex gap-4">
