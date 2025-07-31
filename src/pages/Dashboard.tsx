@@ -104,6 +104,11 @@ const Dashboard = () => {
           details: error.details,
           hint: error.hint
         });
+
+        // Se la tabella non esiste, mostra un messaggio nell'interfaccia
+        if (error.code === 'PGRST116' || error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.warn('⚠️ Tabella progetti non configurata. Utilizzare lo script SQL fornito.');
+        }
         return;
       }
 
