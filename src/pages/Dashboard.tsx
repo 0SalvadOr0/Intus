@@ -277,11 +277,71 @@ const Dashboard = () => {
   };
 
   const handleProjectImageRemove = (url: string) => {
-    setNewProject((prev) => ({
-      ...prev,
-      immagini: prev.immagini.filter(img => img !== url),
-      immagine_copertina: prev.immagine_copertina === url ? (prev.immagini.find(img => img !== url) || null) : prev.immagine_copertina
-    }));
+    if (isEditingProject) {
+      setEditingProject((prev: any) => ({
+        ...prev,
+        immagini: prev.immagini.filter((img: string) => img !== url),
+        immagine_copertina: prev.immagine_copertina === url ? (prev.immagini.find((img: string) => img !== url) || null) : prev.immagine_copertina
+      }));
+    } else {
+      setNewProject((prev) => ({
+        ...prev,
+        immagini: prev.immagini.filter(img => img !== url),
+        immagine_copertina: prev.immagine_copertina === url ? (prev.immagini.find(img => img !== url) || null) : prev.immagine_copertina
+      }));
+    }
+  };
+
+  // Pubblica/Nascondi progetto
+  const handleTogglePublishProject = async (id: number, publish: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("progetti")
+        .update({ pubblicato: publish })
+        .eq("id", id);
+
+      if (error) {
+        toast({ title: "Errore", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({
+        title: publish ? "Progetto pubblicato!" : "Progetto nascosto",
+        description: publish ? "Il progetto è ora visibile pubblicamente" : "Il progetto non è più visibile al pubblico"
+      });
+      fetchProjects();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante l'operazione", variant: "destructive" });
+    }
+  };
+
+  // Modifica progetto
+  const handleEditProject = (project: any) => {
+    setEditingProject({ ...project });
+    setIsEditingProject(true);
+    setActiveTab("create-project");
+  };
+
+  // Elimina progetto
+  const handleDeleteProject = async (id: number) => {
+    if (!window.confirm("Sei sicuro di voler eliminare questo progetto?")) return;
+
+    try {
+      const { error } = await supabase
+        .from("progetti")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        toast({ title: "Errore eliminazione", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({ title: "Progetto eliminato" });
+      fetchProjects();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante l'eliminazione", variant: "destructive" });
+    }
   };
 
   const handleSubmitPost = async () => {
