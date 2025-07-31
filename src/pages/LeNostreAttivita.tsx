@@ -37,11 +37,25 @@ const LeNostreAttivita = () => {
 
   const fetchProjects = async () => {
     try {
+      // Prima verifica se la tabella esiste con una query limitata
       const { data, error } = await supabase
         .from('progetti')
-        .select('*')
-        .eq('pubblicato', true)
-        .order('created_at', { ascending: false });
+        .select('id')
+        .limit(1);
+
+      // Se la prima query va a buon fine, fai la query completa
+      if (!error) {
+        const { data: fullData, error: fullError } = await supabase
+          .from('progetti')
+          .select('*')
+          .eq('pubblicato', true)
+          .order('created_at', { ascending: false });
+
+        if (fullError) throw fullError;
+        setProjects(fullData || []);
+        setError(null);
+        return;
+      }
 
       if (error) {
         console.error('Errore nel caricamento progetti:', error.message || error);
