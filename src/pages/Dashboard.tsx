@@ -980,9 +980,24 @@ const Dashboard = () => {
         {activeTab === "create" && (
           <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Plus className="w-5 h-5 mr-2 text-primary" />
-                Crea Nuovo Articolo
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Plus className="w-5 h-5 mr-2 text-primary" />
+                  {isEditingPost ? "Modifica Articolo" : "Crea Nuovo Articolo"}
+                </div>
+                {isEditingPost && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setIsEditingPost(false);
+                      setEditingPost(null);
+                      setNewPost({ titolo: "", contenuto: "", categoria: "", excerpt: "", autore: "", immagini: [], copertina_url: "", youtubeUrl: "" });
+                    }}
+                  >
+                    ✕ Annulla
+                  </Button>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
