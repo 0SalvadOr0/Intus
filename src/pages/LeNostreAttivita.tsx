@@ -200,15 +200,15 @@ const LeNostreAttivita = () => {
                       </Button>
                       <DialogContent className="max-w-lg">
                         <DialogHeader>
-                          <DialogTitle>{project.title}</DialogTitle>
-                          <DialogDescription>{project.category}</DialogDescription>
+                          <DialogTitle>{project.titolo}</DialogTitle>
+                          <DialogDescription>{project.categoria}</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4">
-                          <p>{project.description}</p>
+                          <p>{project.contenuto || project.descrizione_breve}</p>
                           <div className="flex flex-col gap-2 text-sm">
                             <div className="flex items-center text-muted-foreground">
                               <CalendarDays className="w-4 h-4 mr-2 text-primary" />
-                              {new Date(project.date).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })}
+                              {project.data_inizio ? new Date(project.data_inizio).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Data non specificata'}
                             </div>
                             <div className="flex items-center text-muted-foreground">
                               <MapPin className="w-4 h-4 mr-2 text-primary" />
@@ -223,7 +223,7 @@ const LeNostreAttivita = () => {
                             </div>
                           </div>
                           {project.youtube_url && (
-                            <a href={project.youtubeUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-red-600 hover:underline">
+                            <a href={project.youtube_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-red-600 hover:underline">
                               <Play className="w-4 h-4" /> Guarda il video
                             </a>
                           )}
