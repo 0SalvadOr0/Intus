@@ -623,20 +623,20 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Progetti */}
+            {/* Progetti Pubblicati */}
             <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FolderOpen className="w-5 h-5 mr-2 text-primary" />
-                  Progetti ({projects.length})
+                  Progetti Pubblicati ({projects.filter(p => p.pubblicato).length})
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {projects.length === 0 ? (
-                    <div className="text-center text-muted-foreground">Nessun progetto presente.</div>
+                  {projects.filter(p => p.pubblicato).length === 0 ? (
+                    <div className="text-center text-muted-foreground">Nessun progetto pubblicato.</div>
                   ) : (
-                    projects.map((project, index) => (
+                    projects.filter(p => p.pubblicato).map((project, index) => (
                       <div
                         key={project.id}
                         className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
