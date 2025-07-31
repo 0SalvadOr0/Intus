@@ -180,7 +180,7 @@ const LeNostreAttivita = () => {
                     </div>
                     <div className="flex items-center text-muted-foreground">
                       <Users className="w-4 h-4 mr-2 text-primary" />
-                      {project.participants} partecipanti
+                      {project.numero_partecipanti} partecipanti
                     </div>
                   </div>
 
@@ -216,7 +216,7 @@ const LeNostreAttivita = () => {
                             </div>
                             <div className="flex items-center text-muted-foreground">
                               <Users className="w-4 h-4 mr-2 text-primary" />
-                              {project.participants} partecipanti
+                              {project.numero_partecipanti} partecipanti
                             </div>
                             <div className="flex items-center text-muted-foreground">
                               <Badge className={`${getStatusColor(project.status)} border-0`}>{getStatusLabel(project.status)}</Badge>
