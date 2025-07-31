@@ -1023,7 +1023,7 @@ const Dashboard = () => {
               <div className="flex gap-4">
                 <Button onClick={handleSubmitProject} className="shadow-md">
                   <Plus className="w-4 h-4 mr-2" />
-                  Salva Progetto
+                  {isEditingProject ? "Aggiorna Progetto" : "Salva Progetto"}
                 </Button>
                 <Button variant="outline">
                   <Eye className="w-4 h-4 mr-2" />
