@@ -404,7 +404,9 @@ const Dashboard = () => {
   };
 
   const handleSubmitPost = async () => {
-    if (!newPost.titolo || !newPost.contenuto || !newPost.categoria) {
+    const postData = isEditingPost ? editingPost : newPost;
+
+    if (!postData.titolo || !postData.contenuto || !postData.categoria) {
       toast({
         title: "Errore",
         description: "Compila tutti i campi obbligatori",
@@ -412,25 +414,56 @@ const Dashboard = () => {
       });
       return;
     }
-    const { error } = await supabase.from("blog_posts").insert([
-      {
-        titolo: newPost.titolo,
-        contenuto: newPost.contenuto,
-        excerpt: newPost.excerpt,
-        autore: newPost.autore,
-        categoria: newPost.categoria,
-        immagini: newPost.immagini,
-        copertina_url: newPost.copertina_url,
-        youtube_url: newPost.youtubeUrl,
-        pubblicato: false
+
+    try {
+      const postPayload = {
+        titolo: postData.titolo,
+        contenuto: postData.contenuto,
+        excerpt: postData.excerpt,
+        autore: postData.autore,
+        categoria: postData.categoria,
+        immagini: postData.immagini,
+        copertina_url: postData.copertina_url,
+        youtube_url: postData.youtubeUrl
+      };
+
+      let error;
+
+      if (isEditingPost) {
+        // Aggiorna articolo esistente
+        const result = await supabase
+          .from("blog_posts")
+          .update(postPayload)
+          .eq("id", editingPost.id);
+        error = result.error;
+      } else {
+        // Crea nuovo articolo
+        const result = await supabase
+          .from("blog_posts")
+          .insert([{ ...postPayload, pubblicato: false }]);
+        error = result.error;
       }
-    ]);
-    if (error) {
-      toast({ title: "Errore salvataggio", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Articolo salvato come bozza!" });
+
+      if (error) {
+        toast({ title: "Errore salvataggio", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({
+        title: isEditingPost ? "Articolo aggiornato!" : "Articolo salvato come bozza!",
+        description: isEditingPost ? "Le modifiche sono state salvate" : "L'articolo è stato creato come bozza"
+      });
+
+      // Reset form
+      if (isEditingPost) {
+        setIsEditingPost(false);
+        setEditingPost(null);
+      }
+
       setNewPost({ titolo: "", contenuto: "", categoria: "", excerpt: "", autore: "", immagini: [], copertina_url: "", youtubeUrl: "" });
       fetchBlogPosts();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante il salvataggio", variant: "destructive" });
     }
   };
 
