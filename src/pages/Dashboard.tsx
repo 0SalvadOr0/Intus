@@ -981,8 +981,8 @@ const Dashboard = () => {
                   <Input
                     id="project-youtube"
                     placeholder="https://www.youtube.com/watch?v=..."
-                    value={newProject.youtube_url}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, youtube_url: e.target.value }))}
+                    value={getCurrentProject()?.youtube_url || ""}
+                    onChange={(e) => updateCurrentProject({ youtube_url: e.target.value })}
                   />
                 </div>
               </div>
