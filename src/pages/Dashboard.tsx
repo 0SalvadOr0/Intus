@@ -214,6 +214,15 @@ const Dashboard = () => {
     }
   };
 
+  const getCurrentPost = () => isEditingPost ? editingPost : newPost;
+  const updateCurrentPost = (updates: any) => {
+    if (isEditingPost) {
+      setEditingPost((prev: any) => ({ ...prev, ...updates }));
+    } else {
+      setNewPost(prev => ({ ...prev, ...updates }));
+    }
+  };
+
   const getRecentActivity = () => {
     const activities = [];
 
