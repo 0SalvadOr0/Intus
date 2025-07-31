@@ -201,6 +201,8 @@ const Dashboard = () => {
 
   const [editingProject, setEditingProject] = useState<any>(null);
   const [isEditingProject, setIsEditingProject] = useState(false);
+  const [editingPost, setEditingPost] = useState<any>(null);
+  const [isEditingPost, setIsEditingPost] = useState(false);
 
   // Helper per gestire i cambiamenti nei form
   const getCurrentProject = () => isEditingProject ? editingProject : newProject;
