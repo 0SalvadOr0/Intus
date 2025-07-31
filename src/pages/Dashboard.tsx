@@ -902,8 +902,14 @@ const Dashboard = () => {
                   <Input
                     id="project-title"
                     placeholder="Inserisci il titolo del progetto"
-                    value={newProject.titolo}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, titolo: e.target.value }))}
+                    value={isEditingProject ? editingProject?.titolo || "" : newProject.titolo}
+                    onChange={(e) => {
+                      if (isEditingProject) {
+                        setEditingProject((prev: any) => ({ ...prev, titolo: e.target.value }));
+                      } else {
+                        setNewProject(prev => ({ ...prev, titolo: e.target.value }));
+                      }
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
