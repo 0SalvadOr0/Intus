@@ -162,7 +162,7 @@ const LeNostreAttivita = () => {
 
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
-                    {project.description}
+                    {project.descrizione_breve}
                   </p>
 
                   <div className="space-y-2 text-sm">
