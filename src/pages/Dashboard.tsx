@@ -426,8 +426,14 @@ const Dashboard = () => {
 
       toast({
         title: "Successo!",
-        description: "Progetto salvato come bozza",
+        description: isEditingProject ? "Progetto aggiornato!" : "Progetto salvato come bozza",
       });
+
+      // Reset form
+      if (isEditingProject) {
+        setIsEditingProject(false);
+        setEditingProject(null);
+      }
 
       setNewProject({
         titolo: "",
