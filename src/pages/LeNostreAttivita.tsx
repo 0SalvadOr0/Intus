@@ -151,6 +151,23 @@ const LeNostreAttivita = () => {
                 </Card>
               ))}
             </div>
+          ) : error ? (
+            <div className="text-center py-16 animate-fade-in-up">
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 max-w-lg mx-auto">
+                <h3 className="text-xl font-semibold mb-3 text-destructive">⚠️ Errore di Configurazione</h3>
+                <p className="text-muted-foreground mb-4">{error}</p>
+                <Button
+                  onClick={fetchProjects}
+                  variant="outline"
+                  className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                >
+                  Riprova
+                </Button>
+                <p className="text-xs text-muted-foreground mt-4">
+                  Se il problema persiste, contatta l'amministratore del sistema.
+                </p>
+              </div>
+            </div>
           ) : (
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
