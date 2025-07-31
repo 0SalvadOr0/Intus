@@ -1044,8 +1044,8 @@ const Dashboard = () => {
                 <Input
                   id="youtubeUrl"
                   placeholder="https://www.youtube.com/watch?v=..."
-                  value={newPost.youtubeUrl}
-                  onChange={(e) => setNewPost(prev => ({ ...prev, youtubeUrl: e.target.value }))}
+                  value={getCurrentPost()?.youtubeUrl || ""}
+                  onChange={(e) => updateCurrentPost({ youtubeUrl: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
