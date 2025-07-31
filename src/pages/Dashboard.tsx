@@ -836,6 +836,16 @@ const Dashboard = () => {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <Label>Immagini Progetto</Label>
+                <ProjectImageUploader
+                  onUpload={handleProjectImageUpload}
+                  onRemove={handleProjectImageRemove}
+                  uploadedImages={newProject.immagini}
+                  maxImages={5}
+                />
+              </div>
+
               <div className="flex gap-4">
                 <Button onClick={handleSubmitProject} className="shadow-md">
                   <Plus className="w-4 h-4 mr-2" />
