@@ -1062,7 +1062,7 @@ const Dashboard = () => {
                 <Label>Immagini</Label>
                 <BlogImageUploader onUpload={handlePostImageUpload} />
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {newPost.immagini.map((img, i) => (
+                  {(getCurrentPost()?.immagini || []).map((img: string, i: number) => (
                     <img key={i} src={img} alt="img" className="w-20 h-20 object-cover rounded border" />
                   ))}
                 </div>
