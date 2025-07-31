@@ -863,9 +863,36 @@ const Dashboard = () => {
         {activeTab === "create-project" && (
           <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <FolderOpen className="w-5 h-5 mr-2 text-primary" />
-                Crea Nuovo Progetto
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <FolderOpen className="w-5 h-5 mr-2 text-primary" />
+                  {isEditingProject ? "Modifica Progetto" : "Crea Nuovo Progetto"}
+                </div>
+                {isEditingProject && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setIsEditingProject(false);
+                      setEditingProject(null);
+                      setNewProject({
+                        titolo: "",
+                        descrizione_breve: "",
+                        contenuto: "",
+                        categoria: "",
+                        numero_partecipanti: 0,
+                        luoghi: [],
+                        partner: [],
+                        youtube_url: "",
+                        immagini: [],
+                        data_inizio: "",
+                        status: "planned"
+                      });
+                    }}
+                  >
+                    ✕ Annulla
+                  </Button>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
