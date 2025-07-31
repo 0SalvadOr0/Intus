@@ -1026,8 +1026,8 @@ const Dashboard = () => {
                 <Input
                   id="autore"
                   placeholder="Nome autore"
-                  value={newPost.autore}
-                  onChange={(e) => setNewPost(prev => ({ ...prev, autore: e.target.value }))}
+                  value={getCurrentPost()?.autore || ""}
+                  onChange={(e) => updateCurrentPost({ autore: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
@@ -1035,8 +1035,8 @@ const Dashboard = () => {
                 <Input
                   id="excerpt"
                   placeholder="Breve descrizione dell'articolo (opzionale)"
-                  value={newPost.excerpt}
-                  onChange={(e) => setNewPost(prev => ({ ...prev, excerpt: e.target.value }))}
+                  value={getCurrentPost()?.excerpt || ""}
+                  onChange={(e) => updateCurrentPost({ excerpt: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
