@@ -187,7 +187,7 @@ const LeNostreAttivita = () => {
                   <div className="flex gap-2 pt-2">
                     {project.youtube_url && (
                       <Button size="sm" className="flex-1" asChild>
-                        <a href={project.youtubeUrl} target="_blank" rel="noopener noreferrer">
+                        <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
                           <Play className="w-3 h-3 mr-1" />
                           Video
                         </a>
