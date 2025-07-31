@@ -27,58 +27,41 @@ interface Project {
 const LeNostreAttivita = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [openProjectId, setOpenProjectId] = useState<number|null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data - in a real app this would come from a database
-  const projects: Project[] = [
-    {
-      id: 1,
-      title: "Youth Hub: Spazio di Aggregazione Giovanile",
-      description: "Creazione di uno spazio dedicato ai giovani del territorio con attività ricreative, formative e di supporto. Un luogo di incontro che favorisce la socializzazione e lo sviluppo di competenze.",
-      category: "Politiche Giovanili",
-      location: "Centro Storico",
-      date: "2024-01-15",
-      participants: 45,
-      youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      status: "completed"
-    },
-    {
-      id: 2,
-      title: "Valorizzazione del Patrimonio Storico",
-      description: "Progetto di restauro e valorizzazione di siti storici locali attraverso il coinvolgimento della comunità e la promozione del turismo sostenibile.",
-      category: "Territorio",
-      location: "Borgo Antico",
-      date: "2024-02-20",
-      participants: 78,
-      status: "ongoing"
-    },
-    {
-      id: 3,
-      title: "Giornata della Cittadinanza Attiva",
-      description: "Evento di sensibilizzazione sui diritti e doveri civici con workshop pratici, dibattiti e testimonianze per promuovere la partecipazione democratica.",
-      category: "Cittadinanza Attiva",
-      location: "Piazza Centrale",
-      date: "2024-03-10",
-      participants: 120,
-      youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      status: "completed"
-    },
-    {
-      id: 4,
-      title: "Laboratori di Digital Skills",
-      description: "Corsi di formazione digitale per giovani e adulti, focalizzati su competenze informatiche di base e avanzate per l'inserimento lavorativo.",
-      category: "Politiche Giovanili",
-      location: "Centro Formazione",
-      date: "2024-04-05",
-      participants: 32,
-      status: "planned"
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('progetti')
+        .select('*')
+        .eq('pubblicato', true)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Errore nel caricamento progetti:', error);
+        return;
+      }
+
+      setProjects(data || []);
+    } catch (error) {
+      console.error('Errore:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const categories = ["all", "Cittadinanza Attiva", "Territorio", "Politiche Giovanili"];
+  // Estrai categorie dinamicamente dai progetti
+  const allCategories = Array.from(new Set(projects.map(p => p.categoria)));
+  const categories = ["all", ...allCategories];
 
-  const filteredProjects = selectedCategory === "all" 
-    ? projects 
-    : projects.filter(project => project.category === selectedCategory);
+  const filteredProjects = selectedCategory === "all"
+    ? projects
+    : projects.filter(project => project.categoria === selectedCategory);
 
   const getStatusColor = (status: string) => {
     switch(status) {
