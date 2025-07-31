@@ -640,7 +640,29 @@ const Dashboard = () => {
                           ))}
                         </div>
                         <div className="text-xs text-muted-foreground mt-2">Creato il {new Date(post.created_at).toLocaleDateString('it-IT')}</div>
-                        <button onClick={() => handleDelete(post.id)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-destructive text-white rounded-full p-1"><Trash2 className="w-4 h-4" /></button>
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all flex gap-1">
+                          <button
+                            onClick={() => handleTogglePublishPost(post.id, false)}
+                            className="bg-orange-500 hover:bg-orange-600 text-white rounded-full p-1"
+                            title="Nascondi articolo"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleEditPost(post)}
+                            className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-1"
+                            title="Modifica articolo"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(post.id)}
+                            className="bg-destructive hover:bg-destructive/80 text-white rounded-full p-1"
+                            title="Elimina articolo"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
