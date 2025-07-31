@@ -1053,8 +1053,8 @@ const Dashboard = () => {
                 <Textarea
                   id="contenuto"
                   placeholder="Scrivi qui il contenuto dell'articolo..."
-                  value={newPost.contenuto}
-                  onChange={(e) => setNewPost(prev => ({ ...prev, contenuto: e.target.value }))}
+                  value={getCurrentPost()?.contenuto || ""}
+                  onChange={(e) => updateCurrentPost({ contenuto: e.target.value })}
                   className="min-h-[200px]"
                 />
               </div>
