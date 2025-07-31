@@ -53,8 +53,10 @@ const ProjectImageUploader = ({
         // Comprimi l'immagine
         const result = await compressImage(file, settings);
 
-        // Crea nome file con timestamp
-        const fileExtension = result.compressedFile.type === 'image/jpeg' ? 'jpg' : 'png';
+        // Crea nome file con timestamp e estensione corretta
+        const fileExtension = result.compressedFile.type === 'image/jpeg' ? 'jpg' :
+                             result.compressedFile.type === 'image/png' ? 'png' :
+                             result.compressedFile.type === 'image/webp' ? 'webp' : 'jpg';
         const fileName = file.name.split('.')[0];
         const filePath = `${Date.now()}-${fileName}.${fileExtension}`;
 
