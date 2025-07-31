@@ -556,14 +556,18 @@ const Dashboard = () => {
                           <div className="flex items-center space-x-4 text-xs text-muted-foreground">
                             <div className="flex items-center">
                               <Calendar className="w-3 h-3 mr-1" />
-                              <span>{project.created_at ? new Date(project.created_at).toLocaleDateString('it-IT') : "Da pianificare"}</span>
+                              <span>{project.data_inizio ? new Date(project.data_inizio).toLocaleDateString('it-IT') : "Data da definire"}</span>
                             </div>
-                            {project.location && (
+                            {project.luoghi && project.luoghi.length > 0 && (
                               <div className="flex items-center">
                                 <MapPin className="w-3 h-3 mr-1" />
-                                <span>{project.location}</span>
+                                <span>{project.luoghi.join(", ")}</span>
                               </div>
                             )}
+                            <div className="flex items-center">
+                              <Users className="w-3 h-3 mr-1" />
+                              <span>{project.numero_partecipanti} partecipanti</span>
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
