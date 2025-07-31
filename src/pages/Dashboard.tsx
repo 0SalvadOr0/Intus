@@ -166,13 +166,16 @@ const Dashboard = () => {
     youtubeUrl: ""
   });
   const [newProject, setNewProject] = useState({
-    title: "",
-    description: "",
-    category: "",
-    location: "",
-    date: "",
-    participants: 0,
-    youtubeUrl: "",
+    titolo: "",
+    descrizione_breve: "",
+    contenuto: "",
+    categoria: "",
+    numero_partecipanti: 0,
+    luoghi: [] as string[],
+    partner: [] as Array<{nome: string, link?: string}>,
+    youtube_url: "",
+    immagini: [] as string[],
+    data_inizio: "",
     status: "planned" as const
   });
 
@@ -273,31 +276,62 @@ const Dashboard = () => {
     }
   };
 
-  const handleSubmitProject = () => {
-    if (!newProject.title || !newProject.description || !newProject.category) {
+  const handleSubmitProject = async () => {
+    if (!newProject.titolo || !newProject.descrizione_breve || !newProject.categoria || !newProject.contenuto) {
       toast({
         title: "Errore",
-        description: "Compila tutti i campi obbligatori",
+        description: "Compila tutti i campi obbligatori (titolo, descrizione breve, contenuto, categoria)",
         variant: "destructive"
       });
       return;
     }
 
-    toast({
-      title: "Successo!",
-      description: "Progetto salvato come bozza",
-    });
+    try {
+      const { error } = await supabase.from("progetti").insert([
+        {
+          titolo: newProject.titolo,
+          descrizione_breve: newProject.descrizione_breve,
+          contenuto: newProject.contenuto,
+          categoria: newProject.categoria,
+          numero_partecipanti: newProject.numero_partecipanti,
+          luoghi: newProject.luoghi,
+          partner: newProject.partner,
+          youtube_url: newProject.youtube_url || null,
+          immagini: newProject.immagini,
+          data_inizio: newProject.data_inizio || null,
+          status: newProject.status,
+          pubblicato: false
+        }
+      ]);
 
-    setNewProject({
-      title: "",
-      description: "",
-      category: "",
-      location: "",
-      date: "",
-      participants: 0,
-      youtubeUrl: "",
-      status: "planned"
-    });
+      if (error) {
+        toast({ title: "Errore salvataggio", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({
+        title: "Successo!",
+        description: "Progetto salvato come bozza",
+      });
+
+      setNewProject({
+        titolo: "",
+        descrizione_breve: "",
+        contenuto: "",
+        categoria: "",
+        numero_partecipanti: 0,
+        luoghi: [],
+        partner: [],
+        youtube_url: "",
+        immagini: [],
+        data_inizio: "",
+        status: "planned"
+      });
+
+      fetchProjects();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante il salvataggio", variant: "destructive" });
+    }
   };
 
   const TabButton = ({ id, label, icon: Icon }: { id: string, label: string, icon: any }) => (
