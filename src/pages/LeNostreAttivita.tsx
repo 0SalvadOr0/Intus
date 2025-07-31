@@ -140,7 +140,7 @@ const LeNostreAttivita = () => {
                       {getStatusLabel(project.status)}
                     </Badge>
                   </div>
-                  {project.youtubeUrl && (
+                  {project.youtube_url && (
                     <div className="absolute top-4 right-4">
                       <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                         <Play className="w-4 h-4 ml-0.5" />
@@ -185,7 +185,7 @@ const LeNostreAttivita = () => {
                   </div>
 
                   <div className="flex gap-2 pt-2">
-                    {project.youtubeUrl && (
+                    {project.youtube_url && (
                       <Button size="sm" className="flex-1" asChild>
                         <a href={project.youtubeUrl} target="_blank" rel="noopener noreferrer">
                           <Play className="w-3 h-3 mr-1" />
@@ -222,7 +222,7 @@ const LeNostreAttivita = () => {
                               <Badge className={`${getStatusColor(project.status)} border-0`}>{getStatusLabel(project.status)}</Badge>
                             </div>
                           </div>
-                          {project.youtubeUrl && (
+                          {project.youtube_url && (
                             <a href={project.youtubeUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-red-600 hover:underline">
                               <Play className="w-4 h-4" /> Guarda il video
                             </a>
