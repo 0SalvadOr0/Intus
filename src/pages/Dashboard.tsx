@@ -541,12 +541,18 @@ const Dashboard = () => {
                       >
                         <div className="flex-grow">
                           <div className="flex items-center space-x-3 mb-2">
-                            <h3 className="font-semibold">{project.title || project.titolo}</h3>
+                            <h3 className="font-semibold">{project.titolo}</h3>
                             <Badge variant="outline" className="text-xs">
-                              {project.category || project.categoria}
+                              {project.categoria}
+                            </Badge>
+                            <Badge variant={project.pubblicato ? "default" : "secondary"} className="text-xs">
+                              {project.pubblicato ? "Pubblicato" : "Bozza"}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs capitalize">
+                              {project.status === "completed" ? "Completato" : project.status === "ongoing" ? "In Corso" : "Pianificato"}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{project.description || project.descrizione}</p>
+                          <p className="text-sm text-muted-foreground mb-2">{project.descrizione_breve}</p>
                           <div className="flex items-center space-x-4 text-xs text-muted-foreground">
                             <div className="flex items-center">
                               <Calendar className="w-3 h-3 mr-1" />
