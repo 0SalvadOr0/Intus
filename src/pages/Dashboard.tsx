@@ -246,6 +246,22 @@ const Dashboard = () => {
     }
   };
 
+  const handleProjectImageUpload = (url: string) => {
+    setNewProject((prev) => ({
+      ...prev,
+      immagini: [...prev.immagini, url],
+      immagine_copertina: prev.immagini.length === 0 ? url : prev.immagine_copertina
+    }));
+  };
+
+  const handleProjectImageRemove = (url: string) => {
+    setNewProject((prev) => ({
+      ...prev,
+      immagini: prev.immagini.filter(img => img !== url),
+      immagine_copertina: prev.immagine_copertina === url ? (prev.immagini.find(img => img !== url) || null) : prev.immagine_copertina
+    }));
+  };
+
   const handleSubmitPost = async () => {
     if (!newPost.titolo || !newPost.contenuto || !newPost.categoria) {
       toast({
