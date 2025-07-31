@@ -90,12 +90,26 @@ const Dashboard = () => {
   };
 
   const fetchProjects = async () => {
-    const { data, error } = await supabase
-      .from("progetti")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (!error && data) {
-      setProjects(data);
+    try {
+      const { data, error } = await supabase
+        .from("progetti")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error('Errore nel caricamento progetti Dashboard:', error.message || error);
+        console.error('Dettagli errore:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+        return;
+      }
+
+      setProjects(data || []);
+    } catch (error) {
+      console.error('Errore generico Dashboard progetti:', error instanceof Error ? error.message : error);
     }
   };
 
