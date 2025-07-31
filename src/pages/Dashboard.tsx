@@ -313,9 +313,17 @@ const Dashboard = () => {
   ];
 
   const handlePostImageUpload = (url: string) => {
-    setNewPost((prev) => ({ ...prev, immagini: [...prev.immagini, url] }));
-    if (!newPost.copertina_url) {
-      setNewPost((prev) => ({ ...prev, copertina_url: url }));
+    if (isEditingPost) {
+      setEditingPost((prev: any) => ({
+        ...prev,
+        immagini: [...(prev.immagini || []), url],
+        copertina_url: !prev.copertina_url ? url : prev.copertina_url
+      }));
+    } else {
+      setNewPost((prev) => ({ ...prev, immagini: [...prev.immagini, url] }));
+      if (!newPost.copertina_url) {
+        setNewPost((prev) => ({ ...prev, copertina_url: url }));
+      }
     }
   };
 
