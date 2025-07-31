@@ -702,6 +702,86 @@ const Dashboard = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Bozze Progetti */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Edit className="w-5 h-5 mr-2 text-primary" />
+                  Bozze Progetti ({projects.filter(p => !p.pubblicato).length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {projects.filter(p => !p.pubblicato).length === 0 ? (
+                    <div className="text-center text-muted-foreground">Nessuna bozza presente.</div>
+                  ) : (
+                    projects.filter(p => !p.pubblicato).map((project, index) => (
+                      <div
+                        key={project.id}
+                        className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
+                        style={{animationDelay: `${0.1 + index * 0.1}s`}}
+                      >
+                        <div className="flex-grow">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h3 className="font-semibold">{project.titolo}</h3>
+                            <Badge variant="outline" className="text-xs">
+                              {project.categoria}
+                            </Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              Bozza
+                            </Badge>
+                            <Badge variant="outline" className="text-xs capitalize">
+                              {project.status === "completed" ? "Completato" : project.status === "ongoing" ? "In Corso" : "Pianificato"}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">{project.descrizione_breve}</p>
+                          <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                            <div className="flex items-center">
+                              <Calendar className="w-3 h-3 mr-1" />
+                              <span>{project.data_inizio ? new Date(project.data_inizio).toLocaleDateString('it-IT') : "Data da definire"}</span>
+                            </div>
+                            {project.luoghi && project.luoghi.length > 0 && (
+                              <div className="flex items-center">
+                                <MapPin className="w-3 h-3 mr-1" />
+                                <span>{project.luoghi.join(", ")}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center">
+                              <Users className="w-3 h-3 mr-1" />
+                              <span>{project.numero_partecipanti} partecipanti</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => handleTogglePublishProject(project.id, true)}
+                          >
+                            Pubblica
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditProject(project)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteProject(project.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
         {activeTab === "richieste-call-idee" && (
