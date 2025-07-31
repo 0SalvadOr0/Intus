@@ -571,11 +571,26 @@ const Dashboard = () => {
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Button size="sm" variant="outline">
+                          <Button
+                            size="sm"
+                            variant={project.pubblicato ? "secondary" : "default"}
+                            onClick={() => handleTogglePublishProject(project.id, !project.pubblicato)}
+                          >
+                            {project.pubblicato ? "Nascondi" : "Pubblica"}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditProject(project)}
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button size="sm" variant="outline">
-                            <Eye className="w-4 h-4" />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteProject(project.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </div>
