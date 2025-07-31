@@ -100,7 +100,7 @@ const Dashboard = () => {
 
   const fetchCallIdeeRequests = async () => {
     const { data, error } = await supabase
-      .from("call_idee_requests")
+      .from("call_idee_giovani")
       .select("*")
       .order("created_at", { ascending: false });
     if (!error && data) {
