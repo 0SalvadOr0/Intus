@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
 import BlogImageUploader from "@/components/BlogImageUploader";
+import ProjectImageUploader from "@/components/ProjectImageUploader";
 import { StorageStats } from "@/components/StorageStats";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect } from "react";
@@ -89,18 +90,37 @@ const Dashboard = () => {
   };
 
   const fetchProjects = async () => {
-    const { data, error } = await supabase
-      .from("projects")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (!error && data) {
-      setProjects(data);
+    try {
+      const { data, error } = await supabase
+        .from("progetti")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error('Errore nel caricamento progetti Dashboard:', error.message || error);
+        console.error('Dettagli errore:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+
+        // Se la tabella non esiste, mostra un messaggio nell'interfaccia
+        if (error.code === 'PGRST116' || error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.warn('⚠️ Tabella progetti non configurata. Utilizzare lo script SQL fornito.');
+        }
+        return;
+      }
+
+      setProjects(data || []);
+    } catch (error) {
+      console.error('Errore generico Dashboard progetti:', error instanceof Error ? error.message : error);
     }
   };
 
   const fetchCallIdeeRequests = async () => {
     const { data, error } = await supabase
-      .from("call_idee_requests")
+      .from("call_idee_giovani")
       .select("*")
       .order("created_at", { ascending: false });
     if (!error && data) {
@@ -150,6 +170,36 @@ const Dashboard = () => {
     }
   };
 
+  // Toggle pubblicazione articolo (pubblica/nascondi)
+  const handleTogglePublishPost = async (id: number, publish: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("blog_posts")
+        .update({ pubblicato: publish })
+        .eq("id", id);
+
+      if (error) {
+        toast({ title: "Errore", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({
+        title: publish ? "Articolo pubblicato!" : "Articolo nascosto",
+        description: publish ? "L'articolo è ora visibile pubblicamente" : "L'articolo non è più visibile al pubblico"
+      });
+      fetchBlogPosts();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante l'operazione", variant: "destructive" });
+    }
+  };
+
+  // Modifica articolo
+  const handleEditPost = (post: any) => {
+    setEditingPost({ ...post });
+    setIsEditingPost(true);
+    setActiveTab("create");
+  };
+
   // Mostra anteprima articolo
   const handlePreview = (post: any) => {
     window.open(`/blog/preview/${post.id}`, "_blank");
@@ -166,15 +216,42 @@ const Dashboard = () => {
     youtubeUrl: ""
   });
   const [newProject, setNewProject] = useState({
-    title: "",
-    description: "",
-    category: "",
-    location: "",
-    date: "",
-    participants: 0,
-    youtubeUrl: "",
+    titolo: "",
+    descrizione_breve: "",
+    contenuto: "",
+    categoria: "",
+    numero_partecipanti: 0,
+    luoghi: [] as string[],
+    partner: [] as Array<{nome: string, link?: string}>,
+    youtube_url: "",
+    immagini: [] as string[],
+    data_inizio: "",
     status: "planned" as const
   });
+
+  const [editingProject, setEditingProject] = useState<any>(null);
+  const [isEditingProject, setIsEditingProject] = useState(false);
+  const [editingPost, setEditingPost] = useState<any>(null);
+  const [isEditingPost, setIsEditingPost] = useState(false);
+
+  // Helper per gestire i cambiamenti nei form
+  const getCurrentProject = () => isEditingProject ? editingProject : newProject;
+  const updateCurrentProject = (updates: any) => {
+    if (isEditingProject) {
+      setEditingProject((prev: any) => ({ ...prev, ...updates }));
+    } else {
+      setNewProject(prev => ({ ...prev, ...updates }));
+    }
+  };
+
+  const getCurrentPost = () => isEditingPost ? editingPost : newPost;
+  const updateCurrentPost = (updates: any) => {
+    if (isEditingPost) {
+      setEditingPost((prev: any) => ({ ...prev, ...updates }));
+    } else {
+      setNewPost(prev => ({ ...prev, ...updates }));
+    }
+  };
 
   const getRecentActivity = () => {
     const activities = [];
@@ -195,7 +272,7 @@ const Dashboard = () => {
     recentProjects.forEach(project => {
       activities.push({
         action: "Creato progetto",
-        title: project.title || project.titolo,
+        title: project.titolo,
         time: new Date(project.created_at).toLocaleDateString('it-IT'),
         type: "project"
       });
@@ -236,14 +313,108 @@ const Dashboard = () => {
   ];
 
   const handlePostImageUpload = (url: string) => {
-    setNewPost((prev) => ({ ...prev, immagini: [...prev.immagini, url] }));
-    if (!newPost.copertina_url) {
-      setNewPost((prev) => ({ ...prev, copertina_url: url }));
+    if (isEditingPost) {
+      setEditingPost((prev: any) => ({
+        ...prev,
+        immagini: [...(prev.immagini || []), url],
+        copertina_url: !prev.copertina_url ? url : prev.copertina_url
+      }));
+    } else {
+      setNewPost((prev) => ({ ...prev, immagini: [...prev.immagini, url] }));
+      if (!newPost.copertina_url) {
+        setNewPost((prev) => ({ ...prev, copertina_url: url }));
+      }
+    }
+  };
+
+  const handleProjectImageUpload = (url: string) => {
+    if (isEditingProject) {
+      setEditingProject((prev: any) => ({
+        ...prev,
+        immagini: [...(prev.immagini || []), url],
+        immagine_copertina: !prev.immagine_copertina && prev.immagini.length === 0 ? url : prev.immagine_copertina
+      }));
+    } else {
+      setNewProject((prev) => ({
+        ...prev,
+        immagini: [...prev.immagini, url],
+        immagine_copertina: prev.immagini.length === 0 ? url : prev.immagine_copertina
+      }));
+    }
+  };
+
+  const handleProjectImageRemove = (url: string) => {
+    if (isEditingProject) {
+      setEditingProject((prev: any) => ({
+        ...prev,
+        immagini: prev.immagini.filter((img: string) => img !== url),
+        immagine_copertina: prev.immagine_copertina === url ? (prev.immagini.find((img: string) => img !== url) || null) : prev.immagine_copertina
+      }));
+    } else {
+      setNewProject((prev) => ({
+        ...prev,
+        immagini: prev.immagini.filter(img => img !== url),
+        immagine_copertina: prev.immagine_copertina === url ? (prev.immagini.find(img => img !== url) || null) : prev.immagine_copertina
+      }));
+    }
+  };
+
+  // Pubblica/Nascondi progetto
+  const handleTogglePublishProject = async (id: number, publish: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("progetti")
+        .update({ pubblicato: publish })
+        .eq("id", id);
+
+      if (error) {
+        toast({ title: "Errore", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({
+        title: publish ? "Progetto pubblicato!" : "Progetto nascosto",
+        description: publish ? "Il progetto è ora visibile pubblicamente" : "Il progetto non è più visibile al pubblico"
+      });
+      fetchProjects();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante l'operazione", variant: "destructive" });
+    }
+  };
+
+  // Modifica progetto
+  const handleEditProject = (project: any) => {
+    setEditingProject({ ...project });
+    setIsEditingProject(true);
+    setActiveTab("create-project");
+  };
+
+  // Elimina progetto
+  const handleDeleteProject = async (id: number) => {
+    if (!window.confirm("Sei sicuro di voler eliminare questo progetto?")) return;
+
+    try {
+      const { error } = await supabase
+        .from("progetti")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        toast({ title: "Errore eliminazione", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({ title: "Progetto eliminato" });
+      fetchProjects();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante l'eliminazione", variant: "destructive" });
     }
   };
 
   const handleSubmitPost = async () => {
-    if (!newPost.titolo || !newPost.contenuto || !newPost.categoria) {
+    const postData = isEditingPost ? editingPost : newPost;
+
+    if (!postData.titolo || !postData.contenuto || !postData.categoria) {
       toast({
         title: "Errore",
         description: "Compila tutti i campi obbligatori",
@@ -251,53 +422,137 @@ const Dashboard = () => {
       });
       return;
     }
-    const { error } = await supabase.from("blog_posts").insert([
-      {
-        titolo: newPost.titolo,
-        contenuto: newPost.contenuto,
-        excerpt: newPost.excerpt,
-        autore: newPost.autore,
-        categoria: newPost.categoria,
-        immagini: newPost.immagini,
-        copertina_url: newPost.copertina_url,
-        youtube_url: newPost.youtubeUrl,
-        pubblicato: false
+
+    try {
+      const postPayload = {
+        titolo: postData.titolo,
+        contenuto: postData.contenuto,
+        excerpt: postData.excerpt,
+        autore: postData.autore,
+        categoria: postData.categoria,
+        immagini: postData.immagini,
+        copertina_url: postData.copertina_url,
+        youtube_url: postData.youtubeUrl
+      };
+
+      let error;
+
+      if (isEditingPost) {
+        // Aggiorna articolo esistente
+        const result = await supabase
+          .from("blog_posts")
+          .update(postPayload)
+          .eq("id", editingPost.id);
+        error = result.error;
+      } else {
+        // Crea nuovo articolo
+        const result = await supabase
+          .from("blog_posts")
+          .insert([{ ...postPayload, pubblicato: false }]);
+        error = result.error;
       }
-    ]);
-    if (error) {
-      toast({ title: "Errore salvataggio", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Articolo salvato come bozza!" });
+
+      if (error) {
+        toast({ title: "Errore salvataggio", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({
+        title: isEditingPost ? "Articolo aggiornato!" : "Articolo salvato come bozza!",
+        description: isEditingPost ? "Le modifiche sono state salvate" : "L'articolo è stato creato come bozza"
+      });
+
+      // Reset form
+      if (isEditingPost) {
+        setIsEditingPost(false);
+        setEditingPost(null);
+      }
+
       setNewPost({ titolo: "", contenuto: "", categoria: "", excerpt: "", autore: "", immagini: [], copertina_url: "", youtubeUrl: "" });
       fetchBlogPosts();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante il salvataggio", variant: "destructive" });
     }
   };
 
-  const handleSubmitProject = () => {
-    if (!newProject.title || !newProject.description || !newProject.category) {
+  const handleSubmitProject = async () => {
+    const projectData = isEditingProject ? editingProject : newProject;
+
+    if (!projectData.titolo || !projectData.descrizione_breve || !projectData.categoria || !projectData.contenuto) {
       toast({
         title: "Errore",
-        description: "Compila tutti i campi obbligatori",
+        description: "Compila tutti i campi obbligatori (titolo, descrizione breve, contenuto, categoria)",
         variant: "destructive"
       });
       return;
     }
 
-    toast({
-      title: "Successo!",
-      description: "Progetto salvato come bozza",
-    });
+    try {
+      const projectPayload = {
+        titolo: projectData.titolo,
+        descrizione_breve: projectData.descrizione_breve,
+        contenuto: projectData.contenuto,
+        categoria: projectData.categoria,
+        numero_partecipanti: projectData.numero_partecipanti,
+        luoghi: projectData.luoghi,
+        partner: projectData.partner,
+        youtube_url: projectData.youtube_url || null,
+        immagini: projectData.immagini,
+        data_inizio: projectData.data_inizio || null,
+        status: projectData.status
+      };
 
-    setNewProject({
-      title: "",
-      description: "",
-      category: "",
-      location: "",
-      date: "",
-      participants: 0,
-      youtubeUrl: "",
-      status: "planned"
-    });
+      let error;
+
+      if (isEditingProject) {
+        // Aggiorna progetto esistente
+        const result = await supabase
+          .from("progetti")
+          .update(projectPayload)
+          .eq("id", editingProject.id);
+        error = result.error;
+      } else {
+        // Crea nuovo progetto
+        const result = await supabase
+          .from("progetti")
+          .insert([{ ...projectPayload, pubblicato: false }]);
+        error = result.error;
+      }
+
+      if (error) {
+        toast({ title: "Errore salvataggio", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({
+        title: "Successo!",
+        description: isEditingProject ? "Progetto aggiornato!" : "Progetto salvato come bozza",
+      });
+
+      // Reset form
+      if (isEditingProject) {
+        setIsEditingProject(false);
+        setEditingProject(null);
+      }
+
+      setNewProject({
+        titolo: "",
+        descrizione_breve: "",
+        contenuto: "",
+        categoria: "",
+        numero_partecipanti: 0,
+        luoghi: [],
+        partner: [],
+        youtube_url: "",
+        immagini: [],
+        data_inizio: "",
+        status: "planned"
+      });
+
+      fetchProjects();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante il salvataggio", variant: "destructive" });
+    }
   };
 
   const TabButton = ({ id, label, icon: Icon }: { id: string, label: string, icon: any }) => (
@@ -385,7 +640,29 @@ const Dashboard = () => {
                           ))}
                         </div>
                         <div className="text-xs text-muted-foreground mt-2">Creato il {new Date(post.created_at).toLocaleDateString('it-IT')}</div>
-                        <button onClick={() => handleDelete(post.id)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-destructive text-white rounded-full p-1"><Trash2 className="w-4 h-4" /></button>
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all flex gap-1">
+                          <button
+                            onClick={() => handleTogglePublishPost(post.id, false)}
+                            className="bg-orange-500 hover:bg-orange-600 text-white rounded-full p-1"
+                            title="Nascondi articolo"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleEditPost(post)}
+                            className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-1"
+                            title="Modifica articolo"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(post.id)}
+                            className="bg-destructive hover:bg-destructive/80 text-white rounded-full p-1"
+                            title="Elimina articolo"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -434,13 +711,26 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => handlePreview(post)}>
-                          <Eye className="w-4 h-4" />
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => handleTogglePublishPost(post.id, true)}
+                        >
+                          Pubblica
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => handlePublish(post.id)}>
-                          <FileText className="w-4 h-4 text-green-600" />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEditPost(post)}
+                        >
+                          <Edit className="w-4 h-4" />
                         </Button>
-                        <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => handleDelete(post.id)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => handleDelete(post.id)}
+                        >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
@@ -450,20 +740,20 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Progetti */}
+            {/* Progetti Pubblicati */}
             <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FolderOpen className="w-5 h-5 mr-2 text-primary" />
-                  Progetti ({projects.length})
+                  Progetti Pubblicati ({projects.filter(p => p.pubblicato).length})
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {projects.length === 0 ? (
-                    <div className="text-center text-muted-foreground">Nessun progetto presente.</div>
+                  {projects.filter(p => p.pubblicato).length === 0 ? (
+                    <div className="text-center text-muted-foreground">Nessun progetto pubblicato.</div>
                   ) : (
-                    projects.map((project, index) => (
+                    projects.filter(p => p.pubblicato).map((project, index) => (
                       <div
                         key={project.id}
                         className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
@@ -471,31 +761,136 @@ const Dashboard = () => {
                       >
                         <div className="flex-grow">
                           <div className="flex items-center space-x-3 mb-2">
-                            <h3 className="font-semibold">{project.title || project.titolo}</h3>
+                            <h3 className="font-semibold">{project.titolo}</h3>
                             <Badge variant="outline" className="text-xs">
-                              {project.category || project.categoria}
+                              {project.categoria}
+                            </Badge>
+                            <Badge variant={project.pubblicato ? "default" : "secondary"} className="text-xs">
+                              {project.pubblicato ? "Pubblicato" : "Bozza"}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs capitalize">
+                              {project.status === "completed" ? "Completato" : project.status === "ongoing" ? "In Corso" : "Pianificato"}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{project.description || project.descrizione}</p>
+                          <p className="text-sm text-muted-foreground mb-2">{project.descrizione_breve}</p>
                           <div className="flex items-center space-x-4 text-xs text-muted-foreground">
                             <div className="flex items-center">
                               <Calendar className="w-3 h-3 mr-1" />
-                              <span>{project.created_at ? new Date(project.created_at).toLocaleDateString('it-IT') : "Da pianificare"}</span>
+                              <span>{project.data_inizio ? new Date(project.data_inizio).toLocaleDateString('it-IT') : "Data da definire"}</span>
                             </div>
-                            {project.location && (
+                            {project.luoghi && project.luoghi.length > 0 && (
                               <div className="flex items-center">
                                 <MapPin className="w-3 h-3 mr-1" />
-                                <span>{project.location}</span>
+                                <span>{project.luoghi.join(", ")}</span>
                               </div>
                             )}
+                            <div className="flex items-center">
+                              <Users className="w-3 h-3 mr-1" />
+                              <span>{project.numero_partecipanti} partecipanti</span>
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Button size="sm" variant="outline">
+                          <Button
+                            size="sm"
+                            variant={project.pubblicato ? "secondary" : "default"}
+                            onClick={() => handleTogglePublishProject(project.id, !project.pubblicato)}
+                          >
+                            {project.pubblicato ? "Nascondi" : "Pubblica"}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditProject(project)}
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button size="sm" variant="outline">
-                            <Eye className="w-4 h-4" />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteProject(project.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Bozze Progetti */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Edit className="w-5 h-5 mr-2 text-primary" />
+                  Bozze Progetti ({projects.filter(p => !p.pubblicato).length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {projects.filter(p => !p.pubblicato).length === 0 ? (
+                    <div className="text-center text-muted-foreground">Nessuna bozza presente.</div>
+                  ) : (
+                    projects.filter(p => !p.pubblicato).map((project, index) => (
+                      <div
+                        key={project.id}
+                        className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors animate-fade-in-up"
+                        style={{animationDelay: `${0.1 + index * 0.1}s`}}
+                      >
+                        <div className="flex-grow">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h3 className="font-semibold">{project.titolo}</h3>
+                            <Badge variant="outline" className="text-xs">
+                              {project.categoria}
+                            </Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              Bozza
+                            </Badge>
+                            <Badge variant="outline" className="text-xs capitalize">
+                              {project.status === "completed" ? "Completato" : project.status === "ongoing" ? "In Corso" : "Pianificato"}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">{project.descrizione_breve}</p>
+                          <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                            <div className="flex items-center">
+                              <Calendar className="w-3 h-3 mr-1" />
+                              <span>{project.data_inizio ? new Date(project.data_inizio).toLocaleDateString('it-IT') : "Data da definire"}</span>
+                            </div>
+                            {project.luoghi && project.luoghi.length > 0 && (
+                              <div className="flex items-center">
+                                <MapPin className="w-3 h-3 mr-1" />
+                                <span>{project.luoghi.join(", ")}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center">
+                              <Users className="w-3 h-3 mr-1" />
+                              <span>{project.numero_partecipanti} partecipanti</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => handleTogglePublishProject(project.id, true)}
+                          >
+                            Pubblica
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditProject(project)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteProject(project.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </div>
@@ -585,20 +980,47 @@ const Dashboard = () => {
         {activeTab === "create" && (
           <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Plus className="w-5 h-5 mr-2 text-primary" />
-                Crea Nuovo Articolo
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Plus className="w-5 h-5 mr-2 text-primary" />
+                  {isEditingPost ? "Modifica Articolo" : "Crea Nuovo Articolo"}
+                </div>
+                {isEditingPost && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setIsEditingPost(false);
+                      setEditingPost(null);
+                      setNewPost({ titolo: "", contenuto: "", categoria: "", excerpt: "", autore: "", immagini: [], copertina_url: "", youtubeUrl: "" });
+                    }}
+                  >
+                    ✕ Annulla
+                  </Button>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              {isEditingPost && (
+                <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <div className="flex items-center gap-2">
+                    <Badge variant={editingPost?.pubblicato ? "default" : "secondary"}>
+                      {editingPost?.pubblicato ? "Pubblicato" : "Bozza"}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      Modifica in corso - ID: {editingPost?.id}
+                    </span>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="titolo">Titolo *</Label>
                   <Input
                     id="titolo"
                     placeholder="Inserisci il titolo dell'articolo"
-                    value={newPost.titolo}
-                    onChange={(e) => setNewPost(prev => ({ ...prev, titolo: e.target.value }))}
+                    value={getCurrentPost()?.titolo || ""}
+                    onChange={(e) => updateCurrentPost({ titolo: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
@@ -606,8 +1028,8 @@ const Dashboard = () => {
                   <Input
                     id="categoria"
                     placeholder="Categoria"
-                    value={newPost.categoria}
-                    onChange={(e) => setNewPost(prev => ({ ...prev, categoria: e.target.value }))}
+                    value={getCurrentPost()?.categoria || ""}
+                    onChange={(e) => updateCurrentPost({ categoria: e.target.value })}
                   />
                 </div>
               </div>
@@ -616,8 +1038,8 @@ const Dashboard = () => {
                 <Input
                   id="autore"
                   placeholder="Nome autore"
-                  value={newPost.autore}
-                  onChange={(e) => setNewPost(prev => ({ ...prev, autore: e.target.value }))}
+                  value={getCurrentPost()?.autore || ""}
+                  onChange={(e) => updateCurrentPost({ autore: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
@@ -625,8 +1047,8 @@ const Dashboard = () => {
                 <Input
                   id="excerpt"
                   placeholder="Breve descrizione dell'articolo (opzionale)"
-                  value={newPost.excerpt}
-                  onChange={(e) => setNewPost(prev => ({ ...prev, excerpt: e.target.value }))}
+                  value={getCurrentPost()?.excerpt || ""}
+                  onChange={(e) => updateCurrentPost({ excerpt: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
@@ -634,8 +1056,8 @@ const Dashboard = () => {
                 <Input
                   id="youtubeUrl"
                   placeholder="https://www.youtube.com/watch?v=..."
-                  value={newPost.youtubeUrl}
-                  onChange={(e) => setNewPost(prev => ({ ...prev, youtubeUrl: e.target.value }))}
+                  value={getCurrentPost()?.youtubeUrl || ""}
+                  onChange={(e) => updateCurrentPost({ youtubeUrl: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
@@ -643,8 +1065,8 @@ const Dashboard = () => {
                 <Textarea
                   id="contenuto"
                   placeholder="Scrivi qui il contenuto dell'articolo..."
-                  value={newPost.contenuto}
-                  onChange={(e) => setNewPost(prev => ({ ...prev, contenuto: e.target.value }))}
+                  value={getCurrentPost()?.contenuto || ""}
+                  onChange={(e) => updateCurrentPost({ contenuto: e.target.value })}
                   className="min-h-[200px]"
                 />
               </div>
@@ -652,7 +1074,7 @@ const Dashboard = () => {
                 <Label>Immagini</Label>
                 <BlogImageUploader onUpload={handlePostImageUpload} />
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {newPost.immagini.map((img, i) => (
+                  {(getCurrentPost()?.immagini || []).map((img: string, i: number) => (
                     <img key={i} src={img} alt="img" className="w-20 h-20 object-cover rounded border" />
                   ))}
                 </div>
@@ -660,7 +1082,7 @@ const Dashboard = () => {
               <div className="flex gap-4">
                 <Button onClick={handleSubmitPost} className="shadow-md">
                   <Plus className="w-4 h-4 mr-2" />
-                  Salva come Bozza
+                  {isEditingPost ? "Aggiorna Articolo" : "Salva come Bozza"}
                 </Button>
                 <Button variant="outline">
                   <Eye className="w-4 h-4 mr-2" />
@@ -675,25 +1097,64 @@ const Dashboard = () => {
         {activeTab === "create-project" && (
           <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <FolderOpen className="w-5 h-5 mr-2 text-primary" />
-                Crea Nuovo Progetto
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <FolderOpen className="w-5 h-5 mr-2 text-primary" />
+                  {isEditingProject ? "Modifica Progetto" : "Crea Nuovo Progetto"}
+                </div>
+                {isEditingProject && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setIsEditingProject(false);
+                      setEditingProject(null);
+                      setNewProject({
+                        titolo: "",
+                        descrizione_breve: "",
+                        contenuto: "",
+                        categoria: "",
+                        numero_partecipanti: 0,
+                        luoghi: [],
+                        partner: [],
+                        youtube_url: "",
+                        immagini: [],
+                        data_inizio: "",
+                        status: "planned"
+                      });
+                    }}
+                  >
+                    ✕ Annulla
+                  </Button>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              {isEditingProject && (
+                <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <div className="flex items-center gap-2">
+                    <Badge variant={editingProject?.pubblicato ? "default" : "secondary"}>
+                      {editingProject?.pubblicato ? "Pubblicato" : "Bozza"}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      Modifica in corso - ID: {editingProject?.id}
+                    </span>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="project-title">Titolo *</Label>
                   <Input
                     id="project-title"
                     placeholder="Inserisci il titolo del progetto"
-                    value={newProject.title}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, title: e.target.value }))}
+                    value={getCurrentProject()?.titolo || ""}
+                    onChange={(e) => updateCurrentProject({ titolo: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="project-category">Categoria *</Label>
-                  <Select value={newProject.category} onValueChange={(value) => setNewProject(prev => ({ ...prev, category: value }))}>
+                  <Select value={getCurrentProject()?.categoria || ""} onValueChange={(value) => updateCurrentProject({ categoria: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleziona categoria" />
                     </SelectTrigger>
@@ -712,8 +1173,8 @@ const Dashboard = () => {
                   <Input
                     id="project-location"
                     placeholder="Dove si svolge"
-                    value={newProject.location}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, location: e.target.value }))}
+                    value={getCurrentProject()?.luoghi?.[0] || ""}
+                    onChange={(e) => updateCurrentProject({ luoghi: e.target.value ? [e.target.value] : [] })}
                   />
                 </div>
                 <div className="space-y-2">
@@ -721,8 +1182,8 @@ const Dashboard = () => {
                   <Input
                     id="project-date"
                     type="date"
-                    value={newProject.date}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, date: e.target.value }))}
+                    value={getCurrentProject()?.data_inizio || ""}
+                    onChange={(e) => updateCurrentProject({ data_inizio: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
@@ -731,8 +1192,8 @@ const Dashboard = () => {
                     id="project-participants"
                     type="number"
                     placeholder="Numero stimato"
-                    value={newProject.participants || ""}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, participants: parseInt(e.target.value) || 0 }))}
+                    value={getCurrentProject()?.numero_partecipanti || ""}
+                    onChange={(e) => updateCurrentProject({ numero_partecipanti: parseInt(e.target.value) || 0 })}
                   />
                 </div>
               </div>
@@ -740,7 +1201,7 @@ const Dashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="project-status">Stato</Label>
-                  <Select value={newProject.status} onValueChange={(value: any) => setNewProject(prev => ({ ...prev, status: value }))}>
+                  <Select value={getCurrentProject()?.status || "planned"} onValueChange={(value: any) => updateCurrentProject({ status: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleziona stato" />
                     </SelectTrigger>
@@ -756,27 +1217,49 @@ const Dashboard = () => {
                   <Input
                     id="project-youtube"
                     placeholder="https://www.youtube.com/watch?v=..."
-                    value={newProject.youtubeUrl}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, youtubeUrl: e.target.value }))}
+                    value={getCurrentProject()?.youtube_url || ""}
+                    onChange={(e) => updateCurrentProject({ youtube_url: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="project-description-short">Descrizione Breve *</Label>
+                  <Textarea
+                    id="project-description-short"
+                    placeholder="Breve descrizione del progetto..."
+                    value={getCurrentProject()?.descrizione_breve || ""}
+                    onChange={(e) => updateCurrentProject({ descrizione_breve: e.target.value })}
+                    className="min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-content">Contenuto Dettagliato *</Label>
+                  <Textarea
+                    id="project-content"
+                    placeholder="Descrizione dettagliata del progetto, obiettivi, attività..."
+                    value={getCurrentProject()?.contenuto || ""}
+                    onChange={(e) => updateCurrentProject({ contenuto: e.target.value })}
+                    className="min-h-[150px]"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="project-description">Descrizione *</Label>
-                <Textarea
-                  id="project-description"
-                  placeholder="Descrivi il progetto..."
-                  value={newProject.description}
-                  onChange={(e) => setNewProject(prev => ({ ...prev, description: e.target.value }))}
-                  className="min-h-[150px]"
+                <Label>Immagini Progetto</Label>
+                <ProjectImageUploader
+                  onUpload={handleProjectImageUpload}
+                  onRemove={handleProjectImageRemove}
+                  uploadedImages={getCurrentProject()?.immagini || []}
+                  maxImages={5}
                 />
               </div>
 
               <div className="flex gap-4">
                 <Button onClick={handleSubmitProject} className="shadow-md">
                   <Plus className="w-4 h-4 mr-2" />
-                  Salva Progetto
+                  {isEditingProject ? "Aggiorna Progetto" : "Salva Progetto"}
                 </Button>
                 <Button variant="outline">
                   <Eye className="w-4 h-4 mr-2" />
