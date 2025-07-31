@@ -1007,8 +1007,8 @@ const Dashboard = () => {
                   <Input
                     id="titolo"
                     placeholder="Inserisci il titolo dell'articolo"
-                    value={newPost.titolo}
-                    onChange={(e) => setNewPost(prev => ({ ...prev, titolo: e.target.value }))}
+                    value={getCurrentPost()?.titolo || ""}
+                    onChange={(e) => updateCurrentPost({ titolo: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
