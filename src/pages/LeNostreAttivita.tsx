@@ -51,12 +51,23 @@ const LeNostreAttivita = () => {
           details: error.details,
           hint: error.hint
         });
+
+        // Gestisci errori specifici
+        if (error.code === 'PGRST116' || error.message?.includes('does not exist')) {
+          setError('La tabella progetti non è stata ancora configurata nel database.');
+        } else if (error.code === '42501') {
+          setError('Permessi insufficienti per accedere ai progetti.');
+        } else {
+          setError(`Errore nel caricamento progetti: ${error.message}`);
+        }
         return;
       }
 
       setProjects(data || []);
+      setError(null);
     } catch (error) {
       console.error('Errore generico:', error instanceof Error ? error.message : error);
+      setError('Errore di connessione al database.');
     } finally {
       setLoading(false);
     }
