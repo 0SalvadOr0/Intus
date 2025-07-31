@@ -1016,8 +1016,8 @@ const Dashboard = () => {
                   <Input
                     id="categoria"
                     placeholder="Categoria"
-                    value={newPost.categoria}
-                    onChange={(e) => setNewPost(prev => ({ ...prev, categoria: e.target.value }))}
+                    value={getCurrentPost()?.categoria || ""}
+                    onChange={(e) => updateCurrentPost({ categoria: e.target.value })}
                   />
                 </div>
               </div>
