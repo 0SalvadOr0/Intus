@@ -176,7 +176,7 @@ const LeNostreAttivita = () => {
                     </div>
                     <div className="flex items-center text-muted-foreground">
                       <MapPin className="w-4 h-4 mr-2 text-primary" />
-                      {project.location}
+                      {project.luoghi && project.luoghi.length > 0 ? project.luoghi.join(', ') : 'Luogo da definire'}
                     </div>
                     <div className="flex items-center text-muted-foreground">
                       <Users className="w-4 h-4 mr-2 text-primary" />
@@ -212,7 +212,7 @@ const LeNostreAttivita = () => {
                             </div>
                             <div className="flex items-center text-muted-foreground">
                               <MapPin className="w-4 h-4 mr-2 text-primary" />
-                              {project.location}
+                              {project.luoghi && project.luoghi.length > 0 ? project.luoghi.join(', ') : 'Luogo da definire'}
                             </div>
                             <div className="flex items-center text-muted-foreground">
                               <Users className="w-4 h-4 mr-2 text-primary" />
