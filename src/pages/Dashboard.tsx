@@ -1001,6 +1001,18 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              {isEditingPost && (
+                <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <div className="flex items-center gap-2">
+                    <Badge variant={editingPost?.pubblicato ? "default" : "secondary"}>
+                      {editingPost?.pubblicato ? "Pubblicato" : "Bozza"}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      Modifica in corso - ID: {editingPost?.id}
+                    </span>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="titolo">Titolo *</Label>
