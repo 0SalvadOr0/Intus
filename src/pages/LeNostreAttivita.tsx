@@ -57,28 +57,25 @@ const LeNostreAttivita = () => {
         return;
       }
 
-      if (error) {
-        console.error('Errore nel caricamento progetti:', error.message || error);
-        console.error('Dettagli errore Supabase:', {
-          code: error.code,
-          message: error.message,
-          details: error.details,
-          hint: error.hint
-        });
+      // Gestione errore dalla prima query
+      console.error('Errore nel caricamento progetti:', error.message || error);
+      console.error('Dettagli errore Supabase:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
 
-        // Gestisci errori specifici
-        if (error.code === 'PGRST116' || error.message?.includes('does not exist')) {
-          setError('La tabella progetti non è stata ancora configurata nel database.');
-        } else if (error.code === '42501') {
-          setError('Permessi insufficienti per accedere ai progetti.');
-        } else {
-          setError(`Errore nel caricamento progetti: ${error.message}`);
-        }
-        return;
+      // Gestisci errori specifici
+      if (error.code === 'PGRST116' || error.message?.includes('does not exist')) {
+        setError('La tabella "progetti" non è stata ancora creata nel database. Eseguire prima lo script SQL di configurazione.');
+      } else if (error.code === '42501') {
+        setError('Permessi insufficienti per accedere ai progetti. Verificare le policy RLS su Supabase.');
+      } else if (error.code === '42P01') {
+        setError('La tabella "progetti" non esiste nel database. Creare la tabella usando lo script SQL fornito.');
+      } else {
+        setError(`Errore nel caricamento progetti: ${error.message}`);
       }
-
-      setProjects(data || []);
-      setError(null);
     } catch (error) {
       console.error('Errore generico:', error instanceof Error ? error.message : error);
       setError('Errore di connessione al database.');
