@@ -170,6 +170,36 @@ const Dashboard = () => {
     }
   };
 
+  // Toggle pubblicazione articolo (pubblica/nascondi)
+  const handleTogglePublishPost = async (id: number, publish: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("blog_posts")
+        .update({ pubblicato: publish })
+        .eq("id", id);
+
+      if (error) {
+        toast({ title: "Errore", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      toast({
+        title: publish ? "Articolo pubblicato!" : "Articolo nascosto",
+        description: publish ? "L'articolo è ora visibile pubblicamente" : "L'articolo non è più visibile al pubblico"
+      });
+      fetchBlogPosts();
+    } catch (error) {
+      toast({ title: "Errore", description: "Errore durante l'operazione", variant: "destructive" });
+    }
+  };
+
+  // Modifica articolo
+  const handleEditPost = (post: any) => {
+    setEditingPost({ ...post });
+    setIsEditingPost(true);
+    setActiveTab("create");
+  };
+
   // Mostra anteprima articolo
   const handlePreview = (post: any) => {
     window.open(`/blog/preview/${post.id}`, "_blank");
