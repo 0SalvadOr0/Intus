@@ -269,11 +269,19 @@ const Dashboard = () => {
   };
 
   const handleProjectImageUpload = (url: string) => {
-    setNewProject((prev) => ({
-      ...prev,
-      immagini: [...prev.immagini, url],
-      immagine_copertina: prev.immagini.length === 0 ? url : prev.immagine_copertina
-    }));
+    if (isEditingProject) {
+      setEditingProject((prev: any) => ({
+        ...prev,
+        immagini: [...(prev.immagini || []), url],
+        immagine_copertina: !prev.immagine_copertina && prev.immagini.length === 0 ? url : prev.immagine_copertina
+      }));
+    } else {
+      setNewProject((prev) => ({
+        ...prev,
+        immagini: [...prev.immagini, url],
+        immagine_copertina: prev.immagini.length === 0 ? url : prev.immagine_copertina
+      }));
+    }
   };
 
   const handleProjectImageRemove = (url: string) => {
