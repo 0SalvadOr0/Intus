@@ -993,8 +993,8 @@ const Dashboard = () => {
                   <Textarea
                     id="project-description-short"
                     placeholder="Breve descrizione del progetto..."
-                    value={newProject.descrizione_breve}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, descrizione_breve: e.target.value }))}
+                    value={getCurrentProject()?.descrizione_breve || ""}
+                    onChange={(e) => updateCurrentProject({ descrizione_breve: e.target.value })}
                     className="min-h-[80px]"
                   />
                 </div>
@@ -1003,8 +1003,8 @@ const Dashboard = () => {
                   <Textarea
                     id="project-content"
                     placeholder="Descrizione dettagliata del progetto, obiettivi, attività..."
-                    value={newProject.contenuto}
-                    onChange={(e) => setNewProject(prev => ({ ...prev, contenuto: e.target.value }))}
+                    value={getCurrentProject()?.contenuto || ""}
+                    onChange={(e) => updateCurrentProject({ contenuto: e.target.value })}
                     className="min-h-[150px]"
                   />
                 </div>
