@@ -1015,7 +1015,7 @@ const Dashboard = () => {
                 <ProjectImageUploader
                   onUpload={handleProjectImageUpload}
                   onRemove={handleProjectImageRemove}
-                  uploadedImages={newProject.immagini}
+                  uploadedImages={getCurrentProject()?.immagini || []}
                   maxImages={5}
                 />
               </div>
