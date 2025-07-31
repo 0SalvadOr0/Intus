@@ -43,13 +43,19 @@ const LeNostreAttivita = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Errore nel caricamento progetti:', error);
+        console.error('Errore nel caricamento progetti:', error.message || error);
+        console.error('Dettagli errore Supabase:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
         return;
       }
 
       setProjects(data || []);
     } catch (error) {
-      console.error('Errore:', error);
+      console.error('Errore generico:', error instanceof Error ? error.message : error);
     } finally {
       setLoading(false);
     }
