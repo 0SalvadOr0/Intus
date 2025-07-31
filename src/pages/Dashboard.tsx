@@ -199,6 +199,9 @@ const Dashboard = () => {
     status: "planned" as const
   });
 
+  const [editingProject, setEditingProject] = useState<any>(null);
+  const [isEditingProject, setIsEditingProject] = useState(false);
+
   const getRecentActivity = () => {
     const activities = [];
 
