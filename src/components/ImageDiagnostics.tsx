@@ -4,16 +4,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/lib/supabaseClient";
 import { Badge } from "@/components/ui/badge";
-import { 
-  CheckCircle, 
-  XCircle, 
-  AlertTriangle, 
-  Loader2, 
+import {
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  Loader2,
   Image as ImageIcon,
   Database,
   Shield,
-  Globe
+  Globe,
+  Wrench,
+  RefreshCw
 } from "lucide-react";
+import {
+  checkBucketsExist,
+  createMissingBuckets,
+  getBucketStats,
+  formatBytes,
+  validateAndFixImageUrl
+} from "@/lib/imageUtils";
 
 interface DiagnosticResult {
   test: string;
