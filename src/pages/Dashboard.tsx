@@ -906,6 +906,11 @@ const Dashboard = () => {
         {activeTab === "richieste-call-idee" && (
           <RichiesteCallIdeeTab />
         )}
+        {activeTab === "diagnostics" && (
+          <div className="animate-fade-in-up">
+            <ImageDiagnostics />
+          </div>
+        )}
           </div>
         </div>
       </section>
