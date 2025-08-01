@@ -219,66 +219,117 @@ const ProjectViewer = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       {/* Header con immagine di copertina */}
-      <section className="relative h-[70vh] overflow-hidden">
+      <section className="relative h-[80vh] min-h-[600px] overflow-hidden">
         {coverImage ? (
           <div className="absolute inset-0">
             <ImageWithFallback
               src={coverImage}
               alt={project.titolo}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-center"
               fallbackClassName="w-full h-full"
               showError={false}
               onError={(url) => console.error('Errore caricamento immagine copertina:', url)}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10" />
           </div>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-accent/30 to-heart/30">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          </div>
         )}
 
         {/* Navigation */}
-        <div className="absolute top-6 left-6 z-10">
+        <div className="absolute top-8 left-8 z-20">
           <Button
             variant="ghost"
             onClick={() => navigate('/le-nostre-attivita')}
-            className="bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50"
+            className="bg-black/20 backdrop-blur-md hover:bg-black/40 border border-white/20 text-white hover:text-white transition-all duration-300"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Torna ai progetti
           </Button>
         </div>
 
-        {/* Azioni */}
-        <div className="absolute top-6 right-6 z-10 flex gap-2">
-          <Button
-            variant="ghost"
-            onClick={handleShare}
-            className="bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50"
-          >
-            {copySuccess ? (
-              <>
-                <Eye className="w-4 h-4 mr-2" />
-                Copiato!
-              </>
-            ) : (
-              <>
+        {/* Social Share Actions */}
+        <div className="absolute top-8 right-8 z-20">
+          <div className="flex items-center gap-3">
+            {/* Dropdown per condivisione social */}
+            <div className="relative group">
+              <Button
+                variant="ghost"
+                className="bg-black/20 backdrop-blur-md hover:bg-black/40 border border-white/20 text-white hover:text-white transition-all duration-300"
+              >
                 <Share2 className="w-4 h-4 mr-2" />
                 Condividi
-              </>
+              </Button>
+
+              {/* Menu a tendina social */}
+              <div className="absolute right-0 top-12 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <div className="bg-black/90 backdrop-blur-md rounded-lg border border-white/20 p-2 min-w-[200px] shadow-2xl">
+                  <div className="flex flex-col gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')}
+                      className="justify-start text-white hover:bg-blue-600/20 hover:text-blue-400"
+                    >
+                      <Facebook className="w-4 h-4 mr-2" />
+                      Facebook
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(project.titolo)}`, '_blank')}
+                      className="justify-start text-white hover:bg-sky-600/20 hover:text-sky-400"
+                    >
+                      <Twitter className="w-4 h-4 mr-2" />
+                      Twitter
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')}
+                      className="justify-start text-white hover:bg-blue-700/20 hover:text-blue-500"
+                    >
+                      <Linkedin className="w-4 h-4 mr-2" />
+                      LinkedIn
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(project.titolo + ' - ' + window.location.href)}`, '_blank')}
+                      className="justify-start text-white hover:bg-green-600/20 hover:text-green-400"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      WhatsApp
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleShare}
+                      className="justify-start text-white hover:bg-gray-600/20 hover:text-gray-300"
+                    >
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copia link
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {project.youtube_url && (
+              <Button
+                variant="ghost"
+                asChild
+                className="bg-red-600/80 backdrop-blur-md text-white hover:bg-red-600 border border-red-600/50 transition-all duration-300"
+              >
+                <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
+                  <Play className="w-4 h-4 mr-2" />
+                  Video
+                </a>
+              </Button>
             )}
-          </Button>
-          {project.youtube_url && (
-            <Button
-              variant="ghost"
-              asChild
-              className="bg-red-600/80 text-white hover:bg-red-600 border border-red-600/50"
-            >
-              <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
-                <Play className="w-4 h-4 mr-2" />
-                Video
-              </a>
-            </Button>
-          )}
+          </div>
         </div>
 
         {/* Contenuto header */}
