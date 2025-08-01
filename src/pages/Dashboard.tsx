@@ -633,7 +633,14 @@ const Dashboard = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {blogPosts.filter(p => p.pubblicato === true).map((post) => (
                       <div key={post.id} className="rounded-xl border border-border/50 bg-white/90 dark:bg-card/90 shadow-lg p-4 flex flex-col min-h-[320px] relative group">
-                        {post.copertina_url && <img src={post.copertina_url} alt="copertina" className="w-full h-40 object-cover rounded mb-2" />}
+                        {post.copertina_url && (
+                          <ImageWithFallback
+                            src={post.copertina_url}
+                            alt="copertina"
+                            className="w-full h-40 object-cover rounded mb-2"
+                            fallbackClassName="w-full h-40 rounded mb-2"
+                          />
+                        )}
                         <h3 className="font-bold text-lg mb-1 line-clamp-2">{post.titolo}</h3>
                         <div className="text-xs text-muted-foreground mb-1">{post.categoria} • {post.autore}</div>
                         <div className="text-sm mb-2 line-clamp-3">{post.excerpt}</div>
