@@ -646,7 +646,14 @@ const Dashboard = () => {
                         <div className="text-sm mb-2 line-clamp-3">{post.excerpt}</div>
                         <div className="flex flex-wrap gap-1 mt-auto">
                           {Array.isArray(post.immagini) && post.immagini.map((img: string, i: number) => (
-                            <img key={i} src={img} alt="img" className="w-10 h-10 object-cover rounded border" />
+                            <ImageWithFallback
+                              key={i}
+                              src={img}
+                              alt="img"
+                              className="w-10 h-10 object-cover rounded border"
+                              fallbackClassName="w-10 h-10 rounded border"
+                              showError={false}
+                            />
                           ))}
                         </div>
                         <div className="text-xs text-muted-foreground mt-2">Creato il {new Date(post.created_at).toLocaleDateString('it-IT')}</div>
