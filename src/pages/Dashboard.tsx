@@ -612,6 +612,7 @@ const Dashboard = () => {
             <TabButton id="create" label="Nuovo Articolo" icon={Plus} />
             <TabButton id="create-project" label="Nuovo Progetto" icon={FolderOpen} />
             <TabButton id="richieste-call-idee" label="Richieste Call Idee" icon={Eye} />
+            <TabButton id="diagnostics" label="Diagnostica Immagini" icon={TrendingUp} />
         {activeTab === "content" && (
           <div className="space-y-8">
             {/* Articoli Pubblicati */}
