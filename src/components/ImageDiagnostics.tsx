@@ -23,6 +23,7 @@ import {
   formatBytes,
   validateAndFixImageUrl
 } from "@/lib/imageUtils";
+import { toast } from "@/hooks/use-toast";
 
 interface DiagnosticResult {
   test: string;
