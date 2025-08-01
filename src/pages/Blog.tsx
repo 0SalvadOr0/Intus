@@ -306,10 +306,12 @@ const Blog = () => {
             <div className="relative">
               {currentPost.copertina_url ? (
                 <div className="relative h-64 md:h-80 overflow-hidden">
-                  <img
+                  <ImageWithFallback
                     src={currentPost.copertina_url}
                     alt={currentPost.titolo}
                     className="w-full h-full object-cover"
+                    fallbackClassName="w-full h-full bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20 flex items-center justify-center"
+                    showError={false}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 </div>
