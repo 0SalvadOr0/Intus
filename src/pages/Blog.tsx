@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { Calendar, User, Search, Filter, ArrowRight, X, Clock, Share2, Check, Copy } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { BlogCardSkeleton } from "@/components/ui/loading-skeleton";
