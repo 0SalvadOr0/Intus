@@ -18,7 +18,12 @@ import {
   ChevronRight,
   X,
   Eye,
-  Clock
+  Clock,
+  Facebook,
+  Twitter,
+  Linkedin,
+  MessageCircle,
+  Copy
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
