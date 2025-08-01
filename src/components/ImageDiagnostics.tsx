@@ -375,23 +375,46 @@ const ImageDiagnostics = () => {
           Questo strumento verifica la configurazione delle immagini per blog e progetti.
         </div>
 
-        <Button 
-          onClick={runDiagnostics} 
-          disabled={isRunning}
-          className="w-full"
-        >
-          {isRunning ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Esecuzione diagnostica...
-            </>
-          ) : (
-            <>
-              <Shield className="w-4 h-4 mr-2" />
-              Avvia Diagnostica
-            </>
+        <div className="flex gap-2">
+          <Button
+            onClick={runDiagnostics}
+            disabled={isRunning || isFixing}
+            className="flex-1"
+          >
+            {isRunning ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Esecuzione diagnostica...
+              </>
+            ) : (
+              <>
+                <Shield className="w-4 h-4 mr-2" />
+                Avvia Diagnostica
+              </>
+            )}
+          </Button>
+
+          {results.some(r => r.status === 'error' || r.status === 'warning') && (
+            <Button
+              onClick={autoFixIssues}
+              disabled={isRunning || isFixing}
+              variant="outline"
+              className="flex-1"
+            >
+              {isFixing ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Fix in corso...
+                </>
+              ) : (
+                <>
+                  <Wrench className="w-4 h-4 mr-2" />
+                  Fix Automatico
+                </>
+              )}
+            </Button>
           )}
-        </Button>
+        </div>
 
         {results.length > 0 && (
           <div className="space-y-4">
