@@ -252,7 +252,11 @@ export default {
 				'color-fade': 'color-fade 3s ease-in-out infinite',
 				'white-overlay': 'white-overlay 3s ease-in-out infinite',
 				'logo-fade-out': 'logo-fade-out 1.5s ease-in-out infinite',
-				'logo-fade-in': 'logo-fade-in 1.5s ease-in-out infinite'
+				'logo-fade-in': 'logo-fade-in 1.5s ease-in-out infinite',
+				'spin-slow': 'spin-slow 8s linear infinite',
+				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+				'gradient-shift': 'gradient-shift 6s ease-in-out infinite',
+				'reveal': 'reveal 0.8s ease-out forwards'
 			}
 		}
 	},
