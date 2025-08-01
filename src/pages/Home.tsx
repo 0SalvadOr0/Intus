@@ -8,6 +8,43 @@ import { useState, useEffect } from "react";
 
 
 const Home = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [counters, setCounters] = useState({ projects: 0, years: 0, people: 0 });
+
+  // Animation hook
+  useEffect(() => {
+    setIsVisible(true);
+
+    // Animated counters
+    const animateCounters = () => {
+      const targets = { projects: 50, years: 27, people: 1000 };
+      const duration = 2000;
+      const steps = 60;
+      const stepTime = duration / steps;
+
+      let step = 0;
+      const timer = setInterval(() => {
+        step++;
+        const progress = step / steps;
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+
+        setCounters({
+          projects: Math.floor(targets.projects * easeOut),
+          years: Math.floor(targets.years * easeOut),
+          people: Math.floor(targets.people * easeOut)
+        });
+
+        if (step >= steps) {
+          clearInterval(timer);
+          setCounters(targets);
+        }
+      }, stepTime);
+    };
+
+    // Start counters after a delay
+    setTimeout(animateCounters, 1000);
+  }, []);
+
   const principles = [
     {
       icon: Users,
