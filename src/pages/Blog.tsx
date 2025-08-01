@@ -47,34 +47,55 @@ const Blog = () => {
       url: window.location.href + `?post=${post.id}`
     };
 
-    try {
-      // 📱 Native Web Share API (mobile/modern browsers)
-      if (navigator.share) {
-        await navigator.share(shareData);
-        toast({
-          title: "Condivisione completata! ✅",
-          description: "L'articolo è stato condiviso con successo."
-        });
-      } else {
-        // 📋 Fallback: Copy to clipboard
+    const fallbackToClipboard = async () => {
+      try {
         await navigator.clipboard.writeText(`${post.titolo}\n\n${post.excerpt}\n\n${shareData.url}`);
         setCopySuccess(true);
         toast({
           title: "Link copiato! 📋",
           description: "Il link dell'articolo è stato copiato negli appunti."
         });
-        
-        // Reset copy success state after 2 seconds
         setTimeout(() => setCopySuccess(false), 2000);
+      } catch (clipboardError) {
+        console.error('Errore copia negli appunti:', clipboardError);
+        toast({
+          title: "Errore nella condivisione ❌",
+          description: "Impossibile condividere o copiare il link.",
+          variant: "destructive"
+        });
       }
-    } catch (error) {
-      console.error('Errore nella condivisione:', error);
-      toast({
-        title: "Errore nella condivisione ❌",
-        description: "Si è verificato un problema durante la condivisione.",
-        variant: "destructive"
-      });
+    };
+
+    // Verifica supporto Web Share API e contesto sicuro
+    if (navigator.share && window.isSecureContext) {
+      try {
+        await navigator.share(shareData);
+        toast({
+          title: "Condivisione completata! ✅",
+          description: "L'articolo è stato condiviso con successo."
+        });
+        return;
+      } catch (error) {
+        console.error('Errore Web Share API:', error);
+
+        // Se Web Share fallisce (NotAllowedError, ecc.), usa fallback
+        if (error instanceof Error &&
+            (error.name === 'NotAllowedError' ||
+             error.name === 'AbortError' ||
+             error.message.includes('Permission denied'))) {
+          console.log('Web Share non disponibile, uso fallback clipboard');
+          await fallbackToClipboard();
+          return;
+        }
+
+        // Per altri tipi di errore, prova comunque il fallback
+        await fallbackToClipboard();
+        return;
+      }
     }
+
+    // Fallback diretto se Web Share non è supportato
+    await fallbackToClipboard();
   };
 
   // 🗂️ Enhanced data fetching with content field
