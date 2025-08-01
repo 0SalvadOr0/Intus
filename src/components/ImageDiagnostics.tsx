@@ -299,6 +299,42 @@ const ImageDiagnostics = () => {
     setIsRunning(false);
   };
 
+  const autoFixIssues = async () => {
+    setIsFixing(true);
+
+    try {
+      // Prova a creare i bucket mancanti
+      const fixResult = await createMissingBuckets();
+
+      if (fixResult.success) {
+        toast({
+          title: "Fix completato! ✅",
+          description: `Bucket creati: ${fixResult.created.join(', ') || 'nessuno'}`
+        });
+      } else {
+        toast({
+          title: "Fix parziale ⚠️",
+          description: `Errori: ${fixResult.errors.join(', ')}`,
+          variant: "destructive"
+        });
+      }
+
+      // Ri-esegui la diagnostica
+      setTimeout(() => {
+        runDiagnostics();
+      }, 1000);
+
+    } catch (error) {
+      toast({
+        title: "Errore durante il fix ❌",
+        description: error instanceof Error ? error.message : 'Errore sconosciuto',
+        variant: "destructive"
+      });
+    }
+
+    setIsFixing(false);
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'success':
