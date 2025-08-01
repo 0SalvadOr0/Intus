@@ -113,14 +113,30 @@ const LeNostreAttivita = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background pt-24">
       {/* Header */}
-      <section className="py-12 px-4">
-        <div className="container mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
-            Le Nostre <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Attività</span>
+      <section className="relative py-20 px-4 overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 left-20 w-32 h-32 bg-primary rounded-full animate-float" style={{animationDelay: '0s'}}></div>
+          <div className="absolute bottom-20 right-10 w-24 h-24 bg-accent rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+          <div className="absolute top-40 right-40 w-16 h-16 bg-heart rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+        </div>
+
+        <div className="container mx-auto text-center relative">
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 animate-fade-in-up">
+            Le Nostre <span className="bg-gradient-to-r from-primary via-accent to-heart bg-clip-text text-transparent animate-gradient-shift bg-300%">Attività</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed animate-slide-in-up" style={{animationDelay: '0.3s'}}>
             Scopri i progetti che abbiamo realizzato per la comunità. Ogni iniziativa nasce dall'ascolto delle esigenze del territorio e dalla partecipazione attiva dei cittadini.
           </p>
+
+          {/* Floating accent elements */}
+          <div className="mt-8 flex justify-center items-center gap-6 animate-fade-in-up" style={{animationDelay: '0.5s'}}>
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+            <div className="w-3 h-3 bg-accent rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-accent to-transparent"></div>
+            <div className="w-2 h-2 bg-heart rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+          </div>
         </div>
       </section>
 
