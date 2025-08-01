@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { CalendarDays, MapPin, Users, ExternalLink, Play, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -310,7 +311,7 @@ const LeNostreAttivita = () => {
               <Link to="/chi-siamo">Contattaci</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/blog">Scopri di Più</Link>
+              <Link to="/blog">Scopri di Pi��</Link>
             </Button>
           </div>
         </div>
