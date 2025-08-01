@@ -71,49 +71,48 @@ const ImageDiagnostics = () => {
       });
     }
 
-    // Test 2: Verifica bucket blog-images
+    // Test 2: Verifica bucket con utility
     try {
-      const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
-      
-      if (bucketsError) {
+      const bucketCheck = await checkBucketsExist();
+
+      if (bucketCheck.error) {
         diagnostics.push({
           test: "Bucket Storage",
           status: 'error',
-          message: "Impossibile listare i bucket",
-          details: bucketsError.message
+          message: "Errore verifica bucket",
+          details: bucketCheck.error
+        });
+      } else if (!bucketCheck.blogImages && !bucketCheck.projectImages) {
+        diagnostics.push({
+          test: "Bucket Storage",
+          status: 'error',
+          message: "Bucket 'blog-images' e 'project-images' non trovati",
+          details: "I bucket devono essere creati in Supabase Storage"
+        });
+      } else if (!bucketCheck.blogImages) {
+        diagnostics.push({
+          test: "Bucket Storage",
+          status: 'warning',
+          message: "Bucket 'blog-images' non trovato",
+          details: "Solo 'project-images' è disponibile"
+        });
+      } else if (!bucketCheck.projectImages) {
+        diagnostics.push({
+          test: "Bucket Storage",
+          status: 'warning',
+          message: "Bucket 'project-images' non trovato",
+          details: "Solo 'blog-images' è disponibile"
         });
       } else {
-        const blogImagesBucket = buckets?.find(b => b.name === 'blog-images');
-        const projectImagesBucket = buckets?.find(b => b.name === 'project-images');
-        
-        if (!blogImagesBucket && !projectImagesBucket) {
-          diagnostics.push({
-            test: "Bucket Storage",
-            status: 'error',
-            message: "Bucket 'blog-images' e 'project-images' non trovati",
-            details: "I bucket devono essere creati in Supabase Storage"
-          });
-        } else if (!blogImagesBucket) {
-          diagnostics.push({
-            test: "Bucket Storage",
-            status: 'warning',
-            message: "Bucket 'blog-images' non trovato",
-            details: "Solo 'project-images' è disponibile"
-          });
-        } else if (!projectImagesBucket) {
-          diagnostics.push({
-            test: "Bucket Storage",
-            status: 'warning',
-            message: "Bucket 'project-images' non trovato",
-            details: "Solo 'blog-images' è disponibile"
-          });
-        } else {
-          diagnostics.push({
-            test: "Bucket Storage",
-            status: 'success',
-            message: "Bucket 'blog-images' e 'project-images' trovati"
-          });
-        }
+        diagnostics.push({
+          test: "Bucket Storage",
+          status: 'success',
+          message: "Bucket 'blog-images' e 'project-images' trovati"
+        });
+
+        // Ottieni statistiche bucket
+        const stats = await getBucketStats();
+        setBucketStats(stats);
       }
     } catch (error) {
       diagnostics.push({
