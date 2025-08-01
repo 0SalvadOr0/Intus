@@ -333,45 +333,47 @@ const ProjectViewer = () => {
         </div>
 
         {/* Contenuto header */}
-        <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 text-white">
-          <div className="max-w-4xl">
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <Badge className={`${getStatusColor(project.status)} shadow-lg`}>
-                {getStatusLabel(project.status)}
-              </Badge>
-              <Badge variant="outline" className="bg-background/20 backdrop-blur-sm text-white border-white/30">
-                {project.categoria}
-              </Badge>
-            </div>
-            
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-fade-in-up">
-              {project.titolo}
-            </h1>
-            
-            <p className="text-xl md:text-2xl opacity-90 mb-6 max-w-3xl animate-fade-in-up" style={{animationDelay: '0.1s'}}>
-              {project.descrizione_breve}
-            </p>
+        <div className="absolute inset-0 flex items-end">
+          <div className="w-full p-8 md:p-16 text-white">
+            <div className="max-w-6xl mx-auto">
+              <div className="flex flex-wrap items-center gap-4 mb-6 animate-slide-in-left">
+                <Badge className={`${getStatusColor(project.status)} shadow-lg backdrop-blur-sm border-0 text-sm px-3 py-1`}>
+                  {getStatusLabel(project.status)}
+                </Badge>
+                <Badge variant="outline" className="bg-white/10 backdrop-blur-sm text-white border-white/30 text-sm px-3 py-1">
+                  {project.categoria}
+                </Badge>
+              </div>
 
-            <div className="flex flex-wrap items-center gap-6 text-lg animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              {project.data_inizio && (
-                <div className="flex items-center">
-                  <Calendar className="w-5 h-5 mr-2" />
-                  <span>{new Date(project.data_inizio).toLocaleDateString('it-IT', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}</span>
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 animate-fade-in-up leading-none tracking-tight">
+                {project.titolo}
+              </h1>
+
+              <p className="text-xl md:text-2xl lg:text-3xl opacity-90 mb-8 max-w-4xl leading-relaxed animate-fade-in-up font-light" style={{animationDelay: '0.2s'}}>
+                {project.descrizione_breve}
+              </p>
+
+              <div className="flex flex-wrap items-center gap-8 text-lg md:text-xl animate-slide-in-right" style={{animationDelay: '0.4s'}}>
+                {project.data_inizio && (
+                  <div className="flex items-center bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+                    <Calendar className="w-5 h-5 mr-3 text-primary" />
+                    <span className="font-medium">{new Date(project.data_inizio).toLocaleDateString('it-IT', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}</span>
+                  </div>
+                )}
+                {project.luoghi && project.luoghi.length > 0 && (
+                  <div className="flex items-center bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+                    <MapPin className="w-5 h-5 mr-3 text-accent" />
+                    <span className="font-medium">{project.luoghi.join(', ')}</span>
+                  </div>
+                )}
+                <div className="flex items-center bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+                  <Users className="w-5 h-5 mr-3 text-heart" />
+                  <span className="font-medium">{project.numero_partecipanti} partecipanti</span>
                 </div>
-              )}
-              {project.luoghi && project.luoghi.length > 0 && (
-                <div className="flex items-center">
-                  <MapPin className="w-5 h-5 mr-2" />
-                  <span>{project.luoghi.join(', ')}</span>
-                </div>
-              )}
-              <div className="flex items-center">
-                <Users className="w-5 h-5 mr-2" />
-                <span>{project.numero_partecipanti} partecipanti</span>
               </div>
             </div>
           </div>
