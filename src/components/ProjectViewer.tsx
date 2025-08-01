@@ -191,14 +191,13 @@ const ProjectViewer = () => {
       <section className="relative h-[70vh] overflow-hidden">
         {coverImage ? (
           <div className="absolute inset-0">
-            <img
+            <ImageWithFallback
               src={coverImage}
               alt={project.titolo}
               className="w-full h-full object-cover"
-              onError={(e) => {
-                console.error('Errore caricamento immagine copertina:', coverImage);
-                e.currentTarget.style.display = 'none';
-              }}
+              fallbackClassName="w-full h-full"
+              showError={false}
+              onError={(url) => console.error('Errore caricamento immagine copertina:', url)}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
           </div>
