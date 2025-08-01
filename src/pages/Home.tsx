@@ -66,27 +66,66 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       {/* Hero Section */}
-      <section className="relative pt-24 md:pt-32 pb-16 md:pb-20 px-4">
-        <div className="container mx-auto text-center">
-          <div className="mb-8 animate-fade-in-up">
-            <div className="flex justify-center mb-6 md:mb-8">
-              <AnimatedIntusLogo className="w-64 h-auto md:w-80 lg:w-96" />
+      <section className="relative pt-32 md:pt-40 pb-20 md:pb-32 px-4 overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-10 w-20 h-20 bg-primary/20 rounded-full animate-float" style={{animationDelay: '0s'}}></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-accent/20 rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-40 left-20 w-12 h-12 bg-heart/20 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-20 right-10 w-24 h-24 bg-primary/10 rounded-full animate-float" style={{animationDelay: '0.5s'}}></div>
+        </div>
+
+        <div className="container mx-auto text-center relative">
+          <div className="mb-12 md:mb-16">
+            <div className="flex justify-center mb-8 md:mb-12">
+              <div className="relative">
+                <AnimatedIntusLogo className="w-72 h-auto md:w-96 lg:w-[28rem] animate-fade-in-up" />
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-full blur-2xl animate-pulse opacity-30"></div>
+              </div>
             </div>
-            <div className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed px-4 space-y-4">
-              <p>
-                Fondata nel <strong className="text-primary">1997</strong> durante la <em>"Primavera Corleonese"</em>, promuove la <strong className="text-accent">legalità</strong>, i <strong className="text-primary">diritti umani</strong> e la <strong className="text-accent">cittadinanza attiva</strong>.
+
+            <div className={`text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-5xl mx-auto leading-relaxed px-4 space-y-6 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} style={{transitionDelay: '0.3s'}}>
+              <p className="animate-slide-in-left" style={{animationDelay: '0.5s'}}>
+                Fondata nel <strong className="text-primary bg-primary/10 px-2 py-1 rounded-lg">1997</strong> durante la <em className="text-accent">"Primavera Corleonese"</em>, promuove la <strong className="text-accent bg-accent/10 px-2 py-1 rounded-lg">legalità</strong>, i <strong className="text-primary">diritti umani</strong> e la <strong className="text-heart bg-heart/10 px-2 py-1 rounded-lg">cittadinanza attiva</strong>.
               </p>
-              <p>
+              <p className="animate-slide-in-right" style={{animationDelay: '0.7s'}}>
                 L'associazione forma educatori e sostiene progetti giovanili, sociali ed ecologici a livello locale ed europeo. È attiva nel <strong className="text-primary">turismo responsabile</strong> e nella valorizzazione della <strong className="text-accent">memoria antimafia</strong> attraverso l'arte.
               </p>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up px-4" style={{animationDelay: '0.2s'}}>
-            <Button asChild size="lg" className="text-base md:text-lg px-6 md:px-8 py-4 md:py-6 shadow-elegant hover:shadow-2xl transition-all duration-300">
-              <Link to="/chi-siamo">Scopri Chi Siamo</Link>
+
+          {/* Stats Section */}
+          <div className="mb-12 md:mb-16">
+            <div className="grid grid-cols-3 gap-8 md:gap-16 max-w-4xl mx-auto">
+              <div className="animate-bounce-in" style={{animationDelay: '1s'}}>
+                <div className="text-4xl md:text-6xl font-bold text-primary mb-2">{counters.projects}+</div>
+                <div className="text-sm md:text-base text-muted-foreground font-medium">Progetti Realizzati</div>
+              </div>
+              <div className="animate-bounce-in" style={{animationDelay: '1.2s'}}>
+                <div className="text-4xl md:text-6xl font-bold text-accent mb-2">{counters.years}</div>
+                <div className="text-sm md:text-base text-muted-foreground font-medium">Anni di Esperienza</div>
+              </div>
+              <div className="animate-bounce-in" style={{animationDelay: '1.4s'}}>
+                <div className="text-4xl md:text-6xl font-bold text-heart mb-2">{counters.people}+</div>
+                <div className="text-sm md:text-base text-muted-foreground font-medium">Persone Coinvolte</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-6 justify-center px-4 animate-fade-in-up" style={{animationDelay: '1.6s'}}>
+            <Button asChild size="lg" className="group text-base md:text-lg px-8 md:px-12 py-6 md:py-8 shadow-2xl hover:shadow-primary/25 transition-all duration-500 hover:scale-105 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary">
+              <Link to="/chi-siamo">
+                <Sparkles className="w-5 h-5 mr-2 group-hover:animate-spin" />
+                Scopri Chi Siamo
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
+              </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-base md:text-lg px-6 md:px-8 py-4 md:py-6 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-              <Link to="/le-nostre-attivita">Le Nostre Attività</Link>
+            <Button asChild variant="outline" size="lg" className="group text-base md:text-lg px-8 md:px-12 py-6 md:py-8 border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-500 hover:scale-105 hover:shadow-xl">
+              <Link to="/le-nostre-attivita">
+                <Target className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+                Le Nostre Attività
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
+              </Link>
             </Button>
           </div>
         </div>
