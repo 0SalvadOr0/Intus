@@ -4,13 +4,14 @@ import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { 
-  ArrowLeft, 
-  Calendar, 
-  MapPin, 
-  Users, 
-  Play, 
-  Share2, 
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import {
+  ArrowLeft,
+  Calendar,
+  MapPin,
+  Users,
+  Play,
+  Share2,
   ExternalLink,
   ChevronLeft,
   ChevronRight,
