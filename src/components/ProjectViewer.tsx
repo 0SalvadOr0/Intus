@@ -447,6 +447,9 @@ const ProjectViewer = () => {
       {/* Modal per immagini */}
       <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
         <DialogContent className="max-w-7xl w-full h-full max-h-[90vh] p-0 gap-0 bg-black/95">
+          <VisuallyHidden>
+            <DialogTitle>Visualizzazione immagine progetto</DialogTitle>
+          </VisuallyHidden>
           <div className="relative w-full h-full flex items-center justify-center">
             {/* Close button */}
             <Button
