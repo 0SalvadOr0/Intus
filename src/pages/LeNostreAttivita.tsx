@@ -202,10 +202,12 @@ const LeNostreAttivita = () => {
                 {/* Project Image */}
                 <div className="h-48 relative overflow-hidden">
                   {project.immagine_copertina || (project.immagini && project.immagini[0]) ? (
-                    <img
+                    <ImageWithFallback
                       src={project.immagine_copertina || project.immagini[0]}
                       alt={project.titolo}
                       className="w-full h-full object-cover"
+                      fallbackClassName="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20"
+                      showError={false}
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20" />
@@ -311,7 +313,7 @@ const LeNostreAttivita = () => {
               <Link to="/chi-siamo">Contattaci</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/blog">Scopri di Pi��</Link>
+              <Link to="/blog">Scopri di Più</Link>
             </Button>
           </div>
         </div>
