@@ -111,14 +111,8 @@ const ProjectViewer = () => {
       url: window.location.href
     };
 
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-        toast({
-          title: "Condivisione completata! ✅",
-          description: "Il progetto è stato condiviso con successo."
-        });
-      } else {
+    const fallbackToClipboard = async () => {
+      try {
         await navigator.clipboard.writeText(`${project.titolo}\n\n${project.descrizione_breve}\n\n${window.location.href}`);
         setCopySuccess(true);
         toast({
@@ -126,15 +120,46 @@ const ProjectViewer = () => {
           description: "Il link del progetto è stato copiato negli appunti."
         });
         setTimeout(() => setCopySuccess(false), 2000);
+      } catch (clipboardError) {
+        console.error('Errore copia negli appunti:', clipboardError);
+        toast({
+          title: "Errore nella condivisione ❌",
+          description: "Impossibile condividere o copiare il link.",
+          variant: "destructive"
+        });
       }
-    } catch (error) {
-      console.error('Errore nella condivisione:', error);
-      toast({
-        title: "Errore nella condivisione ❌",
-        description: "Si è verificato un problema durante la condivisione.",
-        variant: "destructive"
-      });
+    };
+
+    // Verifica supporto Web Share API e contesto sicuro
+    if (navigator.share && window.isSecureContext) {
+      try {
+        await navigator.share(shareData);
+        toast({
+          title: "Condivisione completata! ✅",
+          description: "Il progetto è stato condiviso con successo."
+        });
+        return;
+      } catch (error) {
+        console.error('Errore Web Share API:', error);
+
+        // Se Web Share fallisce (NotAllowedError, ecc.), usa fallback
+        if (error instanceof Error &&
+            (error.name === 'NotAllowedError' ||
+             error.name === 'AbortError' ||
+             error.message.includes('Permission denied'))) {
+          console.log('Web Share non disponibile, uso fallback clipboard');
+          await fallbackToClipboard();
+          return;
+        }
+
+        // Per altri tipi di errore, prova comunque il fallback
+        await fallbackToClipboard();
+        return;
+      }
     }
+
+    // Fallback diretto se Web Share non è supportato
+    await fallbackToClipboard();
   };
 
   const nextImage = () => {
