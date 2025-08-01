@@ -480,13 +480,12 @@ const ProjectViewer = () => {
             )}
 
             {/* Image */}
-            <img
+            <ImageWithFallback
               src={projectImages[selectedImageIndex]}
               alt={`Immagine ${selectedImageIndex + 1} del progetto`}
               className="max-w-full max-h-full object-contain"
-              onError={(e) => {
-                console.error('Errore caricamento immagine modal:', projectImages[selectedImageIndex]);
-              }}
+              fallbackClassName="max-w-full max-h-full flex items-center justify-center"
+              onError={(url) => console.error('Errore caricamento immagine modal:', url)}
             />
 
             {/* Image counter */}
