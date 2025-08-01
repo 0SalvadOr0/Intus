@@ -269,46 +269,15 @@ const LeNostreAttivita = () => {
                         </a>
                       </Button>
                     )}
-                    <Dialog open={openProjectId === project.id} onOpenChange={(open) => setOpenProjectId(open ? project.id : null)}>
-                      <Button size="sm" variant="outline" className="flex-1" onClick={() => setOpenProjectId(project.id)}>
-                        <Eye className="w-3 h-3 mr-1" />
-                        Dettagli
-                      </Button>
-                      <DialogContent className="max-w-lg">
-                        <DialogHeader>
-                          <DialogTitle>{project.titolo}</DialogTitle>
-                          <DialogDescription>{project.categoria}</DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <p>{project.contenuto || project.descrizione_breve}</p>
-                          <div className="flex flex-col gap-2 text-sm">
-                            <div className="flex items-center text-muted-foreground">
-                              <CalendarDays className="w-4 h-4 mr-2 text-primary" />
-                              {project.data_inizio ? new Date(project.data_inizio).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Data non specificata'}
-                            </div>
-                            <div className="flex items-center text-muted-foreground">
-                              <MapPin className="w-4 h-4 mr-2 text-primary" />
-                              {project.luoghi && project.luoghi.length > 0 ? project.luoghi.join(', ') : 'Luogo da definire'}
-                            </div>
-                            <div className="flex items-center text-muted-foreground">
-                              <Users className="w-4 h-4 mr-2 text-primary" />
-                              {project.numero_partecipanti} partecipanti
-                            </div>
-                            <div className="flex items-center text-muted-foreground">
-                              <Badge className={`${getStatusColor(project.status)} border-0`}>{getStatusLabel(project.status)}</Badge>
-                            </div>
-                          </div>
-                          {project.youtube_url && (
-                            <a href={project.youtube_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-red-600 hover:underline">
-                              <Play className="w-4 h-4" /> Guarda il video
-                            </a>
-                          )}
-                        </div>
-                        <DialogClose asChild>
-                          <Button variant="ghost" className="mt-4 w-full">Chiudi</Button>
-                        </DialogClose>
-                      </DialogContent>
-                    </Dialog>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => window.location.href = `/progetto/${project.id}`}
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
+                      Visualizza
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
