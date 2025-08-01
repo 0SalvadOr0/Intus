@@ -34,7 +34,9 @@ interface DiagnosticResult {
 const ImageDiagnostics = () => {
   const [results, setResults] = useState<DiagnosticResult[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+  const [isFixing, setIsFixing] = useState(false);
   const [testImages, setTestImages] = useState<string[]>([]);
+  const [bucketStats, setBucketStats] = useState<any>(null);
 
   const runDiagnostics = async () => {
     setIsRunning(true);
