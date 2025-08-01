@@ -141,17 +141,27 @@ const LeNostreAttivita = () => {
       </section>
 
       {/* Category Filters */}
-      <section className="px-4 mb-8">
+      <section className="px-4 mb-12">
         <div className="container mx-auto">
-          <div className="flex flex-wrap gap-3 justify-center animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-            {categories.map((category) => (
+          <div className="flex flex-wrap gap-4 justify-center animate-fade-in-up" style={{animationDelay: '0.7s'}}>
+            {categories.map((category, index) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category)}
-                className="transition-all duration-300 hover:scale-105"
+                className={`group relative overflow-hidden transition-all duration-500 hover:scale-110 hover:shadow-xl ${
+                  selectedCategory === category
+                    ? "bg-gradient-to-r from-primary to-accent text-white shadow-lg animate-pulse-glow"
+                    : "hover:bg-primary hover:text-primary-foreground border-2"
+                }`}
+                style={{animationDelay: `${0.8 + index * 0.1}s`}}
               >
-                {category === "all" ? "Tutte le Categorie" : category}
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+
+                <span className="relative z-10">
+                  {category === "all" ? "Tutte le Categorie" : category}
+                </span>
               </Button>
             ))}
           </div>
