@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { CalendarDays, MapPin, Users, ExternalLink, Play, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+
 import { supabase } from "@/lib/supabaseClient";
 
 interface Project {
@@ -26,7 +27,6 @@ interface Project {
 
 const LeNostreAttivita = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [openProjectId, setOpenProjectId] = useState<number|null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -113,29 +113,55 @@ const LeNostreAttivita = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background pt-24">
       {/* Header */}
-      <section className="py-12 px-4">
-        <div className="container mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
-            Le Nostre <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Attività</span>
+      <section className="relative py-20 px-4 overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 left-20 w-32 h-32 bg-primary rounded-full animate-float" style={{animationDelay: '0s'}}></div>
+          <div className="absolute bottom-20 right-10 w-24 h-24 bg-accent rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+          <div className="absolute top-40 right-40 w-16 h-16 bg-heart rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+        </div>
+
+        <div className="container mx-auto text-center relative">
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 animate-fade-in-up">
+            Le Nostre <span className="bg-gradient-to-r from-primary via-accent to-heart bg-clip-text text-transparent animate-gradient-shift bg-300%">Attività</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed animate-slide-in-up" style={{animationDelay: '0.3s'}}>
             Scopri i progetti che abbiamo realizzato per la comunità. Ogni iniziativa nasce dall'ascolto delle esigenze del territorio e dalla partecipazione attiva dei cittadini.
           </p>
+
+          {/* Floating accent elements */}
+          <div className="mt-8 flex justify-center items-center gap-6 animate-fade-in-up" style={{animationDelay: '0.5s'}}>
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+            <div className="w-3 h-3 bg-accent rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-accent to-transparent"></div>
+            <div className="w-2 h-2 bg-heart rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+          </div>
         </div>
       </section>
 
       {/* Category Filters */}
-      <section className="px-4 mb-8">
+      <section className="px-4 mb-12">
         <div className="container mx-auto">
-          <div className="flex flex-wrap gap-3 justify-center animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-            {categories.map((category) => (
+          <div className="flex flex-wrap gap-4 justify-center animate-fade-in-up" style={{animationDelay: '0.7s'}}>
+            {categories.map((category, index) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category)}
-                className="transition-all duration-300 hover:scale-105"
+                className={`group relative overflow-hidden transition-all duration-500 hover:scale-110 hover:shadow-xl ${
+                  selectedCategory === category
+                    ? "bg-gradient-to-r from-primary to-accent text-white shadow-lg animate-pulse-glow"
+                    : "hover:bg-primary hover:text-primary-foreground border-2"
+                }`}
+                style={{animationDelay: `${0.8 + index * 0.1}s`}}
               >
-                {category === "all" ? "Tutte le Categorie" : category}
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+
+                <span className="relative z-10">
+                  {category === "all" ? "Tutte le Categorie" : category}
+                </span>
               </Button>
             ))}
           </div>
@@ -202,10 +228,12 @@ const LeNostreAttivita = () => {
                 {/* Project Image */}
                 <div className="h-48 relative overflow-hidden">
                   {project.immagine_copertina || (project.immagini && project.immagini[0]) ? (
-                    <img
+                    <ImageWithFallback
                       src={project.immagine_copertina || project.immagini[0]}
                       alt={project.titolo}
                       className="w-full h-full object-cover"
+                      fallbackClassName="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20"
+                      showError={false}
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20" />
@@ -269,46 +297,15 @@ const LeNostreAttivita = () => {
                         </a>
                       </Button>
                     )}
-                    <Dialog open={openProjectId === project.id} onOpenChange={(open) => setOpenProjectId(open ? project.id : null)}>
-                      <Button size="sm" variant="outline" className="flex-1" onClick={() => setOpenProjectId(project.id)}>
-                        <Eye className="w-3 h-3 mr-1" />
-                        Dettagli
-                      </Button>
-                      <DialogContent className="max-w-lg">
-                        <DialogHeader>
-                          <DialogTitle>{project.titolo}</DialogTitle>
-                          <DialogDescription>{project.categoria}</DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <p>{project.contenuto || project.descrizione_breve}</p>
-                          <div className="flex flex-col gap-2 text-sm">
-                            <div className="flex items-center text-muted-foreground">
-                              <CalendarDays className="w-4 h-4 mr-2 text-primary" />
-                              {project.data_inizio ? new Date(project.data_inizio).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Data non specificata'}
-                            </div>
-                            <div className="flex items-center text-muted-foreground">
-                              <MapPin className="w-4 h-4 mr-2 text-primary" />
-                              {project.luoghi && project.luoghi.length > 0 ? project.luoghi.join(', ') : 'Luogo da definire'}
-                            </div>
-                            <div className="flex items-center text-muted-foreground">
-                              <Users className="w-4 h-4 mr-2 text-primary" />
-                              {project.numero_partecipanti} partecipanti
-                            </div>
-                            <div className="flex items-center text-muted-foreground">
-                              <Badge className={`${getStatusColor(project.status)} border-0`}>{getStatusLabel(project.status)}</Badge>
-                            </div>
-                          </div>
-                          {project.youtube_url && (
-                            <a href={project.youtube_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-red-600 hover:underline">
-                              <Play className="w-4 h-4" /> Guarda il video
-                            </a>
-                          )}
-                        </div>
-                        <DialogClose asChild>
-                          <Button variant="ghost" className="mt-4 w-full">Chiudi</Button>
-                        </DialogClose>
-                      </DialogContent>
-                    </Dialog>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => window.location.href = `/progetto/${project.id}`}
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
+                      Visualizza
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

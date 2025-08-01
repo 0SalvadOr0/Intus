@@ -14,6 +14,7 @@ import PresentaProgetto from "./pages/PresentaProgetto";
 import Blog from "./pages/Blog";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import ProjectViewer from "./components/ProjectViewer";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/chi-siamo" element={<ChiSiamo />} />
             <Route path="/le-nostre-attivita" element={<LeNostreAttivita />} />
+            <Route path="/progetto/:id" element={<ProjectViewer />} />
             <Route path="/presenta-progetto" element={<PresentaProgetto />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/dashboard" element={

@@ -28,6 +28,8 @@ import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
 import BlogImageUploader from "@/components/BlogImageUploader";
 import ProjectImageUploader from "@/components/ProjectImageUploader";
 import { StorageStats } from "@/components/StorageStats";
+import ImageDiagnostics from "@/components/ImageDiagnostics";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect } from "react";
 
@@ -611,6 +613,7 @@ const Dashboard = () => {
             <TabButton id="create" label="Nuovo Articolo" icon={Plus} />
             <TabButton id="create-project" label="Nuovo Progetto" icon={FolderOpen} />
             <TabButton id="richieste-call-idee" label="Richieste Call Idee" icon={Eye} />
+            <TabButton id="diagnostics" label="Diagnostica Immagini" icon={TrendingUp} />
         {activeTab === "content" && (
           <div className="space-y-8">
             {/* Articoli Pubblicati */}
@@ -630,13 +633,27 @@ const Dashboard = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {blogPosts.filter(p => p.pubblicato === true).map((post) => (
                       <div key={post.id} className="rounded-xl border border-border/50 bg-white/90 dark:bg-card/90 shadow-lg p-4 flex flex-col min-h-[320px] relative group">
-                        {post.copertina_url && <img src={post.copertina_url} alt="copertina" className="w-full h-40 object-cover rounded mb-2" />}
+                        {post.copertina_url && (
+                          <ImageWithFallback
+                            src={post.copertina_url}
+                            alt="copertina"
+                            className="w-full h-40 object-cover rounded mb-2"
+                            fallbackClassName="w-full h-40 rounded mb-2"
+                          />
+                        )}
                         <h3 className="font-bold text-lg mb-1 line-clamp-2">{post.titolo}</h3>
                         <div className="text-xs text-muted-foreground mb-1">{post.categoria} • {post.autore}</div>
                         <div className="text-sm mb-2 line-clamp-3">{post.excerpt}</div>
                         <div className="flex flex-wrap gap-1 mt-auto">
                           {Array.isArray(post.immagini) && post.immagini.map((img: string, i: number) => (
-                            <img key={i} src={img} alt="img" className="w-10 h-10 object-cover rounded border" />
+                            <ImageWithFallback
+                              key={i}
+                              src={img}
+                              alt="img"
+                              className="w-10 h-10 object-cover rounded border"
+                              fallbackClassName="w-10 h-10 rounded border"
+                              showError={false}
+                            />
                           ))}
                         </div>
                         <div className="text-xs text-muted-foreground mt-2">Creato il {new Date(post.created_at).toLocaleDateString('it-IT')}</div>
@@ -904,6 +921,11 @@ const Dashboard = () => {
         {activeTab === "richieste-call-idee" && (
           <RichiesteCallIdeeTab />
         )}
+        {activeTab === "diagnostics" && (
+          <div className="animate-fade-in-up">
+            <ImageDiagnostics />
+          </div>
+        )}
           </div>
         </div>
       </section>
@@ -1075,7 +1097,13 @@ const Dashboard = () => {
                 <BlogImageUploader onUpload={handlePostImageUpload} />
                 <div className="flex flex-wrap gap-2 mt-2">
                   {(getCurrentPost()?.immagini || []).map((img: string, i: number) => (
-                    <img key={i} src={img} alt="img" className="w-20 h-20 object-cover rounded border" />
+                    <ImageWithFallback
+                      key={i}
+                      src={img}
+                      alt="img"
+                      className="w-20 h-20 object-cover rounded border"
+                      fallbackClassName="w-20 h-20 rounded border"
+                    />
                   ))}
                 </div>
               </div>
