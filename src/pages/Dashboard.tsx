@@ -29,6 +29,7 @@ import BlogImageUploader from "@/components/BlogImageUploader";
 import ProjectImageUploader from "@/components/ProjectImageUploader";
 import { StorageStats } from "@/components/StorageStats";
 import ImageDiagnostics from "@/components/ImageDiagnostics";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect } from "react";
 
