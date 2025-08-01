@@ -205,10 +205,12 @@ const Blog = () => {
               >
                 <div className="relative overflow-hidden">
                   {post.copertina_url ? (
-                    <img
+                    <ImageWithFallback
                       src={post.copertina_url}
                       alt="copertina"
                       className="aspect-video w-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      fallbackClassName="aspect-video bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20 flex items-center justify-center group-hover:from-primary/30 group-hover:via-accent/30 group-hover:to-heart/30 transition-all duration-500"
+                      showError={false}
                     />
                   ) : (
                     <div className="aspect-video bg-gradient-to-br from-primary/20 via-accent/20 to-heart/20 flex items-center justify-center group-hover:from-primary/30 group-hover:via-accent/30 group-hover:to-heart/30 transition-all duration-500">
