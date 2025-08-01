@@ -14,6 +14,7 @@ import PresentaProgetto from "./pages/PresentaProgetto";
 import Blog from "./pages/Blog";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import ProjectViewer from "./components/ProjectViewer";
 
 const queryClient = new QueryClient();
 
