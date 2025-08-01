@@ -26,7 +26,6 @@ interface Project {
 
 const LeNostreAttivita = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [openProjectId, setOpenProjectId] = useState<number|null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
