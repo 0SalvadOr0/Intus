@@ -444,6 +444,34 @@ const ImageDiagnostics = () => {
               </Alert>
             ))}
 
+            {/* Statistiche bucket */}
+            {bucketStats && (
+              <Card className="bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Database className="w-5 h-5" />
+                    Statistiche Storage
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <strong>Blog Images:</strong>
+                    <ul className="ml-4 mt-1">
+                      <li>File: {bucketStats.blogImages.count}</li>
+                      <li>Dimensione: {formatBytes(bucketStats.blogImages.totalSize)}</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <strong>Project Images:</strong>
+                    <ul className="ml-4 mt-1">
+                      <li>File: {bucketStats.projectImages.count}</li>
+                      <li>Dimensione: {formatBytes(bucketStats.projectImages.totalSize)}</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Anteprima immagini test */}
             {testImages.length > 0 && (
               <div className="space-y-3">
