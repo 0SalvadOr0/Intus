@@ -318,23 +318,20 @@ const ProjectViewer = () => {
                   <h3 className="text-2xl font-bold">Galleria</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {projectImages.map((img, i) => (
-                      <div 
-                        key={i} 
+                      <div
+                        key={i}
                         className="group relative overflow-hidden rounded-lg aspect-square cursor-pointer"
                         onClick={() => {
                           setSelectedImageIndex(i);
                           setIsImageModalOpen(true);
                         }}
                       >
-                        <img
+                        <ImageWithFallback
                           src={img}
                           alt={`Immagine ${i + 1} del progetto`}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                          onError={(e) => {
-                            console.error('Errore caricamento immagine galleria:', img);
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.parentElement?.classList.add('bg-muted');
-                          }}
+                          fallbackClassName="w-full h-full"
+                          onError={(url) => console.error('Errore caricamento immagine galleria:', url)}
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
