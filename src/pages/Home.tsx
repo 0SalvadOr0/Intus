@@ -5,7 +5,7 @@ import { Users, MapPin, Zap, ArrowRight, Heart, Target, Award, Sparkles } from "
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PartnersStrip from "@/components/PartnersStrip";
-import ParallaxGlitchText from "@/components/ParallaxGlitchText";
+import ComicTextBubble from "@/components/ComicTextBubble";
 
 
 
@@ -87,7 +87,7 @@ const Home = () => {
             </div>
 
             <div className={`max-w-5xl mx-auto px-4 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} style={{transitionDelay: '0.3s'}}>
-              <ParallaxGlitchText className="min-h-[200px]" />
+              <ComicTextBubble className="min-h-[200px]" />
             </div>
           </div>
 
