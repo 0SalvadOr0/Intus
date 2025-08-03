@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Search, FileText, Users, FolderOpen, DollarSign, Home } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
@@ -49,6 +50,9 @@ export const SearchDialog = ({ trigger }: { trigger: React.ReactNode }) => {
         {trigger}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[550px] p-0">
+        <VisuallyHidden>
+          <DialogTitle>Ricerca nel sito</DialogTitle>
+        </VisuallyHidden>
         <div className="flex items-center border-b px-3">
           <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
           <Input

@@ -20,14 +20,18 @@ export const useImageCompression = () => {
   const [compressionProgress, setCompressionProgress] = useState<string>("");
 
   const compressImage = async (
-    file: File, 
+    file: File,
     options: CompressionOptions = {}
   ): Promise<CompressionResult> => {
+    // Determina il formato migliore basato sul file originale
+    const originalType = file.type;
+    const isTransparent = originalType === 'image/png' || originalType === 'image/webp';
+
     const defaultOptions = {
       maxSizeMB: 0.8,
       maxWidthOrHeight: 1920,
       useWebWorker: true,
-      fileType: 'image/jpeg',
+      fileType: isTransparent ? originalType : 'image/jpeg', // Preserva PNG per trasparenza
       quality: 0.85,
       ...options
     };
