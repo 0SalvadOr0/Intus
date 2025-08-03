@@ -28,7 +28,7 @@ import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
 import BlogImageUploader from "@/components/BlogImageUploader";
 import ProjectImageUploader from "@/components/ProjectImageUploader";
 import { StorageStats } from "@/components/StorageStats";
-import ImageDiagnostics from "@/components/ImageDiagnostics";
+
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect } from "react";
@@ -613,7 +613,7 @@ const Dashboard = () => {
             <TabButton id="create" label="Nuovo Articolo" icon={Plus} />
             <TabButton id="create-project" label="Nuovo Progetto" icon={FolderOpen} />
             <TabButton id="richieste-call-idee" label="Richieste Call Idee" icon={Eye} />
-            <TabButton id="diagnostics" label="Diagnostica Immagini" icon={TrendingUp} />
+
         {activeTab === "content" && (
           <div className="space-y-8">
             {/* Articoli Pubblicati */}
@@ -921,11 +921,7 @@ const Dashboard = () => {
         {activeTab === "richieste-call-idee" && (
           <RichiesteCallIdeeTab />
         )}
-        {activeTab === "diagnostics" && (
-          <div className="animate-fade-in-up">
-            <ImageDiagnostics />
-          </div>
-        )}
+
           </div>
         </div>
       </section>
