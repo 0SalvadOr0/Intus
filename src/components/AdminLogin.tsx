@@ -52,7 +52,7 @@ export const AdminLogin = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@intus.it"
+                placeholder="amminastratoremail@intus.it"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

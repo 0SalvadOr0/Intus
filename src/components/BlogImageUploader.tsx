@@ -48,6 +48,7 @@ const BlogImageUploader = ({ onUpload }: BlogImageUploaderProps) => {
         setUploading(false);
         return;
       }
+      
 
       const { data } = supabase.storage.from("blog-images").getPublicUrl(filePath);
       if (data?.publicUrl) {
