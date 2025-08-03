@@ -4,7 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Eye, 
   User, 
@@ -20,7 +24,17 @@ import {
   FileText,
   ChevronDown,
   ChevronUp,
-  Loader2
+  Loader2,
+  Star,
+  MessageSquare,
+  Edit,
+  Save,
+  X,
+  CheckCircle,
+  AlertCircle,
+  Clock,
+  ThumbsUp,
+  ThumbsDown
 } from "lucide-react";
 
 interface Richiesta {
@@ -64,6 +78,13 @@ interface Richiesta {
     rimborsoSpese?: number;
   };
   created_at: string;
+  valutazione?: {
+    punteggio: number;
+    stato: "in_valutazione" | "approvato" | "rifiutato" | "in_attesa";
+    note_valutatore: string;
+    data_valutazione: string;
+    valutatore: string;
+  };
 }
 
 const RichiesteCallIdeeTab = () => {
@@ -72,8 +93,16 @@ const RichiesteCallIdeeTab = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [exporting, setExporting] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<Richiesta | null>(null);
+  const [evaluationData, setEvaluationData] = useState({
+    punteggio: 0,
+    stato: "in_valutazione" as const,
+    note_valutatore: ""
+  });
+  const { toast } = useToast();
 
   // 🔄 Data Fetching Logic
   useEffect(() => {
@@ -119,10 +148,18 @@ const RichiesteCallIdeeTab = () => {
       filtered = filtered.filter(r => r.categoria === categoryFilter);
     }
 
-    setFilteredRichieste(filtered);
-  }, [richieste, searchTerm, categoryFilter]);
+    // Apply status filter
+    if (statusFilter !== "all") {
+      filtered = filtered.filter(r => {
+        const status = r.valutazione?.stato || "in_attesa";
+        return status === statusFilter;
+      });
+    }
 
-// 📊 Export Functionality
+    setFilteredRichieste(filtered);
+  }, [richieste, searchTerm, categoryFilter, statusFilter]);
+
+  // 📊 Export Functionality
   const exportToCSV = async (singleRequest?: Richiesta) => {
     setExporting(true);
     try {
@@ -154,6 +191,11 @@ const RichiesteCallIdeeTab = () => {
         "Assicurazione": r.spese_generali?.assicurazione || 0,
         "Rimborso Spese": r.spese_generali?.rimborsoSpese || 0,
         "Totale Complessivo": calculateTotalCost(r),
+        "Punteggio Valutazione": r.valutazione?.punteggio || '',
+        "Stato Valutazione": r.valutazione?.stato || 'in_attesa',
+        "Note Valutatore": r.valutazione?.note_valutatore || '',
+        "Data Valutazione": r.valutazione?.data_valutazione || '',
+        "Valutatore": r.valutazione?.valutatore || '',
         "Data Creazione": new Date(r.created_at).toLocaleDateString('it-IT'),
         "Timestamp Creazione": r.created_at
       }));
@@ -180,12 +222,65 @@ const RichiesteCallIdeeTab = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
+      toast({
+        title: "Export completato!",
+        description: `File ${fileName} scaricato con successo.`
+      });
     } catch (error) {
       console.error("Export error:", error);
+      toast({
+        title: "Errore nell'export",
+        description: "Si è verificato un errore durante l'esportazione.",
+        variant: "destructive"
+      });
     } finally {
       setExporting(false);
     }
   };
+
+  // 📝 Evaluation Functions
+  const saveEvaluation = async () => {
+    if (!selectedRequest) return;
+
+    try {
+      const evaluationPayload = {
+        ...evaluationData,
+        data_valutazione: new Date().toISOString(),
+        valutatore: "Admin" // In a real app, this would be the current user
+      };
+
+      const { error } = await supabase
+        .from("call_idee_giovani")
+        .update({ valutazione: evaluationPayload })
+        .eq("id", selectedRequest.id);
+
+      if (error) throw error;
+
+      // Update local state
+      setRichieste(prev => prev.map(r => 
+        r.id === selectedRequest.id 
+          ? { ...r, valutazione: evaluationPayload }
+          : r
+      ));
+
+      toast({
+        title: "Valutazione salvata!",
+        description: "La valutazione è stata salvata con successo."
+      });
+
+      setSelectedRequest(null);
+      setEvaluationData({ punteggio: 0, stato: "in_valutazione", note_valutatore: "" });
+    } catch (error) {
+      console.error("Save evaluation error:", error);
+      toast({
+        title: "Errore nel salvataggio",
+        description: "Si è verificato un errore durante il salvataggio della valutazione.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // ⚡ Helper Functions
   const toggleCardExpansion = (id: string) => {
     const newExpanded = new Set(expandedCards);
@@ -228,6 +323,24 @@ const RichiesteCallIdeeTab = () => {
     return [...new Set(richieste.map(r => r.categoria))];
   };
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "approvato": return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case "rifiutato": return <X className="w-4 h-4 text-red-500" />;
+      case "in_valutazione": return <Clock className="w-4 h-4 text-yellow-500" />;
+      default: return <AlertCircle className="w-4 h-4 text-gray-500" />;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "approvato": return <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Approvato</Badge>;
+      case "rifiutato": return <Badge className="bg-red-100 text-red-800 hover:bg-red-200">Rifiutato</Badge>;
+      case "in_valutazione": return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">In Valutazione</Badge>;
+      default: return <Badge variant="secondary">In Attesa</Badge>;
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* 📋 Header Section */}
@@ -254,7 +367,7 @@ const RichiesteCallIdeeTab = () => {
                 ) : (
                   <Download className="w-4 h-4 mr-2" />
                 )}
-                Esporta CSV
+                Esporta Tutto CSV
               </Button>
             </div>
           </div>
@@ -288,6 +401,20 @@ const RichiesteCallIdeeTab = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div className="w-full md:w-48">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="bg-white/80 dark:bg-card/80">
+                  <SelectValue placeholder="Filtra stato" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tutti gli stati</SelectItem>
+                  <SelectItem value="in_attesa">In Attesa</SelectItem>
+                  <SelectItem value="in_valutazione">In Valutazione</SelectItem>
+                  <SelectItem value="approvato">Approvato</SelectItem>
+                  <SelectItem value="rifiutato">Rifiutato</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -304,10 +431,10 @@ const RichiesteCallIdeeTab = () => {
             <div className="text-center py-16">
               <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-muted-foreground mb-2">
-                {searchTerm || categoryFilter !== "all" ? "Nessun risultato trovato" : "Nessuna richiesta presente"}
+                {searchTerm || categoryFilter !== "all" || statusFilter !== "all" ? "Nessun risultato trovato" : "Nessuna richiesta presente"}
               </h3>
               <p className="text-muted-foreground">
-                {searchTerm || categoryFilter !== "all" 
+                {searchTerm || categoryFilter !== "all" || statusFilter !== "all"
                   ? "Prova a modificare i filtri di ricerca" 
                   : "Le richieste appariranno qui quando saranno inviate"
                 }
@@ -318,6 +445,7 @@ const RichiesteCallIdeeTab = () => {
               {filteredRichieste.map((r) => {
                 const isExpanded = expandedCards.has(r.id);
                 const totalCost = calculateTotalCost(r);
+                const status = r.valutazione?.stato || "in_attesa";
                 
                 return (
                   <div 
@@ -341,13 +469,37 @@ const RichiesteCallIdeeTab = () => {
                             <Badge variant="destructive" className="text-xs font-medium bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-100">
                               €{totalCost.toFixed(2)}
                             </Badge>
+                            {getStatusBadge(status)}
                           </div>
                         </div>
                       </div>
                       
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                      <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
                         {r.descrizione_progetto}
                       </p>
+
+                      {/* Evaluation Summary */}
+                      {r.valutazione && (
+                        <div className="mt-3 p-3 bg-gray-50 dark:bg-card/50 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              {getStatusIcon(status)}
+                              <span className="text-sm font-medium">Valutazione</span>
+                            </div>
+                            {r.valutazione.punteggio > 0 && (
+                              <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                                <span className="text-sm font-bold">{r.valutazione.punteggio}/10</span>
+                              </div>
+                            )}
+                          </div>
+                          {r.valutazione.note_valutatore && (
+                            <p className="text-xs text-muted-foreground line-clamp-2">
+                              {r.valutazione.note_valutatore}
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     {/* 👤 Contact Info */}
@@ -382,6 +534,24 @@ const RichiesteCallIdeeTab = () => {
                     {isExpanded && (
                       <div className="px-6 pb-4 border-t border-border/30 bg-gray-50/50 dark:bg-card/50">
                         <div className="py-4 space-y-4">
+                          {/* Detailed Description */}
+                          <div>
+                            <h4 className="font-semibold text-sm text-primary mb-2">Descrizione Dettagliata</h4>
+                            <p className="text-sm text-muted-foreground">{r.descrizione_progetto}</p>
+                            {r.descrizione_evento && (
+                              <div className="mt-2">
+                                <h5 className="font-medium text-xs text-muted-foreground mb-1">Descrizione Evento</h5>
+                                <p className="text-xs">{r.descrizione_evento}</p>
+                              </div>
+                            )}
+                            {r.altro && (
+                              <div className="mt-2">
+                                <h5 className="font-medium text-xs text-muted-foreground mb-1">Note Aggiuntive</h5>
+                                <p className="text-xs">{r.altro}</p>
+                              </div>
+                            )}
+                          </div>
+
                           {/* Partecipanti */}
                           {r.partecipanti?.length > 0 && (
                             <div>
@@ -471,24 +641,124 @@ const RichiesteCallIdeeTab = () => {
                           minute: '2-digit'
                         })}
                       </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => toggleCardExpansion(r.id)}
-                        className="text-primary hover:text-primary/80 h-8 px-3"
-                      >
-                        {isExpanded ? (
-                          <>
-                            <ChevronUp className="w-4 h-4 mr-1" />
-                            Meno dettagli
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className="w-4 h-4 mr-1" />
-                            Più dettagli
-                          </>
-                        )}
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => exportToCSV(r)}
+                          className="text-green-600 hover:text-green-700 h-8 px-3"
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedRequest(r);
+                                setEvaluationData({
+                                  punteggio: r.valutazione?.punteggio || 0,
+                                  stato: r.valutazione?.stato || "in_valutazione",
+                                  note_valutatore: r.valutazione?.note_valutatore || ""
+                                });
+                              }}
+                              className="text-blue-600 hover:text-blue-700 h-8 px-3"
+                            >
+                              <Star className="w-4 h-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[500px]">
+                            <DialogHeader>
+                              <DialogTitle>Valuta Richiesta</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <h4 className="font-semibold mb-2">{selectedRequest?.titolo_progetto}</h4>
+                                <p className="text-sm text-muted-foreground">{selectedRequest?.descrizione_progetto}</p>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                  <Label htmlFor="punteggio">Punteggio (1-10)</Label>
+                                  <Input
+                                    id="punteggio"
+                                    type="number"
+                                    min="1"
+                                    max="10"
+                                    value={evaluationData.punteggio}
+                                    onChange={(e) => setEvaluationData(prev => ({
+                                      ...prev,
+                                      punteggio: parseInt(e.target.value) || 0
+                                    }))}
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label htmlFor="stato">Stato</Label>
+                                  <Select 
+                                    value={evaluationData.stato} 
+                                    onValueChange={(value: any) => setEvaluationData(prev => ({
+                                      ...prev,
+                                      stato: value
+                                    }))}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="in_valutazione">In Valutazione</SelectItem>
+                                      <SelectItem value="approvato">Approvato</SelectItem>
+                                      <SelectItem value="rifiutato">Rifiutato</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor="note">Note Valutazione</Label>
+                                <Textarea
+                                  id="note"
+                                  placeholder="Inserisci le note sulla valutazione..."
+                                  value={evaluationData.note_valutatore}
+                                  onChange={(e) => setEvaluationData(prev => ({
+                                    ...prev,
+                                    note_valutatore: e.target.value
+                                  }))}
+                                  rows={3}
+                                />
+                              </div>
+                              
+                              <div className="flex justify-end gap-2">
+                                <Button variant="outline" onClick={() => setSelectedRequest(null)}>
+                                  Annulla
+                                </Button>
+                                <Button onClick={saveEvaluation}>
+                                  <Save className="w-4 h-4 mr-2" />
+                                  Salva Valutazione
+                                </Button>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleCardExpansion(r.id)}
+                          className="text-primary hover:text-primary/80 h-8 px-3"
+                        >
+                          {isExpanded ? (
+                            <>
+                              <ChevronUp className="w-4 h-4 mr-1" />
+                              Meno
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="w-4 h-4 mr-1" />
+                              Più
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 );

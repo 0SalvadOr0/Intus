@@ -5,6 +5,7 @@ import { Users, MapPin, Zap, ArrowRight, Heart, Target, Award, Sparkles } from "
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PartnersStrip from "@/components/PartnersStrip";
+import ComicTextBubble from "@/components/ComicTextBubble";
 
 
 
@@ -85,13 +86,8 @@ const Home = () => {
               </div>
             </div>
 
-            <div className={`text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-5xl mx-auto leading-relaxed px-4 space-y-6 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} style={{transitionDelay: '0.3s'}}>
-              <p className="animate-slide-in-left" style={{animationDelay: '0.5s'}}>
-                Fondata nel <strong className="text-primary bg-primary/10 px-2 py-1 rounded-lg">1997</strong> durante la <em className="text-accent">"Primavera Corleonese"</em>, promuove la <strong className="text-accent bg-accent/10 px-2 py-1 rounded-lg">legalità</strong>, i <strong className="text-primary">diritti umani</strong> e la <strong className="text-heart bg-heart/10 px-2 py-1 rounded-lg">cittadinanza attiva</strong>.
-              </p>
-              <p className="animate-slide-in-right" style={{animationDelay: '0.7s'}}>
-                L'associazione forma educatori e sostiene progetti giovanili, sociali ed ecologici a livello locale ed europeo. È attiva nel <strong className="text-primary">turismo responsabile</strong> e nella valorizzazione della <strong className="text-accent">memoria antimafia</strong> attraverso l'arte.
-              </p>
+            <div className={`max-w-5xl mx-auto px-4 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} style={{transitionDelay: '0.3s'}}>
+              <ComicTextBubble className="min-h-[200px]" />
             </div>
           </div>
 

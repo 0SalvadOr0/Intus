@@ -253,6 +253,40 @@ export default {
 				'film-roll': {
 					'0%': { transform: 'translateX(-100%)' },
 					'100%': { transform: 'translateX(100%)' }
+				},
+				'glitch': {
+					'0%': {
+						transform: 'translateX(0)',
+						filter: 'hue-rotate(0deg)'
+					},
+					'20%': {
+						transform: 'translateX(-2px)',
+						filter: 'hue-rotate(90deg)'
+					},
+					'40%': {
+						transform: 'translateX(2px)',
+						filter: 'hue-rotate(180deg)'
+					},
+					'60%': {
+						transform: 'translateX(-1px)',
+						filter: 'hue-rotate(270deg)'
+					},
+					'80%': {
+						transform: 'translateX(1px)',
+						filter: 'hue-rotate(360deg)'
+					},
+					'100%': {
+						transform: 'translateX(0)',
+						filter: 'hue-rotate(0deg)'
+					}
+				},
+				'text-flicker': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.8' }
+				},
+				'parallax-drift': {
+					'0%': { transform: 'translateY(0px)' },
+					'100%': { transform: 'translateY(-10px)' }
 				}
 			},
 			animation: {
@@ -278,7 +312,10 @@ export default {
 				'slide-infinite': 'slide-infinite 40s linear infinite',
 				'camera-shake': 'camera-shake 0.5s ease-in-out infinite',
 				'light-flicker': 'light-flicker 0.3s ease-in-out infinite',
-				'film-roll': 'film-roll 2s ease-in-out infinite'
+				'film-roll': 'film-roll 2s ease-in-out infinite',
+				'glitch': 'glitch 0.3s ease-in-out',
+				'text-flicker': 'text-flicker 0.2s ease-in-out infinite',
+				'parallax-drift': 'parallax-drift 10s ease-in-out infinite alternate'
 			}
 		}
 	},

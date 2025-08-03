@@ -1,0 +1,99 @@
+import { useState, useEffect } from "react";
+
+interface ComicTextBubbleProps {
+  className?: string;
+}
+
+const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  return (
+    <div className={`relative ${className}`}>
+      {/* Comic background effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Comic dots pattern */}
+        <div className="absolute inset-0 opacity-20" 
+             style={{
+               backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
+               backgroundSize: '16px 16px'
+             }}>
+        </div>
+        
+        {/* Action lines */}
+        <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-primary/30 to-transparent transform -rotate-12"></div>
+        <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-accent/30 to-transparent transform rotate-12"></div>
+      </div>
+
+      {/* Main speech bubble */}
+      <div className={`relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-2xl border-4 border-black dark:border-white transition-all duration-1000 transform ${
+        isVisible ? 'scale-100 opacity-100 rotate-0' : 'scale-95 opacity-0 rotate-1'
+      }`}>
+        
+        {/* Speech bubble tail */}
+        <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
+          <div className="w-0 h-0 border-l-[20px] border-r-[20px] border-t-[24px] border-l-transparent border-r-transparent border-t-black dark:border-t-white"></div>
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-0 h-0 border-l-[16px] border-r-[16px] border-t-[20px] border-l-transparent border-r-transparent border-t-white dark:border-t-gray-900"></div>
+        </div>
+
+        {/* Comic text styling */}
+        <div className="space-y-6 text-black dark:text-white">
+          <div className={`text-xl md:text-2xl lg:text-3xl leading-relaxed font-bold transform transition-all duration-700 ${
+            isVisible ? 'translate-y-0' : 'translate-y-4'
+          }`} style={{
+            fontFamily: 'Arial Black, Arial, sans-serif',
+            textShadow: '2px 2px 0px rgba(0,0,0,0.1)',
+            animationDelay: '0.2s'
+          }}>
+            Fondata nel 1997 durante la "Primavera Corleonese", promuove la legalità, i diritti umani e la cittadinanza attiva.
+          </div>
+          
+          <div className={`text-xl md:text-2xl lg:text-3xl leading-relaxed font-bold transform transition-all duration-700 ${
+            isVisible ? 'translate-y-0' : 'translate-y-4'
+          }`} style={{
+            fontFamily: 'Arial Black, Arial, sans-serif',
+            textShadow: '2px 2px 0px rgba(0,0,0,0.1)',
+            animationDelay: '0.4s'
+          }}>
+            L'associazione forma educatori e sostiene progetti giovanili, sociali ed ecologici a livello locale ed europeo. È attiva nel turismo responsabile e nella valorizzazione della memoria antimafia attraverso l'arte.
+          </div>
+        </div>
+
+        {/* Comic book decorative elements */}
+        <div className="absolute top-4 right-4">
+          <div className="w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
+          <div className="absolute top-1 right-1 w-2 h-2 bg-white rounded-full"></div>
+        </div>
+        
+        <div className="absolute bottom-4 left-4">
+          <div className="flex space-x-1">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+            <div className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+          </div>
+        </div>
+
+        {/* Comic action words overlay */}
+        <div className="absolute -top-8 -right-8 transform rotate-12 bg-red-500 text-white px-4 py-2 rounded-full font-black text-sm border-4 border-black animate-pulse">
+          POW!
+        </div>
+        
+        <div className="absolute -bottom-8 -left-8 transform -rotate-12 bg-blue-500 text-white px-4 py-2 rounded-full font-black text-sm border-4 border-black animate-pulse" style={{animationDelay: '0.5s'}}>
+          BAM!
+        </div>
+      </div>
+
+      {/* Thought bubble trail */}
+      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        <div className="w-3 h-3 bg-white dark:bg-gray-900 border-2 border-black dark:border-white rounded-full animate-float"></div>
+        <div className="w-4 h-4 bg-white dark:bg-gray-900 border-2 border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.2s'}}></div>
+        <div className="w-5 h-5 bg-white dark:bg-gray-900 border-2 border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.4s'}}></div>
+      </div>
+    </div>
+  );
+};
+
+export default ComicTextBubble;

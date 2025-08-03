@@ -197,8 +197,13 @@ const CinemaIntro = ({ onComplete }: CinemaIntroProps) => {
           <div className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary via-accent to-heart bg-clip-text text-transparent">
             Benvenuto in INTUS Corleone
           </div>
-          <div className="text-sm text-white/70 animate-pulse">
-            Proiettando il futuro dal 1997
+          <div className="text-sm text-white/70 flex items-center justify-center space-x-2">
+            <span className="animate-pulse">Proiettando il futuro dal</span>
+            <span className={`font-bold text-lg bg-gradient-to-r from-primary via-accent to-heart bg-clip-text text-transparent transition-all duration-1000 ${
+              step >= 4 ? 'animate-bounce-in scale-100 opacity-100' : 'scale-75 opacity-0'
+            }`} style={{animationDelay: '0.5s'}}>
+              1997
+            </span>
           </div>
         </div>
       </div>
