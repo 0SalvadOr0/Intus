@@ -972,7 +972,7 @@ const ChiSiamo = () => {
                 className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-primary/20 hover:border-primary/40"
               >
                 <div className="p-3 rounded-full bg-gradient-to-br from-primary to-primary/80 text-white group-hover:scale-110 transition-transform">
-                  <MapPin className="w-6 h-6" />
+                  <img src="https://www.addiopizzotravel.it/img/assets/logo-ciano.png" alt="Addiopizzo Travel Logo" className="w-15 h-8" />
                 </div>
                 <div>
                   <div className="font-bold text-lg text-primary group-hover:text-primary/80 transition-colors">Addiopizzo Travel</div>
@@ -988,7 +988,7 @@ const ChiSiamo = () => {
                 className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-primary/20 hover:border-primary/40"
               >
                 <div className="p-3 rounded-full bg-gradient-to-br from-accent to-accent/80 text-white group-hover:scale-110 transition-transform">
-                  <TreePine className="w-6 h-6" />
+                  <img src="https://www.educazioneambientale.com/img/logo_2x.png" alt="Palma Nana" className="w-15 h-8" />
                 </div>
                 <div>
                   <div className="font-bold text-lg text-primary group-hover:text-primary/80 transition-colors">Palma Nana</div>
@@ -1012,7 +1012,7 @@ const ChiSiamo = () => {
                 className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-accent/20 hover:border-accent/40"
               >
                 <div className="p-3 rounded-full bg-gradient-to-br from-accent to-accent/80 text-white group-hover:scale-110 transition-transform">
-                  <Network className="w-6 h-6" />
+                  <img src="https://reteiter.it/wp-content/uploads/2023/07/logo_ITER-copia-copia.png" alt="Rete Iter Logo" className="w-15 h-8" />
                 </div>
                 <div>
                   <div className="font-bold text-lg text-accent group-hover:text-accent/80 transition-colors">Rete Iter</div>
@@ -1028,7 +1028,7 @@ const ChiSiamo = () => {
                 className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-accent/20 hover:border-accent/40"
               >
                 <div className="p-3 rounded-full bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 transition-transform">
-                  <Users className="w-6 h-6" />
+                  <img src="https://www.sipuofare.net/wp-content/uploads/2024/10/loghi-si-puo-fare-09.png" alt="Rete Si può fare Logo" className="w-15 h-8" />
                 </div>
                 <div>
                   <div className="font-bold text-lg text-accent group-hover:text-accent/80 transition-colors">Rete "Si può fare"</div>
