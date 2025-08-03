@@ -260,7 +260,8 @@ export default {
 				'spin-slow': 'spin-slow 8s linear infinite',
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
 				'gradient-shift': 'gradient-shift 6s ease-in-out infinite',
-				'reveal': 'reveal 0.8s ease-out forwards'
+				'reveal': 'reveal 0.8s ease-out forwards',
+				'slide-infinite': 'slide-infinite 40s linear infinite'
 			}
 		}
 	},
