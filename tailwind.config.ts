@@ -235,6 +235,10 @@ export default {
 						opacity: '1',
 						transform: 'translateY(0) scale(1)'
 					}
+				},
+				'slide-infinite': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-50%)' }
 				}
 			},
 			animation: {
