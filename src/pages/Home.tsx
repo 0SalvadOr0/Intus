@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Users, MapPin, Zap, ArrowRight, Heart, Target, Award, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import PartnersStrip from "@/components/PartnersStrip";
 
 
 
@@ -183,6 +184,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Partners Strip */}
+      <PartnersStrip />
 
       {/* In Evidenza */}
       <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-muted/20 via-background to-muted/30">
