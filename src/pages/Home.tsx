@@ -185,6 +185,9 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Partners Strip */}
+      <PartnersStrip />
+
       {/* In Evidenza */}
       <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-muted/20 via-background to-muted/30">
         <div className="container mx-auto max-w-6xl">
