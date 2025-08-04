@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L, { LatLngTuple } from "leaflet";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
