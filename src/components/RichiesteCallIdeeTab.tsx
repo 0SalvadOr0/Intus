@@ -260,25 +260,67 @@ const RichiesteCallIdeeTab = () => {
     if (!selectedRequest) return;
 
     try {
-      const evaluationPayload = {
-        ...evaluationData,
-        data_valutazione: new Date().toISOString(),
-        valutatore: "Admin" // In a real app, this would be the current user
-      };
+      // Usa la funzione helper di Supabase per maggiore sicurezza
+      const { data, error } = await supabase.rpc('update_evaluation', {
+        request_id: selectedRequest.id,
+        new_score: evaluationData.punteggio,
+        new_status: evaluationData.stato,
+        evaluator_notes: evaluationData.note_valutatore,
+        evaluator_name: "Admin" // In un'app reale, questo sarebbe l'utente corrente
+      });
 
-      const { error } = await supabase
-        .from("call_idee_giovani")
-        .update({ valutazione: evaluationPayload })
-        .eq("id", selectedRequest.id);
+      if (error) {
+        // Fallback al metodo diretto se la funzione RPC non è disponibile
+        console.warn("RPC function not available, using direct update:", error);
 
-      if (error) throw error;
+        const evaluationPayload = {
+          ...evaluationData,
+          data_valutazione: new Date().toISOString(),
+          valutatore: "Admin"
+        };
 
-      // Update local state
-      setRichieste(prev => prev.map(r => 
-        r.id === selectedRequest.id 
-          ? { ...r, valutazione: evaluationPayload }
-          : r
-      ));
+        const { error: directError } = await supabase
+          .from("call_idee_giovani")
+          .update({ valutazione: evaluationPayload })
+          .eq("id", selectedRequest.id);
+
+        if (directError) throw directError;
+
+        // Update local state
+        setRichieste(prev => prev.map(r =>
+          r.id === selectedRequest.id
+            ? { ...r, valutazione: evaluationPayload }
+            : r
+        ));
+      } else {
+        // Se la funzione RPC ha funzionato, ricarica i dati
+        const { data: updatedData, error: fetchError } = await supabase
+          .from("call_idee_giovani")
+          .select("*")
+          .eq("id", selectedRequest.id)
+          .single();
+
+        if (!fetchError && updatedData) {
+          setRichieste(prev => prev.map(r =>
+            r.id === selectedRequest.id ? updatedData : r
+          ));
+        } else {
+          // Fallback al payload locale
+          const evaluationPayload = {
+            punteggio: evaluationData.punteggio,
+            stato: evaluationData.stato,
+            note_valutatore: evaluationData.note_valutatore,
+            data_valutazione: new Date().toISOString(),
+            valutatore: "Admin"
+          };
+
+          setRichieste(prev => prev.map(r =>
+            r.id === selectedRequest.id
+              ? { ...r, valutazione: evaluationPayload }
+              : r
+          ));
+        }
+      }
 
       toast({
         title: "Valutazione salvata!",
