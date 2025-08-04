@@ -1099,7 +1099,7 @@ const ChiSiamo = () => {
                   <div className="relative mb-4">
                     <div className="absolute inset-0 bg-gradient-to-br from-accent to-accent/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
                     <div className="relative p-3 rounded-xl bg-gradient-to-br from-accent to-accent/80 text-white group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
-                      <Network className="w-6 h-6 mx-auto" />
+                      <img src="https://reteiter.it/wp-content/uploads/2023/07/logo_ITER-copia-copia.png" alt="Rete Iter Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
                     </div>
                   </div>
                   <div className="text-center">
