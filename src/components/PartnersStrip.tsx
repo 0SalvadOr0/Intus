@@ -154,7 +154,21 @@ const PartnersStrip = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
 
                 <div className={`relative z-10 p-3 rounded-xl bg-gradient-to-br ${partner.type === 'partner' ? 'from-primary to-primary/80' : partner.type === 'network' ? 'from-accent to-accent/80' : 'from-heart to-heart/80'} text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
-                  {getIcon(partner)}
+                  {partner.logo ? (
+                    <img
+                      src={partner.logo}
+                      alt={`${partner.name} logo`}
+                      className="w-8 h-8 object-contain filter brightness-0 invert"
+                      onError={(e) => {
+                        // Fallback to icon if image fails to load
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                  ) : null}
+                  <div className={`${partner.logo ? 'hidden' : ''}`}>
+                    {getIcon(partner)}
+                  </div>
 
                   {/* Sparkle effects */}
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
