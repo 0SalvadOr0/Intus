@@ -1,7 +1,7 @@
 import { AnimatedIntusLogo } from "@/components/ui/animated-intus-logo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, MapPin, Zap, ArrowRight, Heart, Target, Award, Sparkles } from "lucide-react";
+import { Users, MapPin, Zap, ArrowRight, Heart, Target, Award, Sparkles, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PartnersStrip from "@/components/PartnersStrip";
