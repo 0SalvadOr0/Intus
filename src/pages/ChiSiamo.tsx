@@ -1201,9 +1201,7 @@ const ChiSiamo = () => {
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
                     <div className="relative p-4 rounded-2xl bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                      <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                      </svg>
+                      <img src="https://cdn.builder.io/api/v1/image/assets%2Fc0f7b2c705d74b75bd52d5dc56b5532f%2Fee5f13ead30543ed802e6bb6351f9e3e?format=webp&width=800" alt="INTUS Corleone Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
                     </div>
                     {/* Sparkle effects */}
                     <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
