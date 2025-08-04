@@ -20,6 +20,7 @@ import { WelcomeToast } from "./components/ui/welcome-toast";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import CinemaIntro from "./components/CinemaIntro";
+import SmoothLoadingScreen from "./components/SmoothLoadingScreen";
 import Home from "./pages/Home";
 const ChiSiamo = lazy(() => import("./pages/ChiSiamo"));
 const LeNostreAttivita = lazy(() => import("./pages/LeNostreAttivita"));
