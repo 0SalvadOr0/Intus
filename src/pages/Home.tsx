@@ -181,6 +181,60 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Mappa Progetti CTA */}
+      <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-primary/10 via-accent/10 to-heart/10 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-10 left-10 w-20 h-20 bg-primary/30 rounded-full animate-float" style={{animationDelay: '0s'}}></div>
+          <div className="absolute bottom-10 right-10 w-16 h-16 bg-accent/30 rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-heart/20 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+        </div>
+
+        <div className="container mx-auto text-center relative z-10">
+          <div className="animate-fade-in-up">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <Globe className="w-12 h-12 text-primary animate-spin-slow" />
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Esplora i Nostri <span className="bg-gradient-to-r from-primary via-accent to-heart bg-clip-text text-transparent">Progetti</span>
+              </h2>
+              <MapPin className="w-12 h-12 text-accent animate-bounce" />
+            </div>
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+              Scopri 28 anni di progetti sul territorio attraverso una mappa interattiva.
+              Ogni pin racconta una storia di impegno, legalità e trasformazione sociale.
+            </p>
+
+            {/* Statistiche rapide */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-8">
+              <div className="bg-gradient-to-br from-card/90 to-muted/50 backdrop-blur-sm rounded-xl p-4 shadow-lg animate-bounce-in">
+                <div className="text-2xl md:text-3xl font-bold text-primary">8+</div>
+                <div className="text-sm text-muted-foreground">Progetti Mappati</div>
+              </div>
+              <div className="bg-gradient-to-br from-card/90 to-muted/50 backdrop-blur-sm rounded-xl p-4 shadow-lg animate-bounce-in" style={{animationDelay: '0.1s'}}>
+                <div className="text-2xl md:text-3xl font-bold text-accent">5</div>
+                <div className="text-sm text-muted-foreground">Località</div>
+              </div>
+              <div className="bg-gradient-to-br from-card/90 to-muted/50 backdrop-blur-sm rounded-xl p-4 shadow-lg animate-bounce-in" style={{animationDelay: '0.2s'}}>
+                <div className="text-2xl md:text-3xl font-bold text-heart">10k+</div>
+                <div className="text-sm text-muted-foreground">Partecipanti</div>
+              </div>
+              <div className="bg-gradient-to-br from-card/90 to-muted/50 backdrop-blur-sm rounded-xl p-4 shadow-lg animate-bounce-in" style={{animationDelay: '0.3s'}}>
+                <div className="text-2xl md:text-3xl font-bold text-primary">6</div>
+                <div className="text-sm text-muted-foreground">Categorie</div>
+              </div>
+            </div>
+
+            <Button asChild size="lg" className="group text-base md:text-lg px-8 md:px-12 py-6 md:py-8 shadow-2xl hover:shadow-primary/25 transition-all duration-500 hover:scale-105 bg-gradient-to-r from-primary via-accent to-heart hover:from-primary/90 hover:to-heart/90">
+              <Link to="/mappa-progetti">
+                <Globe className="w-6 h-6 mr-3 group-hover:animate-spin" />
+                Esplora la Mappa
+                <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform duration-300" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Partners Strip */}
       <PartnersStrip />
 
