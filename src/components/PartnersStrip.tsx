@@ -13,36 +13,42 @@ const PartnersStrip = () => {
     {
       name: "Addiopizzo Travel",
       url: "https://www.addiopizzotravel.it/",
+      logo: "https://www.addiopizzotravel.it/img/assets/logo-ciano.png",
       type: "partner",
       description: "Turismo responsabile e legalità"
     },
     {
       name: "Palma Nana",
       url: "https://www.educazioneambientale.com/",
-      type: "partner", 
+      logo: "https://www.educazioneambientale.com/img/logo_2x.png",
+      type: "partner",
       description: "Educazione ambientale"
     },
     {
       name: "Rete Iter",
       url: "https://reteiter.it/",
+      logo: "https://reteiter.it/wp-content/uploads/2023/07/logo_ITER-copia-copia.png",
       type: "network",
       description: "Rete nazionale politiche giovanili"
     },
     {
       name: "Rete Si può fare",
       url: "https://www.sipuofare.net/",
+      logo: "https://www.sipuofare.net/wp-content/uploads/2024/10/loghi-si-puo-fare-09.png",
       type: "network",
       description: "Rete per il cambiamento sociale"
     },
     {
-      name: "Laboratorio della Legalità", 
+      name: "Laboratorio della Legalità",
       url: "https://www.facebook.com/share/19VVSZAEWC/",
+      logo: "https://scontent.fplm1-1.fna.fbcdn.net/v/t39.30808-6/460946625_932081162266844_6442029316538644710_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=4F8eRw7vCWsQ7kNvgG8pbyX&_nc_zt=23&_nc_ht=scontent.fplm1-1.fna&_nc_gid=AJFJayJ9nP8fROIFSoqlGrq&oh=00_AYDRWJMfBqS-iIfCDlVepEOAUuOWZLpGhTAUFDrjfTGGEA&oe=678D05EE",
       type: "network",
       description: "Museo della legalità"
     },
     {
       name: "INTUS Corleone",
       url: "https://www.facebook.com/share/1GKyTE79ML/",
+      logo: "https://cdn.builder.io/api/v1/image/assets%2Fc0f7b2c705d74b75bd52d5dc56b5532f%2Fee5f13ead30543ed802e6bb6351f9e3e?format=webp&width=800",
       type: "social",
       description: "La nostra pagina Facebook"
     }
