@@ -1126,7 +1126,7 @@ const ChiSiamo = () => {
                   <div className="relative mb-4">
                     <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
                     <div className="relative p-3 rounded-xl bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
-                      <TrendingUp className="w-6 h-6 mx-auto" />
+                      <img src="https://www.sipuofare.net/wp-content/uploads/2024/10/loghi-si-puo-fare-09.png" alt="Rete Si può fare Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
                     </div>
                   </div>
                   <div className="text-center">
