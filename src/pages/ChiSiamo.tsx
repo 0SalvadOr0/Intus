@@ -1006,7 +1006,7 @@ const ChiSiamo = () => {
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
                     <div className="relative p-4 rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                      <img src="https://www.addiopizzotravel.it/img/assets/logo-ciano.png" alt="Addiopizzo Travel Logo" className="w-16 h-10 object-contain" />
+                      <img src="https://www.addiopizzotravel.it/img/assets/logo-ciano.png" alt="Addiopizzo Travel Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
                     </div>
                     {/* Sparkle effects */}
                     <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
