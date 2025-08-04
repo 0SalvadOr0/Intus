@@ -26,6 +26,7 @@ const ChiSiamo = lazy(() => import("./pages/ChiSiamo"));
 const LeNostreAttivita = lazy(() => import("./pages/LeNostreAttivita"));
 const PresentaProgetto = lazy(() => import("./pages/PresentaProgetto"));
 const Blog = lazy(() => import("./pages/Blog"));
+const MappaProgetti = lazy(() => import("./pages/MappaProgetti"));
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ProjectViewer from "./components/ProjectViewer";
