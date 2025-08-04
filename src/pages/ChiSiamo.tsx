@@ -3,12 +3,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { 
-  Heart, 
-  Target, 
-  Users, 
-  Calendar, 
-  MapPin, 
+import {
+  Heart,
+  Target,
+  Users,
+  Calendar,
+  MapPin,
   GraduationCap,
   BookOpen,
   Globe,
@@ -27,7 +27,8 @@ import {
   BarChart3,
   TrendingUp,
   Users2,
-  Clock
+  Clock,
+  ExternalLink
 } from "lucide-react";
 
 // Componente immersivo a schermo intero per la descrizione
