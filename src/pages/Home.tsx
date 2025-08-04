@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PartnersStrip from "@/components/PartnersStrip";
 import ComicTextBubble from "@/components/ComicTextBubble";
+import MappaProgettiHome from "@/components/MappaProgettiHome";
 
 
 
@@ -180,6 +181,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Mappa Progetti Integrata */}
+      <MappaProgettiHome />
 
       {/* Partners Strip */}
       <PartnersStrip />

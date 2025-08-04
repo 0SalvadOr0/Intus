@@ -3,12 +3,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { 
-  Heart, 
-  Target, 
-  Users, 
-  Calendar, 
-  MapPin, 
+import {
+  Heart,
+  Target,
+  Users,
+  Calendar,
+  MapPin,
   GraduationCap,
   BookOpen,
   Globe,
@@ -27,7 +27,8 @@ import {
   BarChart3,
   TrendingUp,
   Users2,
-  Clock
+  Clock,
+  ExternalLink
 } from "lucide-react";
 
 // Componente immersivo a schermo intero per la descrizione
@@ -953,71 +954,163 @@ const ChiSiamo = () => {
       </section>
 
       {/* Partner e Reti Associate */}
-      <section className="py-16 px-4 bg-gradient-to-r from-accent/5 to-primary/5">
-        <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 animate-fade-in-up">
-            Partner e <span className="text-primary">Reti Associate</span>
-          </h2>
+      <section className="py-20 px-4 bg-gradient-to-br from-primary/8 via-accent/8 to-heart/8 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-24 h-24 bg-primary/20 rounded-full animate-float" style={{animationDelay: '0s'}}></div>
+          <div className="absolute top-20 right-20 w-20 h-20 bg-accent/20 rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-20 left-20 w-16 h-16 bg-heart/20 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-10 right-10 w-28 h-28 bg-primary/10 rounded-full animate-float" style={{animationDelay: '0.5s'}}></div>
+        </div>
+
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <div className="text-center mb-12 animate-fade-in-up">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Network className="w-8 h-8 text-primary animate-pulse" />
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Partner e <span className="bg-gradient-to-r from-primary via-accent to-heart bg-clip-text text-transparent">Reti Associate</span>
+              </h2>
+              <Network className="w-8 h-8 text-accent animate-pulse" style={{animationDelay: '0.5s'}} />
+            </div>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Insieme costruiamo una rete di collaborazioni che amplifica l'impatto delle nostre azioni sul territorio
+            </p>
+          </div>
 
           {/* Partners */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold text-center mb-8">
-              <span className="text-primary">Partner</span>
-            </h3>
-            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="mb-16">
+            <div className="text-center mb-10">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Globe className="w-6 h-6 text-primary" />
+                <h3 className="text-2xl md:text-3xl font-bold text-primary">
+                  Partner Strategici
+                </h3>
+                <Globe className="w-6 h-6 text-primary" />
+              </div>
+              <p className="text-muted-foreground">Collaborazioni consolidate per il turismo responsabile e l'educazione ambientale</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               <a
                 href="https://www.addiopizzotravel.it/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-primary/20 hover:border-primary/40"
+                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-primary/20 px-8 py-6 hover:scale-105 transition-all duration-500 border border-primary/20 hover:border-primary/40 overflow-hidden animate-slide-in-left"
               >
-                <div className="p-3 rounded-full bg-gradient-to-br from-primary to-primary/80 text-white group-hover:scale-110 transition-transform">
-                  <img src="https://www.addiopizzotravel.it/img/assets/logo-ciano.png" alt="Addiopizzo Travel Logo" className="w-15 h-8" />
+                {/* Animated background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+
+                <div className="relative z-10 flex items-center gap-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                    <div className="relative p-4 rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
+                      <img src="https://www.addiopizzotravel.it/img/assets/logo-ciano.png" alt="Addiopizzo Travel Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
+                    </div>
+                    {/* Sparkle effects */}
+                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
+                    <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-accent/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-3">
+                      <h4 className="font-bold text-xl text-primary group-hover:text-primary/80 transition-colors">Addiopizzo Travel</h4>
+                      <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-primary/30 transition-colors">PARTNER</span>
+                    </div>
+                    <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-base leading-relaxed">Turismo responsabile e percorsi di legalità nel territorio siciliano</p>
+                    <div className="text-sm text-muted-foreground/80 group-hover:text-primary/70 transition-colors font-medium">www.addiopizzotravel.it</div>
+                  </div>
+
+                  {/* Hover arrow */}
+                  <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
+                    <ExternalLink className="w-5 h-5 text-primary" />
+                  </div>
                 </div>
-                <div>
-                  <div className="font-bold text-lg text-primary group-hover:text-primary/80 transition-colors">Addiopizzo Travel</div>
-                  <div className="text-muted-foreground text-sm">Turismo responsabile e legalità</div>
-                  <div className="text-xs text-muted-foreground/80">www.addiopizzotravel.it</div>
-                </div>
+
+                {/* Bottom accent line */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-primary to-accent group-hover:w-4/5 transition-all duration-500 rounded-full"></div>
               </a>
 
               <a
                 href="https://www.educazioneambientale.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-primary/20 hover:border-primary/40"
+                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-accent/20 px-8 py-6 hover:scale-105 transition-all duration-500 border border-accent/20 hover:border-accent/40 overflow-hidden animate-slide-in-right"
               >
-                <div className="p-3 rounded-full bg-gradient-to-br from-accent to-accent/80 text-white group-hover:scale-110 transition-transform">
-                  <img src="https://www.educazioneambientale.com/img/logo_2x.png" alt="Palma Nana" className="w-15 h-8" />
+                {/* Animated background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+
+                <div className="relative z-10 flex items-center gap-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-accent to-accent/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                    <div className="relative p-4 rounded-2xl bg-gradient-to-br from-accent to-accent/80 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
+                      <img src="https://www.educazioneambientale.com/img/logo_2x.png" alt="Palma Nana Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
+                    </div>
+                    {/* Sparkle effects */}
+                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
+                    <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-heart/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-3">
+                      <h4 className="font-bold text-xl text-accent group-hover:text-accent/80 transition-colors">Palma Nana</h4>
+                      <span className="bg-accent/20 text-accent px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-accent/30 transition-colors">PARTNER</span>
+                    </div>
+                    <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-base leading-relaxed">Educazione ambientale e sostenibilità per le nuove generazioni</p>
+                    <div className="text-sm text-muted-foreground/80 group-hover:text-accent/70 transition-colors font-medium">www.educazioneambientale.com</div>
+                  </div>
+
+                  {/* Hover arrow */}
+                  <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
+                    <ExternalLink className="w-5 h-5 text-accent" />
+                  </div>
                 </div>
-                <div>
-                  <div className="font-bold text-lg text-primary group-hover:text-primary/80 transition-colors">Palma Nana</div>
-                  <div className="text-muted-foreground text-sm">Educazione ambientale</div>
-                  <div className="text-xs text-muted-foreground/80">www.educazioneambientale.com</div>
-                </div>
+
+                {/* Bottom accent line */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-accent to-heart group-hover:w-4/5 transition-all duration-500 rounded-full"></div>
               </a>
             </div>
           </div>
 
           {/* Reti */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold text-center mb-8">
-              <span className="text-accent">Reti</span>
-            </h3>
+          <div className="mb-16">
+            <div className="text-center mb-10">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Users className="w-6 h-6 text-accent" />
+                <h3 className="text-2xl md:text-3xl font-bold text-accent">
+                  Reti Collaborative
+                </h3>
+                <Users className="w-6 h-6 text-accent" />
+              </div>
+              <p className="text-muted-foreground">Connessioni nazionali e territoriali per amplificare l'impatto sociale</p>
+            </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <a
                 href="https://reteiter.it/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-accent/20 hover:border-accent/40"
+                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-accent/20 px-6 py-6 hover:scale-105 transition-all duration-500 border border-accent/20 hover:border-accent/40 overflow-hidden animate-fade-in-up"
+                style={{animationDelay: '0.1s'}}
               >
-                <div className="p-3 rounded-full bg-gradient-to-br from-accent to-accent/80 text-white group-hover:scale-110 transition-transform">
-                  <img src="https://reteiter.it/wp-content/uploads/2023/07/logo_ITER-copia-copia.png" alt="Rete Iter Logo" className="w-15 h-8" />
-                </div>
-                <div>
-                  <div className="font-bold text-lg text-accent group-hover:text-accent/80 transition-colors">Rete Iter</div>
-                  <div className="text-muted-foreground text-sm">Politiche giovanili</div>
-                  <div className="text-xs text-muted-foreground/80">reteiter.it</div>
+                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                <div className="relative z-10">
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 bg-gradient-to-br from-accent to-accent/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                    <div className="relative p-3 rounded-xl bg-gradient-to-br from-accent to-accent/80 text-white group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
+                      <img src="https://reteiter.it/wp-content/uploads/2023/07/logo_ITER-copia-copia.png" alt="Rete Iter Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <h4 className="font-bold text-lg text-accent group-hover:text-accent/80 transition-colors">Rete Iter</h4>
+                      <span className="bg-accent/20 text-accent px-2 py-1 rounded-full text-xs font-semibold">RETE</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors mb-2">Politiche giovanili nazionali</p>
+                    <div className="text-xs text-muted-foreground/80 group-hover:text-accent/70 transition-colors font-medium">reteiter.it</div>
+                  </div>
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-accent group-hover:w-3/4 transition-all duration-500 rounded-full"></div>
                 </div>
               </a>
 
@@ -1025,15 +1118,26 @@ const ChiSiamo = () => {
                 href="https://www.sipuofare.net/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-accent/20 hover:border-accent/40"
+                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-heart/20 px-6 py-6 hover:scale-105 transition-all duration-500 border border-heart/20 hover:border-heart/40 overflow-hidden animate-fade-in-up"
+                style={{animationDelay: '0.2s'}}
               >
-                <div className="p-3 rounded-full bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 transition-transform">
-                  <img src="https://www.sipuofare.net/wp-content/uploads/2024/10/loghi-si-puo-fare-09.png" alt="Rete Si può fare Logo" className="w-15 h-8" />
-                </div>
-                <div>
-                  <div className="font-bold text-lg text-accent group-hover:text-accent/80 transition-colors">Rete "Si può fare"</div>
-                  <div className="text-muted-foreground text-sm">Cambiamento sociale</div>
-                  <div className="text-xs text-muted-foreground/80">www.sipuofare.net</div>
+                <div className="absolute inset-0 bg-gradient-to-br from-heart/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                <div className="relative z-10">
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                    <div className="relative p-3 rounded-xl bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
+                      <img src="https://www.sipuofare.net/wp-content/uploads/2024/10/loghi-si-puo-fare-09.png" alt="Rete Si può fare Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <h4 className="font-bold text-lg text-heart group-hover:text-heart/80 transition-colors">Rete "Si può fare"</h4>
+                      <span className="bg-heart/20 text-heart px-2 py-1 rounded-full text-xs font-semibold">RETE</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors mb-2">Cambiamento sociale</p>
+                    <div className="text-xs text-muted-foreground/80 group-hover:text-heart/70 transition-colors font-medium">www.sipuofare.net</div>
+                  </div>
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-heart group-hover:w-3/4 transition-all duration-500 rounded-full"></div>
                 </div>
               </a>
 
@@ -1041,19 +1145,28 @@ const ChiSiamo = () => {
                 href="https://www.facebook.com/share/19VVSZAEWC/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-accent/20 hover:border-accent/40"
+                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-primary/20 px-6 py-6 hover:scale-105 transition-all duration-500 border border-primary/20 hover:border-primary/40 overflow-hidden animate-fade-in-up"
+                style={{animationDelay: '0.3s'}}
               >
-                <div className="p-3 rounded-full bg-gradient-to-br from-primary to-primary/80 text-white group-hover:scale-110 transition-transform">
-                  <Shield className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="font-bold text-lg text-accent group-hover:text-accent/80 transition-colors">Laboratorio della Legalità</div>
-                  <div className="text-muted-foreground text-sm">Museo della legalità</div>
-                  <div className="text-xs text-muted-foreground/80 flex items-center gap-1">
-                    <span>Facebook</span>
-                    <span>&</span>
-                    <span>Instagram</span>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                <div className="relative z-10">
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                    <div className="relative p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 text-white group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
+                      <img src="https://scontent.fplm1-1.fna.fbcdn.net/v/t39.30808-6/460946625_932081162266844_6442029316538644710_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=4F8eRw7vCWsQ7kNvgG8pbyX&_nc_zt=23&_nc_ht=scontent.fplm1-1.fna&_nc_gid=AJFJayJ9nP8fROIFSoqlGrq&oh=00_AYDRWJMfBqS-iIfCDlVepEOAUuOWZLpGhTAUFDrjfTGGEA&oe=678D05EE" alt="Laboratorio della Legalità Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
+                    </div>
                   </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <h4 className="font-bold text-lg text-primary group-hover:text-primary/80 transition-colors">Laboratorio della Legalità</h4>
+                      <span className="bg-primary/20 text-primary px-2 py-1 rounded-full text-xs font-semibold">MUSEO</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors mb-2">Museo della legalità</p>
+                    <div className="text-xs text-muted-foreground/80 group-hover:text-primary/70 transition-colors font-medium flex items-center justify-center gap-1">
+                      <span>Facebook & Instagram</span>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-primary group-hover:w-3/4 transition-all duration-500 rounded-full"></div>
                 </div>
               </a>
             </div>
@@ -1061,58 +1174,94 @@ const ChiSiamo = () => {
 
           {/* Social Media */}
           <div>
-            <h3 className="text-2xl font-bold text-center mb-8">
-              <span className="text-heart">Seguici sui Social</span>
-            </h3>
+            <div className="text-center mb-10">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Heart className="w-6 h-6 text-heart animate-pulse-heart" />
+                <h3 className="text-2xl md:text-3xl font-bold text-heart">
+                  Seguici sui Social
+                </h3>
+                <Heart className="w-6 h-6 text-heart animate-pulse-heart" style={{animationDelay: '0.5s'}} />
+              </div>
+              <p className="text-muted-foreground">Resta connesso con le nostre attività e iniziative</p>
+            </div>
             <div className="flex justify-center">
               <a
                 href="https://www.facebook.com/share/1GKyTE79ML/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-4 bg-card/80 rounded-xl shadow-elegant px-6 py-4 hover:scale-105 transition-all border border-heart/20 hover:border-heart/40"
+                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-heart/20 px-8 py-6 hover:scale-105 transition-all duration-500 border border-heart/20 hover:border-heart/40 overflow-hidden animate-bounce-in max-w-md"
               >
-                <div className="p-3 rounded-full bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 transition-transform">
-                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                  </svg>
+                {/* Animated background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-heart/5 via-transparent to-heart/10 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-heart/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+
+                <div className="relative z-10 flex items-center gap-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                    <div className="relative p-4 rounded-2xl bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
+                      <img src="https://cdn.builder.io/api/v1/image/assets%2Fc0f7b2c705d74b75bd52d5dc56b5532f%2Fee5f13ead30543ed802e6bb6351f9e3e?format=webp&width=800" alt="INTUS Corleone Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
+                    </div>
+                    {/* Sparkle effects */}
+                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
+                    <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-3">
+                      <h4 className="font-bold text-xl text-heart group-hover:text-heart/80 transition-colors">INTUS Corleone</h4>
+                      <span className="bg-heart/20 text-heart px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-heart/30 transition-colors">SOCIAL</span>
+                    </div>
+                    <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-base leading-relaxed">La nostra pagina Facebook ufficiale</p>
+                    <div className="text-sm text-muted-foreground/80 group-hover:text-heart/70 transition-colors font-medium">Seguici per restare aggiornato</div>
+                  </div>
+
+                  {/* Hover arrow */}
+                  <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
+                    <ExternalLink className="w-5 h-5 text-heart" />
+                  </div>
                 </div>
-                <div>
-                  <div className="font-bold text-lg text-heart group-hover:text-heart/80 transition-colors">INTUS Corleone</div>
-                  <div className="text-muted-foreground text-sm">La nostra pagina Facebook</div>
-                  <div className="text-xs text-muted-foreground/80">facebook.com/share/1GKyTE79ML</div>
-                </div>
+
+                {/* Bottom accent line */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-heart to-primary group-hover:w-4/5 transition-all duration-500 rounded-full"></div>
               </a>
             </div>
           </div>
 
           {/* Additional Links for Laboratorio della Legalità */}
-          <div className="mt-8 text-center">
-            <p className="text-sm text-muted-foreground mb-4">
-              Seguici anche sui canali del Laboratorio della Legalità:
-            </p>
-            <div className="flex justify-center gap-4">
-              <a
-                href="https://www.facebook.com/share/19VVSZAEWC/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
-                Facebook
-              </a>
-              <a
-                href="https://www.instagram.com/laboratorio_della_legalita?igsh=MTVhYmRndjllbXp3Mg=="
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-                Instagram
-              </a>
+          <div className="mt-12 text-center">
+            <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-heart/5 rounded-2xl p-8 max-w-2xl mx-auto border border-border/50">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Shield className="w-5 h-5 text-primary" />
+                <p className="text-lg font-semibold text-foreground">
+                  Seguici anche sui canali del Laboratorio della Legalità:
+                </p>
+                <Shield className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex justify-center gap-6">
+                <a
+                  href="https://www.facebook.com/share/19VVSZAEWC/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-3 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 border border-primary/20 hover:border-primary/40"
+                >
+                  <svg className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                  <span className="font-medium text-primary group-hover:text-primary/80 transition-colors">Facebook</span>
+                </a>
+                <a
+                  href="https://www.instagram.com/laboratorio_della_legalita?igsh=MTVhYmRndjllbXp3Mg=="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-3 bg-gradient-to-r from-accent/10 to-accent/5 hover:from-accent/20 hover:to-accent/10 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 border border-accent/20 hover:border-accent/40"
+                >
+                  <svg className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                  <span className="font-medium text-accent group-hover:text-accent/80 transition-colors">Instagram</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

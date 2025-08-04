@@ -20,6 +20,7 @@ import { WelcomeToast } from "./components/ui/welcome-toast";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import CinemaIntro from "./components/CinemaIntro";
+import SmoothLoadingScreen from "./components/SmoothLoadingScreen";
 import Home from "./pages/Home";
 const ChiSiamo = lazy(() => import("./pages/ChiSiamo"));
 const LeNostreAttivita = lazy(() => import("./pages/LeNostreAttivita"));
@@ -68,7 +69,7 @@ const App = () => {
             <BrowserRouter>
               <ScrollToTop />
               <Navigation />
-              <Suspense fallback={<div>Caricamento in corso...</div>}>
+              <Suspense fallback={<SmoothLoadingScreen isVisible={true} message="Caricamento pagina" />}>
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/chi-siamo" element={<ChiSiamo />} />
