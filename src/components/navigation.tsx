@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { IntusHeartLogo } from "./ui/intus-heart-logo";
 import { cn } from "@/lib/utils";
-import { Home, Users, FileText, Settings, FolderOpen, Menu, X, DollarSign, Bell, Search } from "lucide-react";
+import { Home, Users, FileText, Settings, FolderOpen, Menu, X, DollarSign, Bell, Search, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 import { SearchDialog } from "./ui/search-dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
