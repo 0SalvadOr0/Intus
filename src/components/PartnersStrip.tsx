@@ -1,4 +1,4 @@
-import { ExternalLink, Facebook, Instagram } from "lucide-react";
+import { ExternalLink, Facebook, Instagram, Shield, Sparkles, Users, Globe } from "lucide-react";
 
 interface Partner {
   name: string;
@@ -79,62 +79,104 @@ const PartnersStrip = () => {
 
   const getIcon = (partner: Partner) => {
     if (partner.url.includes('facebook.com')) {
-      return <Facebook className="w-4 h-4" />;
+      return <Facebook className="w-5 h-5" />;
     }
     if (partner.url.includes('instagram.com')) {
-      return <Instagram className="w-4 h-4" />;
+      return <Instagram className="w-5 h-5" />;
     }
-    return <ExternalLink className="w-4 h-4" />;
+    if (partner.name.includes('Laboratorio')) {
+      return <Shield className="w-5 h-5" />;
+    }
+    if (partner.type === 'network') {
+      return <Users className="w-5 h-5" />;
+    }
+    if (partner.type === 'partner') {
+      return <Globe className="w-5 h-5" />;
+    }
+    return <ExternalLink className="w-5 h-5" />;
   };
 
   return (
-    <section className="py-8 bg-gradient-to-r from-muted/20 via-background to-muted/20 overflow-hidden">
-      <div className="container mx-auto px-4 mb-6">
-        <h3 className="text-xl md:text-2xl font-bold text-center">
-          <span className="text-muted-foreground">I nostri</span>{' '}
-          <span className="text-primary">Partner</span>{' '}
-          <span className="text-muted-foreground">&</span>{' '}
-          <span className="text-accent">Reti</span>
-        </h3>
+    <section className="py-12 md:py-16 bg-gradient-to-r from-primary/5 via-accent/5 to-heart/5 overflow-hidden relative">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute top-4 left-1/4 w-16 h-16 bg-primary/20 rounded-full animate-float" style={{animationDelay: '0s'}}></div>
+        <div className="absolute bottom-4 right-1/4 w-20 h-20 bg-accent/20 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-heart/20 rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+      </div>
+
+      <div className="container mx-auto px-4 mb-8 relative z-10">
+        <div className="text-center animate-fade-in-up">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Sparkles className="w-6 h-6 text-primary animate-pulse" />
+            <h3 className="text-2xl md:text-3xl font-bold">
+              <span className="text-muted-foreground">I nostri</span>{' '}
+              <span className="text-primary">Partner</span>{' '}
+              <span className="text-muted-foreground">&</span>{' '}
+              <span className="text-accent">Reti</span>
+            </h3>
+            <Sparkles className="w-6 h-6 text-accent animate-pulse" style={{animationDelay: '0.5s'}} />
+          </div>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Una rete di collaborazioni che rafforza il nostro impegno per la legalità e lo sviluppo territoriale
+          </p>
+        </div>
       </div>
       
       <div className="relative">
-        {/* Gradient overlays for smooth fade effect */}
-        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+        {/* Enhanced gradient overlays for smooth fade effect */}
+        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
         
-        {/* Scrolling container */}
-        <div className="flex animate-slide-infinite">
+        {/* Enhanced scrolling container */}
+        <div className="flex animate-slide-infinite" style={{animationDuration: '50s'}}>
           {duplicatedPartners.map((partner, index) => (
             <div
               key={`${partner.name}-${index}`}
-              className="flex-shrink-0 mx-4"
+              className="flex-shrink-0 mx-3"
             >
               <a
                 href={partner.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 bg-card/80 backdrop-blur-sm rounded-xl px-4 py-3 hover:bg-card hover:shadow-lg transition-all duration-300 border border-border/50 hover:border-primary/30 min-w-[280px]"
+                className="group relative flex items-center gap-4 bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl px-6 py-4 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 border border-border/30 hover:border-primary/50 min-w-[320px] hover:scale-105 overflow-hidden"
               >
-                <div className={`p-2 rounded-lg bg-gradient-to-br from-background to-muted/50 ${getTypeColor(partner.type)} group-hover:scale-110 transition-transform duration-300`}>
+                {/* Animated background gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-heart/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-2xl"></div>
+
+                {/* Glowing border effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+
+                <div className={`relative z-10 p-3 rounded-xl bg-gradient-to-br ${partner.type === 'partner' ? 'from-primary to-primary/80' : partner.type === 'network' ? 'from-accent to-accent/80' : 'from-heart to-heart/80'} text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
                   {getIcon(partner)}
+
+                  {/* Sparkle effects */}
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
                 </div>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
+
+                <div className="flex-1 min-w-0 relative z-10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="font-bold text-base truncate group-hover:text-primary transition-colors duration-300">
                       {partner.name}
                     </h4>
-                    <span className={`text-xs px-2 py-1 rounded-full bg-muted/50 ${getTypeColor(partner.type)}`}>
+                    <span className={`text-xs px-3 py-1 rounded-full font-medium ${partner.type === 'partner' ? 'bg-primary/20 text-primary' : partner.type === 'network' ? 'bg-accent/20 text-accent' : 'bg-heart/20 text-heart'} group-hover:scale-105 transition-transform duration-300`}>
                       {getTypeLabel(partner.type)}
                     </span>
                   </div>
                   {partner.description && (
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors duration-300 leading-relaxed">
                       {partner.description}
                     </p>
                   )}
+
+                  {/* Hover arrow */}
+                  <div className="absolute -right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
+                    <ExternalLink className="w-4 h-4 text-primary" />
+                  </div>
                 </div>
+
+                {/* Bottom accent line */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-primary via-accent to-heart group-hover:w-5/6 transition-all duration-500 rounded-full"></div>
               </a>
             </div>
           ))}
