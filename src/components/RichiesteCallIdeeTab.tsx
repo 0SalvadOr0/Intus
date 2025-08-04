@@ -200,15 +200,31 @@ const RichiesteCallIdeeTab = () => {
         "Timestamp Creazione": r.created_at
       }));
 
-      // Convert to CSV
+      // Convert to CSV with proper formatting
       const headers = Object.keys(csvData[0]);
+
+      // Escape CSV fields properly
+      const escapeCSVField = (field: any): string => {
+        if (field === null || field === undefined) return '';
+        const str = String(field);
+        // If field contains comma, newline, or quote, wrap in quotes and escape quotes
+        if (str.includes(',') || str.includes('\n') || str.includes('"') || str.includes('\r')) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      };
+
       const csvContent = [
-        headers.join(','),
-        ...csvData.map(row => headers.map(header => `"${row[header as keyof typeof row] || ''}"`).join(','))
-      ].join('\n');
+        headers.map(escapeCSVField).join(','),
+        ...csvData.map(row => headers.map(header => escapeCSVField(row[header as keyof typeof row])).join(','))
+      ].join('\r\n');
+
+      // Add BOM for proper Excel compatibility
+      const BOM = '\uFEFF';
+      const finalContent = BOM + csvContent;
 
       // Download file
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob([finalContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
