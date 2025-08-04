@@ -74,7 +74,6 @@ const App = () => {
                   <Route path="/" element={<Home />} />
                   <Route path="/chi-siamo" element={<ChiSiamo />} />
                   <Route path="/le-nostre-attivita" element={<LeNostreAttivita />} />
-                  <Route path="/mappa-progetti" element={<MappaProgetti />} />
                   <Route path="/progetto/:id" element={<ProjectViewer />} />
                   <Route path="/presenta-progetto" element={<PresentaProgetto />} />
                   <Route path="/blog" element={<Blog />} />
