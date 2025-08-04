@@ -29,7 +29,7 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
       </div>
 
       {/* Main speech bubble */}
-      <div className={`relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-2xl border-4 border-black dark:border-white transition-all duration-1000 transform ${
+      <div className={`relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-2xl border-4 border-black dark:border-white transition-all duration-1000 transform${
         isVisible ? 'scale-100 opacity-100 rotate-0' : 'scale-95 opacity-0 rotate-1'
       }`}>
         
@@ -75,15 +75,8 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
             <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
           </div>
         </div>
-
-        {/* Comic action words overlay */}
-        <div className="absolute -top-8 -right-8 transform rotate-12 bg-red-500 text-white px-4 py-2 rounded-full font-black text-sm border-4 border-black animate-pulse">
-          POW!
-        </div>
         
-        <div className="absolute -bottom-8 -left-8 transform -rotate-12 bg-blue-500 text-white px-4 py-2 rounded-full font-black text-sm border-4 border-black animate-pulse" style={{animationDelay: '0.5s'}}>
-          BAM!
-        </div>
+
       </div>
 
       {/* Thought bubble trail */}
