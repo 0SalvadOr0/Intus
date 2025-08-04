@@ -28,6 +28,7 @@ import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
 import BlogImageUploader from "@/components/BlogImageUploader";
 import ProjectImageUploader from "@/components/ProjectImageUploader";
 import { StorageStats } from "@/components/StorageStats";
+import EvaluationStats from "@/components/EvaluationStats";
 
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { supabase } from "@/lib/supabaseClient";
@@ -954,10 +955,15 @@ const Dashboard = () => {
               ))}
             </div>
 
-            {/* Storage Stats and Recent Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Storage Stats, Evaluation Stats and Recent Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Storage Statistics */}
               <StorageStats className="animate-fade-in-up" style={{animationDelay: '0.7s'}} />
+
+              {/* Evaluation Statistics */}
+              <div className="animate-fade-in-up" style={{animationDelay: '0.75s'}}>
+                <EvaluationStats />
+              </div>
 
               {/* Recent Activity */}
               <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up" style={{animationDelay: '0.8s'}}>
