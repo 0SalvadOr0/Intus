@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Life+Savers:wght@400;700;800&family=Ink+Free&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,7 +7,7 @@
 /* Leaflet CSS */
 @import 'leaflet/dist/leaflet.css';
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here.
 All colors MUST be HSL.
 */
 
