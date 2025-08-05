@@ -186,7 +186,7 @@ export default {
 					},
 					'50%': {
 						opacity: '0',
-						transform: 'scale(1.1)'
+						transform: 'scale(1.05)'
 					},
 					'100%': {
 						opacity: '1',
@@ -200,7 +200,7 @@ export default {
 					},
 					'50%': {
 						opacity: '1',
-						transform: 'scale(1.1)'
+						transform: 'scale(1.05)'
 					},
 					'100%': {
 						opacity: '0',
