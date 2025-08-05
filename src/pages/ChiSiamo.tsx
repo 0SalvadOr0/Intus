@@ -1155,7 +1155,7 @@ const ChiSiamo = () => {
                   <div className="relative mb-4">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
                     <div className="relative p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 text-white group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
-                      <img src="https://scontent.fplm1-1.fna.fbcdn.net/v/t39.30808-6/460946625_932081162266844_6442029316538644710_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=4F8eRw7vCWsQ7kNvgG8pbyX&_nc_zt=23&_nc_ht=scontent.fplm1-1.fna&_nc_gid=AJFJayJ9nP8fROIFSoqlGrq&oh=00_AYDRWJMfBqS-iIfCDlVepEOAUuOWZLpGhTAUFDrjfTGGEA&oe=678D05EE" alt="Laboratorio della Legalità Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
+                      <img src="../files/logos/lab_legalità.jpg" alt="Laboratorio della Legalità Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
                     </div>
                   </div>
                   <div className="text-center">

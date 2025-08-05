@@ -286,7 +286,7 @@ const MappaProgettiHome = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-heart/20 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
       </div>
 
-      <div className="container mx-auto relative z-10">
+      <div className="hidden md:block container mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in-up">
           <div className="flex items-center justify-center gap-3 mb-6">
@@ -323,206 +323,207 @@ const MappaProgettiHome = () => {
         </div>
 
         {/* Mappa e Slider */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Mappa */}
-          <div className="lg:col-span-2">
-            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-2xl overflow-hidden">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  Mappa Interattiva
-                  <Sparkles className="w-5 h-5 text-accent" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="h-[400px] relative">
-                  <MapContainer
-                    center={center}
-                    zoom={7}
-                    className="h-full w-full"
-                    style={{ borderRadius: '0 0 0.5rem 0.5rem' }}
-                  >
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    
-                    {progetti.map((progetto) => (
-                      <Marker
-                        key={progetto.id}
-                        position={progetto.coordinate}
-                        icon={getMarkerIcon(progetto.categoria, progetto.stato)}
-                        eventHandlers={{
-                          click: () => setProgettoSelezionato(progetto)
-                        }}
-                      >
-                        <Popup>
-                          <div className="p-2 min-w-[200px]">
-                            <h3 className="font-bold text-base mb-2">{progetto.nome}</h3>
-                            <p className="text-sm text-muted-foreground mb-2">{progetto.descrizione}</p>
-                            <div className="flex flex-wrap gap-1 mb-2">
-                              <Badge variant="secondary" className="text-xs">{progetto.anno}</Badge>
-                              <Badge 
-                                variant={progetto.stato === "completato" ? "default" : "secondary"}
-                                className="text-xs"
-                              >
-                                {progetto.stato}
-                              </Badge>
-                            </div>
-                            <Button 
-                              size="sm" 
-                              onClick={() => setProgettoSelezionato(progetto)}
-                              className="w-full text-xs"
-                            >
-                              Dettagli
-                            </Button>
-                          </div>
-                        </Popup>
-                      </Marker>
-                    ))}
-                  </MapContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Slider Progetti Significativi */}
-          <div className="lg:col-span-1">
-            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-2xl h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-accent" />
-                  Progetti in Evidenza
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="relative">
-                  <div className="overflow-hidden rounded-lg">
-                    <div 
-                      className="flex transition-transform duration-500 ease-out"
-                      style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Mappa */}
+            <div className="lg:col-span-2">
+              <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-2xl overflow-hidden">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-primary" />
+                    Mappa Interattiva
+                    <Sparkles className="w-5 h-5 text-accent" />
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="h-[400px] relative">
+                    <MapContainer
+                      center={center}
+                      zoom={7}
+                      className="h-full w-full"
+                      style={{ borderRadius: '0 0 0.5rem 0.5rem' }}
                     >
-                      {progettiSlider.map((progetto, index) => (
-                        <div key={progetto.id} className="w-full flex-shrink-0">
-                          <div className="bg-gradient-to-br from-muted/30 to-background/50 rounded-lg p-4 h-[280px] flex flex-col">
-                            <div className="flex items-center gap-2 mb-3">
-                              <Badge variant="outline" className="text-xs">{progetto.anno}</Badge>
-                              <Badge 
-                                variant={progetto.stato === "completato" ? "default" : "secondary"}
-                                className="text-xs"
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      />
+                      
+                      {progetti.map((progetto) => (
+                        <Marker
+                          key={progetto.id}
+                          position={progetto.coordinate}
+                          icon={getMarkerIcon(progetto.categoria, progetto.stato)}
+                          eventHandlers={{
+                            click: () => setProgettoSelezionato(progetto)
+                          }}
+                        >
+                          <Popup>
+                            <div className="p-2 min-w-[200px]">
+                              <h3 className="font-bold text-base mb-2">{progetto.nome}</h3>
+                              <p className="text-sm text-muted-foreground mb-2">{progetto.descrizione}</p>
+                              <div className="flex flex-wrap gap-1 mb-2">
+                                <Badge variant="secondary" className="text-xs">{progetto.anno}</Badge>
+                                <Badge 
+                                  variant={progetto.stato === "completato" ? "default" : "secondary"}
+                                  className="text-xs"
+                                >
+                                  {progetto.stato}
+                                </Badge>
+                              </div>
+                              <Button 
+                                size="sm" 
+                                onClick={() => setProgettoSelezionato(progetto)}
+                                className="w-full text-xs"
                               >
-                                {progetto.stato}
-                              </Badge>
+                                Dettagli
+                              </Button>
                             </div>
-                            
-                            <h3 className="font-bold text-lg mb-2 line-clamp-2">{progetto.nome}</h3>
-                            
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                              <MapPin className="w-3 h-3" />
-                              <span className="line-clamp-1">{progetto.località}</span>
-                            </div>
-                            
-                            <p className="text-sm text-muted-foreground mb-4 line-clamp-3 flex-grow">
-                              {progetto.descrizione}
-                            </p>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Users className="w-3 h-3" />
-                                <span className="line-clamp-1">{progetto.destinatari}</span>
+                          </Popup>
+                        </Marker>
+                      ))}
+                    </MapContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Slider Progetti Significativi */}
+            <div className="lg:col-span-1">
+              <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-2xl h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="w-5 h-5 text-accent" />
+                    Progetti in Evidenza
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="relative">
+                    <div className="overflow-hidden rounded-lg">
+                      <div 
+                        className="flex transition-transform duration-500 ease-out"
+                        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                      >
+                        {progettiSlider.map((progetto, index) => (
+                          <div key={progetto.id} className="w-full flex-shrink-0">
+                            <div className="bg-gradient-to-br from-muted/30 to-background/50 rounded-lg p-4 h-[280px] flex flex-col">
+                              <div className="flex items-center gap-2 mb-3">
+                                <Badge variant="outline" className="text-xs">{progetto.anno}</Badge>
+                                <Badge 
+                                  variant={progetto.stato === "completato" ? "default" : "secondary"}
+                                  className="text-xs"
+                                >
+                                  {progetto.stato}
+                                </Badge>
                               </div>
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Building className="w-3 h-3" />
-                                <span className="line-clamp-1">{progetto.ente}</span>
+                              
+                              <h3 className="font-bold text-lg mb-2 line-clamp-2">{progetto.nome}</h3>
+                              
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                                <MapPin className="w-3 h-3" />
+                                <span className="line-clamp-1">{progetto.località}</span>
                               </div>
+                              
+                              <p className="text-sm text-muted-foreground mb-4 line-clamp-3 flex-grow">
+                                {progetto.descrizione}
+                              </p>
+                              
+                              <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Users className="w-3 h-3" />
+                                  <span className="line-clamp-1">{progetto.destinatari}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Building className="w-3 h-3" />
+                                  <span className="line-clamp-1">{progetto.ente}</span>
+                                </div>
+                              </div>
+                              
+                              <Button 
+                                size="sm" 
+                                onClick={() => setProgettoSelezionato(progetto)}
+                                className="w-full mt-4 text-xs"
+                              >
+                                Vedi Dettagli
+                              </Button>
                             </div>
-                            
-                            <Button 
-                              size="sm" 
-                              onClick={() => setProgettoSelezionato(progetto)}
-                              className="w-full mt-4 text-xs"
-                            >
-                              Vedi Dettagli
-                            </Button>
                           </div>
-                        </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Controlli Slider */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={prevSlide}
+                      className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-2 w-8 h-8 bg-background/80 backdrop-blur-sm hover:bg-background/90"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={nextSlide}
+                      className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-2 w-8 h-8 bg-background/80 backdrop-blur-sm hover:bg-background/90"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                    
+                    {/* Indicatori */}
+                    <div className="flex justify-center gap-2 mt-4">
+                      {progettiSlider.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentSlide(index)}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            index === currentSlide ? 'bg-primary w-6' : 'bg-muted-foreground/30'
+                          }`}
+                        />
                       ))}
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Legenda */}
+          <div className="mt-8">
+            <Card className="border-0 bg-card/60 backdrop-blur-sm shadow-lg">
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                  <div>
+                    <h4 className="font-semibold mb-2 text-primary">Stati Progetti</h4>
+                    <div className="flex justify-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span className="text-sm">Completato</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <span className="text-sm">In corso</span>
+                      </div>
+                    </div>
+                  </div>
                   
-                  {/* Controlli Slider */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={prevSlide}
-                    className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-2 w-8 h-8 bg-background/80 backdrop-blur-sm hover:bg-background/90"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </Button>
+                  <div>
+                    <h4 className="font-semibold mb-2 text-accent">Copertura Territoriale</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Da Corleone a Napoli, da Pisa a Prato: l'impatto nazionale di INTUS
+                    </p>
+                  </div>
                   
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={nextSlide}
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-2 w-8 h-8 bg-background/80 backdrop-blur-sm hover:bg-background/90"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                  
-                  {/* Indicatori */}
-                  <div className="flex justify-center gap-2 mt-4">
-                    {progettiSlider.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-2 h-2 rounded-full transition-all ${
-                          index === currentSlide ? 'bg-primary w-6' : 'bg-muted-foreground/30'
-                        }`}
-                      />
-                    ))}
+                  <div>
+                    <h4 className="font-semibold mb-2 text-heart">Come Esplorare</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Clicca sui marker per scoprire ogni progetto e la sua storia
+                    </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
-        </div>
-
-        {/* Legenda */}
-        <div className="mt-8">
-          <Card className="border-0 bg-card/60 backdrop-blur-sm shadow-lg">
-            <CardContent className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div>
-                  <h4 className="font-semibold mb-2 text-primary">Stati Progetti</h4>
-                  <div className="flex justify-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm">Completato</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      <span className="text-sm">In corso</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h4 className="font-semibold mb-2 text-accent">Copertura Territoriale</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Da Corleone a Napoli, da Pisa a Prato: l'impatto nazionale di INTUS
-                  </p>
-                </div>
-                
-                <div>
-                  <h4 className="font-semibold mb-2 text-heart">Come Esplorare</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Clicca sui marker per scoprire ogni progetto e la sua storia
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </div>
 
       {/* Modal Dettagli Progetto */}
