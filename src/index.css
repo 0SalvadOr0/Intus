@@ -125,5 +125,16 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Life Savers', serif;
+  }
+
+  /* Apply Life Savers to headings and important text */
+  h1, h2, h3, h4, h5, h6, .font-bold, .font-semibold {
+    font-family: 'Life Savers', serif;
+  }
+
+  /* Use Ink Free for handwritten style elements */
+  .font-handwritten, .handwritten {
+    font-family: 'Ink Free', cursive;
   }
 }
