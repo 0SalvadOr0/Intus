@@ -26,9 +26,12 @@ const ChiSiamo = lazy(() => import("./pages/ChiSiamo"));
 const LeNostreAttivita = lazy(() => import("./pages/LeNostreAttivita"));
 const PresentaProgetto = lazy(() => import("./pages/PresentaProgetto"));
 const Blog = lazy(() => import("./pages/Blog"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const Contatti = lazy(() => import("./pages/Contatti"));
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ProjectViewer from "./components/ProjectViewer";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +80,8 @@ const App = () => {
                   <Route path="/progetto/:id" element={<ProjectViewer />} />
                   <Route path="/presenta-progetto" element={<PresentaProgetto />} />
                   <Route path="/blog" element={<Blog />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/contatti" element={<Contatti />} />
                   <Route
                     path="/dashboard"
                     element={
@@ -88,6 +93,7 @@ const App = () => {
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
+              <Footer />
             </BrowserRouter>
           </div>
         </TooltipProvider>
