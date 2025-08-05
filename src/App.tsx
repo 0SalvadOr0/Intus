@@ -69,7 +69,7 @@ const App = () => {
             <BrowserRouter>
               <ScrollToTop />
               <Navigation />
-              <Suspense fallback={<SmoothLoadingScreen isVisible={true} message="Caricamento pagina" />}>
+              <Suspense  fallback={<SmoothLoadingScreen  isVisible={true} message="Caricamento pagina" />}>
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/chi-siamo" element={<ChiSiamo />} />

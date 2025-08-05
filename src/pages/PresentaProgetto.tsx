@@ -263,6 +263,78 @@ const CallIdeeGiovani = () => {
               </CardContent>
             </Card>
 
+            {/* Dettagli Progetto */}
+            <Card className="animate-scale-in shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="w-6 h-6 text-primary" />
+                  Dettagli Progetto
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="luogoSvolgimento"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Luogo di Svolgimento</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Indica il luogo dove si svolgerà il progetto" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="categoria"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Categoria</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Seleziona categoria" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="sociale">Sociale e Volontariato</SelectItem>
+                            <SelectItem value="ambientale">Ambientale e Sostenibilità</SelectItem>
+                            <SelectItem value="culturale">Culturale e Artistico</SelectItem>
+                            <SelectItem value="educativo">Educativo e Formativo</SelectItem>
+                            <SelectItem value="tecnologico">Tecnologico e Innovativo</SelectItem>
+                            <SelectItem value="sportivo">Sportivo e Benessere</SelectItem>
+                            <SelectItem value="imprenditoriale">Imprenditoriale</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="categoriaDescrizione"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descrizione Categoria</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Breve descrizione della categoria scelta e come si collega al tuo progetto..."
+                          className="min-h-[80px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
             {/* Informazioni Referente */}
             <Card className="animate-scale-in shadow-lg">
               <CardHeader>
@@ -484,77 +556,7 @@ const CallIdeeGiovani = () => {
               </CardContent>
             </Card>
 
-            {/* Dettagli Progetto */}
-            <Card className="animate-scale-in shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-6 h-6 text-primary" />
-                  Dettagli e Ubicazione
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="luogoSvolgimento"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Luogo di Svolgimento</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Indica il luogo dove si svolgerà il progetto" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="categoria"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Categoria</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Seleziona categoria" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="sociale">Sociale e Volontariato</SelectItem>
-                            <SelectItem value="ambientale">Ambientale e Sostenibilità</SelectItem>
-                            <SelectItem value="culturale">Culturale e Artistico</SelectItem>
-                            <SelectItem value="educativo">Educativo e Formativo</SelectItem>
-                            <SelectItem value="tecnologico">Tecnologico e Innovativo</SelectItem>
-                            <SelectItem value="sportivo">Sportivo e Benessere</SelectItem>
-                            <SelectItem value="imprenditoriale">Imprenditoriale</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="categoriaDescrizione"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descrizione Categoria</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Breve descrizione della categoria scelta e come si collega al tuo progetto..."
-                          className="min-h-[80px]"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-            </Card>
+            
 
             {/* Evento Pubblico */}
             <Card className="animate-scale-in shadow-lg">

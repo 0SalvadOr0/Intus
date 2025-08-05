@@ -26,7 +26,7 @@ const CallIdeeNotice = () => {
                   Avviso importante - Call di Idee Giovani
                 </h3>
                 <p className="text-amber-700 dark:text-amber-200 text-sm leading-relaxed">
-                  Ti invitiamo a consultare attentamente il seguente documento prima di procedere con la tua candidatura:
+                  Ti consigliamo di leggere attentamente il documento informativo. Usa il modello Word come riferimento: compila i campi lì e poi copia e incolla le risposte direttamente nel form online.
                 </p>
               </div>
               
