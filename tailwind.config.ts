@@ -18,6 +18,12 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'default': ['Life Savers', 'serif'],
+				'life-savers': ['Life Savers', 'serif'],
+				'ink-free': ['Ink Free', 'cursive'],
+				'handwritten': ['Ink Free', 'cursive'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
