@@ -52,8 +52,13 @@ const EvaluationStats = () => {
             approved_requests: data.filter(r => r.valutazione?.stato === 'approvato').length,
             rejected_requests: data.filter(r => r.valutazione?.stato === 'rifiutato').length,
             average_score: data
-              .filter(r => r.valutazione?.punteggio)
-              .reduce((sum, r, _, arr) => sum + (r.valutazione.punteggio / arr.length), 0) || 0
+              .filter(r => r.valutazione && (r.valutazione.punteggio_totale || r.valutazione.punteggio))
+              .reduce((sum, r, _, arr) => {
+                const score = r.valutazione.punteggio_totale || r.valutazione.punteggio;
+                const maxScore = r.valutazione.punteggio_totale ? 100 : 10;
+                // Normalize to percentage
+                return sum + ((score / maxScore * 100) / arr.length);
+              }, 0) || 0
           };
 
           setStats(calculatedStats);
