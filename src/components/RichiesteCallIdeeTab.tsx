@@ -38,6 +38,7 @@ import {
   CreditCard,
   Activity
 } from "lucide-react";
+import NewEvaluationDialog from "./NewEvaluationDialog";
 
 interface Coprogramma {
   attivita: string;
@@ -61,6 +62,14 @@ interface FiguraSupporto {
   telefono: string;
   dataNascita: string;
   codiceFiscale: string;
+}
+
+interface EvaluationCriteria {
+  cantierabilita: number;
+  sostenibilita: number;
+  risposta_territorio: number;
+  coinvolgimento_giovani: number;
+  promozione_territorio: number;
 }
 
 interface Richiesta {
@@ -104,7 +113,11 @@ interface Richiesta {
   };
   created_at: string;
   valutazione?: {
-    punteggio: number;
+    // Legacy fields for backward compatibility
+    punteggio?: number;
+    // New evaluation system
+    criteri?: EvaluationCriteria;
+    punteggio_totale?: number;
     stato: "in_valutazione" | "approvato" | "rifiutato" | "in_attesa";
     note_valutatore: string;
     data_valutazione: string;
@@ -122,6 +135,7 @@ const RichiesteCallIdeeTab = () => {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [exporting, setExporting] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Richiesta | null>(null);
+  const [evaluationDialogOpen, setEvaluationDialogOpen] = useState(false);
   const [evaluationData, setEvaluationData] = useState({
     punteggio: 0,
     stato: "in_valutazione" as const,
@@ -221,7 +235,7 @@ const RichiesteCallIdeeTab = () => {
         "Assicurazione": r.spese_generali?.assicurazione || 0,
         "Rimborso Spese": r.spese_generali?.rimborsoSpese || 0,
         "Totale Complessivo": calculateTotalCost(r),
-        "Punteggio Valutazione": r.valutazione?.punteggio || '',
+        "Punteggio Valutazione": r.valutazione?.punteggio_totale || r.valutazione?.punteggio || '',
         "Stato Valutazione": r.valutazione?.stato || 'in_attesa',
         "Note Valutatore": r.valutazione?.note_valutatore || '',
         "Data Valutazione": r.valutazione?.data_valutazione || '',
@@ -286,6 +300,47 @@ const RichiesteCallIdeeTab = () => {
   };
 
   // 📝 Evaluation Functions
+  const saveNewEvaluation = async (newEvaluationData: any) => {
+    if (!selectedRequest) return;
+
+    try {
+      const evaluationPayload = {
+        ...newEvaluationData,
+        data_valutazione: new Date().toISOString(),
+        valutatore: "Admin"
+      };
+
+      const { error } = await supabase
+        .from("call_idee_giovani")
+        .update({ valutazione: evaluationPayload })
+        .eq("id", selectedRequest.id);
+
+      if (error) throw error;
+
+      // Update local state
+      setRichieste(prev => prev.map(r =>
+        r.id === selectedRequest.id
+          ? { ...r, valutazione: evaluationPayload }
+          : r
+      ));
+
+      toast({
+        title: "Valutazione salvata!",
+        description: "La valutazione è stata salvata con successo."
+      });
+
+      setSelectedRequest(null);
+    } catch (error) {
+      console.error("Save evaluation error:", error);
+      toast({
+        title: "Errore nel salvataggio",
+        description: "Si è verificato un errore durante il salvataggio della valutazione.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Legacy evaluation function for backward compatibility
   const saveEvaluation = async () => {
     if (!selectedRequest) return;
 
@@ -532,10 +587,12 @@ const RichiesteCallIdeeTab = () => {
                               {getStatusIcon(status)}
                               <span className="text-sm font-medium">Valutazione</span>
                             </div>
-                            {r.valutazione.punteggio > 0 && (
+                            {(r.valutazione.punteggio_totale || r.valutazione.punteggio) && (
                               <div className="flex items-center gap-1">
                                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                <span className="text-sm font-bold">{r.valutazione.punteggio}/10</span>
+                                <span className="text-sm font-bold">
+                                  {r.valutazione.punteggio_totale || r.valutazione.punteggio}/{r.valutazione.punteggio_totale ? '100' : '10'}
+                                </span>
                               </div>
                             )}
                           </div>
@@ -768,96 +825,17 @@ const RichiesteCallIdeeTab = () => {
                         >
                           <Download className="w-4 h-4" />
                         </Button>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                setSelectedRequest(r);
-                                setEvaluationData({
-                                  punteggio: r.valutazione?.punteggio || 0,
-                                  stato: r.valutazione?.stato || "in_valutazione",
-                                  note_valutatore: r.valutazione?.note_valutatore || ""
-                                });
-                              }}
-                              className="text-blue-600 hover:text-blue-700 h-8 px-3"
-                            >
-                              <Star className="w-4 h-4" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-[500px]">
-                            <DialogHeader>
-                              <DialogTitle>Valuta Richiesta</DialogTitle>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                              <div>
-                                <h4 className="font-semibold mb-2">{selectedRequest?.titolo_progetto}</h4>
-                                <p className="text-sm text-muted-foreground">{selectedRequest?.descrizione_progetto}</p>
-                              </div>
-                              
-                              <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                  <Label htmlFor="punteggio">Punteggio (1-10)</Label>
-                                  <Input
-                                    id="punteggio"
-                                    type="number"
-                                    min="1"
-                                    max="10"
-                                    value={evaluationData.punteggio}
-                                    onChange={(e) => setEvaluationData(prev => ({
-                                      ...prev,
-                                      punteggio: parseInt(e.target.value) || 0
-                                    }))}
-                                  />
-                                </div>
-                                <div className="space-y-2">
-                                  <Label htmlFor="stato">Stato</Label>
-                                  <Select 
-                                    value={evaluationData.stato} 
-                                    onValueChange={(value: any) => setEvaluationData(prev => ({
-                                      ...prev,
-                                      stato: value
-                                    }))}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="in_valutazione">In Valutazione</SelectItem>
-                                      <SelectItem value="approvato">Approvato</SelectItem>
-                                      <SelectItem value="rifiutato">Rifiutato</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor="note">Note Valutazione</Label>
-                                <Textarea
-                                  id="note"
-                                  placeholder="Inserisci le note sulla valutazione..."
-                                  value={evaluationData.note_valutatore}
-                                  onChange={(e) => setEvaluationData(prev => ({
-                                    ...prev,
-                                    note_valutatore: e.target.value
-                                  }))}
-                                  rows={3}
-                                />
-                              </div>
-                              
-                              <div className="flex justify-end gap-2">
-                                <Button variant="outline" onClick={() => setSelectedRequest(null)}>
-                                  Annulla
-                                </Button>
-                                <Button onClick={saveEvaluation}>
-                                  <Save className="w-4 h-4 mr-2" />
-                                  Salva Valutazione
-                                </Button>
-                              </div>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedRequest(r);
+                            setEvaluationDialogOpen(true);
+                          }}
+                          className="text-blue-600 hover:text-blue-700 h-8 px-3"
+                        >
+                          <Star className="w-4 h-4" />
+                        </Button>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -885,6 +863,14 @@ const RichiesteCallIdeeTab = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* New Evaluation Dialog */}
+      <NewEvaluationDialog
+        open={evaluationDialogOpen}
+        onOpenChange={setEvaluationDialogOpen}
+        selectedRequest={selectedRequest}
+        onSave={saveNewEvaluation}
+      />
     </div>
   );
 };
