@@ -7,12 +7,15 @@ import { useState, useEffect } from "react";
 import PartnersStrip from "@/components/PartnersStrip";
 import ComicTextBubble from "@/components/ComicTextBubble";
 import MappaProgettiHome from "@/components/MappaProgettiHome";
+import { useTheme } from "next-themes";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 
 
 const Home = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [counters, setCounters] = useState({ projects: 0, years: 0, people: 0 });
+  const { theme } = useTheme();
 
   // Animation hook
   useEffect(() => {
@@ -81,9 +84,27 @@ const Home = () => {
         <div className="container mx-auto text-center relative">
           <div className="mb-12 md:mb-16">
             <div className="flex justify-center mb-8 md:mb-12">
-              <div className="relative">
-                <AnimatedIntusLogo className="w-72 h-auto md:w-96 lg:w-[28rem] animate-fade-in-up" />
-                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-full blur-2xl animate-pulse opacity-30"></div>
+              <div className="flex items-center justify-center mb-8 md:mb-12 relative">
+                {/* Logo */}
+                {theme === "dark" ? (
+                    <AnimatedIntusLogo className="w-48 h-auto md:w-64 lg:w-72 animate-fade-in-up" />
+                  ) : (
+                    <img
+                      src="../files/logos/logo_cuore.png"
+                      alt="Intus Corleone APS - Perdersi è scoprire"
+                      className="w-48 h-auto md:w-64 lg:w-72"
+                    />
+                  )}
+
+                {/* Testo accanto al logo */}
+                <div className="ml-4 text-left">
+                  <p className="text-2xl font-bold text-muted-foreground">
+                    Intus Corleone APS
+                  </p>
+                  <p className="text-xl font-caveat text-muted-foreground mt-1">
+                    Perdersi è scoprire
+                  </p>
+                </div>
               </div>
             </div>
 
