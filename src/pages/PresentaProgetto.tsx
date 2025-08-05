@@ -77,7 +77,7 @@ const formSchema = z.object({
   
   luogoSvolgimento: z.string().min(2, "Luogo di svolgimento richiesto"),
   categoria: z.string().min(1, "Categoria richiesta"),
-  categoriaDescrizione: z.string().min(10, "Descrizione categoria richiesta (min 10 caratteri)"),
+  categoriaDescrizione: z.string().min(10, "Descrizione categoria e risultati attesi richiesta (min 10 caratteri)"),
   
   // Evento pubblico
   tipoEvento: z.string().min(3, "Tipo di evento richiesto"),
@@ -339,7 +339,7 @@ const CallIdeeGiovani = () => {
                             <FormItem>
                               <FormLabel>Mesi</FormLabel>
                               <FormControl>
-                                <Input placeholder="Es: Gennaio-Marzo" {...field} />
+                                <Input placeholder="Es: Ottobre-Novembre" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -445,7 +445,7 @@ const CallIdeeGiovani = () => {
                   name="categoriaDescrizione"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Descrizione Categoria</FormLabel>
+                      <FormLabel>Descrizione Categoria e risulati attesi</FormLabel>
                       <FormControl>
                         <Textarea 
                           placeholder="Breve descrizione della categoria scelta e come si collega al tuo progetto..."
