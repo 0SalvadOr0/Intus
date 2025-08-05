@@ -20,6 +20,22 @@ const partecipanteSchema = z.object({
   email: z.string().email("Email non valida"),
   telefono: z.string().min(8, "Numero di telefono valido richiesto"),
   dataNascita: z.string().min(1, "Data di nascita richiesta"),
+  codiceFiscale: z.string().min(16, "Codice fiscale richiesto (16 caratteri)"),
+});
+
+const figuraSupportoSchema = z.object({
+  nome: z.string().min(2, "Nome richiesto"),
+  cognome: z.string().min(2, "Cognome richiesto"),
+  email: z.string().email("Email non valida"),
+  telefono: z.string().min(8, "Numero di telefono valido richiesto"),
+  dataNascita: z.string().min(1, "Data di nascita richiesta"),
+  codiceFiscale: z.string().min(16, "Codice fiscale richiesto (16 caratteri)"),
+});
+
+const coprogrammaSchema = z.object({
+  attivita: z.string().min(3, "Attività richiesta"),
+  descrizione: z.string().min(10, "Descrizione richiesta (min 10 caratteri)"),
+  mesi: z.string().min(1, "Mesi richiesti"),
 });
 
 const spesaSchema = z.object({
@@ -31,8 +47,15 @@ const spesaSchema = z.object({
 const formSchema = z.object({
   titoloProgetto: z.string().min(3, "Il titolo deve contenere almeno 3 caratteri"),
   descrizioneProgetto: z.string().min(50, "La descrizione deve contenere almeno 50 caratteri"),
+  
+  // Coprogramma
+  coprogramma: z.array(coprogrammaSchema).min(1, "Almeno un'attività del coprogramma richiesta"),
+  
   dataInizio: z.string().min(1, "Data di inizio richiesta"),
   dataFine: z.string().min(1, "Data di fine richiesta"),
+  
+  // Dettagli progetto - autorizzazioni opzionali
+  autorizzazioni: z.string().optional(),
   
   // Informazioni referente
   referenteNome: z.string().min(2, "Nome richiesto"),
@@ -40,12 +63,17 @@ const formSchema = z.object({
   referenteEmail: z.string().email("Email non valida"),
   referenteTelefono: z.string().min(8, "Numero di telefono valido richiesto"),
   referenteDataNascita: z.string().min(1, "Data di nascita richiesta"),
+  referenteCodiceFiscale: z.string().min(16, "Codice fiscale richiesto (16 caratteri)"),
   
   // Gruppo
   numeroPartecipanti: z.enum(["2-4", "5-9", "+10"], {
     required_error: "Seleziona il numero di partecipanti",
   }),
+  descrizioneGruppo: z.string().min(20, "Descrizione gruppo richiesta (min 20 caratteri)"),
   partecipanti: z.array(partecipanteSchema).min(1, "Almeno un partecipante richiesto"),
+  
+  // Figure di supporto volontario
+  figureSupporto: z.array(figuraSupportoSchema).optional(),
   
   luogoSvolgimento: z.string().min(2, "Luogo di svolgimento richiesto"),
   categoria: z.string().min(1, "Categoria richiesta"),
@@ -76,15 +104,20 @@ const CallIdeeGiovani = () => {
     defaultValues: {
       titoloProgetto: "",
       descrizioneProgetto: "",
+      coprogramma: [{ attivita: "", descrizione: "", mesi: "" }],
       dataInizio: "",
       dataFine: "",
+      autorizzazioni: "",
       referenteNome: "",
       referenteCognome: "",
       referenteEmail: "",
       referenteTelefono: "",
       referenteDataNascita: "",
+      referenteCodiceFiscale: "",
       numeroPartecipanti: "2-4",
-      partecipanti: [{ nome: "", cognome: "", email: "", telefono: "", dataNascita: "" }],
+      descrizioneGruppo: "",
+      partecipanti: [{ nome: "", cognome: "", email: "", telefono: "", dataNascita: "", codiceFiscale: "" }],
+      figureSupporto: [],
       luogoSvolgimento: "",
       categoria: "",
       categoriaDescrizione: "",
@@ -106,6 +139,16 @@ const CallIdeeGiovani = () => {
     name: "partecipanti",
   });
 
+  const { fields: coprogrammaFields, append: appendCoprogramma, remove: removeCoprogramma } = useFieldArray({
+    control: form.control,
+    name: "coprogramma",
+  });
+
+  const { fields: figureSupportoFields, append: appendFiguraSupporto, remove: removeFiguraSupporto } = useFieldArray({
+    control: form.control,
+    name: "figureSupporto",
+  });
+
   const { fields: attrezzatureFields, append: appendAttrezzatura, remove: removeAttrezzatura } = useFieldArray({
     control: form.control,
     name: "speseAttrezzature",
@@ -123,15 +166,20 @@ const CallIdeeGiovani = () => {
       {
         titolo_progetto: values.titoloProgetto,
         descrizione_progetto: values.descrizioneProgetto,
+        coprogramma: values.coprogramma,
         data_inizio: values.dataInizio,
         data_fine: values.dataFine,
+        autorizzazioni: values.autorizzazioni,
         referente_nome: values.referenteNome,
         referente_cognome: values.referenteCognome,
         referente_email: values.referenteEmail,
         referente_telefono: values.referenteTelefono,
         referente_data_nascita: values.referenteDataNascita,
+        referente_codice_fiscale: values.referenteCodiceFiscale,
         numero_partecipanti: values.numeroPartecipanti,
+        descrizione_gruppo: values.descrizioneGruppo,
         partecipanti: values.partecipanti,
+        figure_supporto: values.figureSupporto,
         luogo_svolgimento: values.luogoSvolgimento,
         categoria: values.categoria,
         categoria_descrizione: values.categoriaDescrizione,
@@ -224,6 +272,83 @@ const CallIdeeGiovani = () => {
                     </FormItem>
                   )}
                 />
+
+                {/* Coprogramma */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-lg font-semibold">Coprogramma</h4>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => appendCoprogramma({ attivita: "", descrizione: "", mesi: "" })}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Aggiungi Attività
+                    </Button>
+                  </div>
+
+                  {coprogrammaFields.map((field, index) => (
+                    <Card key={field.id} className="p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <h5 className="font-medium">Attività {index + 1}</h5>
+                        {index > 0 && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeCoprogramma(index)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <FormField
+                          control={form.control}
+                          name={`coprogramma.${index}.attivita`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Attività</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Nome dell'attività" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`coprogramma.${index}.descrizione`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Descrizione</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Descrivi l'attività" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`coprogramma.${index}.mesi`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Mesi</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Es: Gennaio-Marzo" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </Card>
+                  ))}
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
@@ -332,6 +457,27 @@ const CallIdeeGiovani = () => {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name="autorizzazioni"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Autorizzazioni (Opzionale)</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Eventuali autorizzazioni o permessi necessari per il progetto..."
+                          className="min-h-[80px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Campo opzionale per allegare informazioni su autorizzazioni necessarie
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
 
@@ -414,6 +560,20 @@ const CallIdeeGiovani = () => {
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="referenteCodiceFiscale"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Codice Fiscale</FormLabel>
+                        <FormControl>
+                          <Input placeholder="RSSMRA80A01H501Z" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -450,6 +610,27 @@ const CallIdeeGiovani = () => {
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="descrizioneGruppo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descrizione Gruppo</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Chi siete e che passioni avete? Avete già realizzato qualcosa insieme?"
+                          className="min-h-[100px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Raccontaci qualcosa di più sul vostro gruppo
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="text-lg font-semibold">Partecipanti</h4>
@@ -457,7 +638,7 @@ const CallIdeeGiovani = () => {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => appendPartecipante({ nome: "", cognome: "", email: "", telefono: "", dataNascita: "" })}
+                      onClick={() => appendPartecipante({ nome: "", cognome: "", email: "", telefono: "", dataNascita: "", codiceFiscale: "" })}
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Aggiungi Partecipante
@@ -549,14 +730,146 @@ const CallIdeeGiovani = () => {
                             </FormItem>
                           )}
                         />
+
+                        <FormField
+                          control={form.control}
+                          name={`partecipanti.${index}.codiceFiscale`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Codice Fiscale</FormLabel>
+                              <FormControl>
+                                <Input placeholder="RSSMRA80A01H501Z" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Figure di supporto volontario */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-lg font-semibold">Figure di Supporto a Titolo Volontario</h4>
+                      <p className="text-sm text-muted-foreground">Opzionale - Aggiungi persone che supporteranno il progetto a titolo volontario</p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => appendFiguraSupporto({ nome: "", cognome: "", email: "", telefono: "", dataNascita: "", codiceFiscale: "" })}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Aggiungi Figura di Supporto
+                    </Button>
+                  </div>
+
+                  {figureSupportoFields.map((field, index) => (
+                    <Card key={field.id} className="p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <h5 className="font-medium">Figura di Supporto {index + 1}</h5>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => removeFiguraSupporto(index)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <FormField
+                          control={form.control}
+                          name={`figureSupporto.${index}.nome`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Nome</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Nome" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`figureSupporto.${index}.cognome`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Cognome</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Cognome" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`figureSupporto.${index}.email`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <Input type="email" placeholder="email@esempio.com" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`figureSupporto.${index}.telefono`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Telefono</FormLabel>
+                              <FormControl>
+                                <Input placeholder="+39 123 456 7890" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`figureSupporto.${index}.dataNascita`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Data di Nascita</FormLabel>
+                              <FormControl>
+                                <Input type="date" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`figureSupporto.${index}.codiceFiscale`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Codice Fiscale</FormLabel>
+                              <FormControl>
+                                <Input placeholder="RSSMRA80A01H501Z" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     </Card>
                   ))}
                 </div>
               </CardContent>
             </Card>
-
-            
 
             {/* Evento Pubblico */}
             <Card className="animate-scale-in shadow-lg">
