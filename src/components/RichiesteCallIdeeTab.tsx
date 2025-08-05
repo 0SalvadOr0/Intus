@@ -34,34 +34,59 @@ import {
   AlertCircle,
   Clock,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  CreditCard,
+  Activity
 } from "lucide-react";
+
+interface Coprogramma {
+  attivita: string;
+  descrizione: string;
+  mesi: string;
+}
+
+interface Partecipante {
+  nome: string;
+  cognome: string;
+  email: string;
+  telefono: string;
+  dataNascita: string;
+  codiceFiscale: string;
+}
+
+interface FiguraSupporto {
+  nome: string;
+  cognome: string;
+  email: string;
+  telefono: string;
+  dataNascita: string;
+  codiceFiscale: string;
+}
 
 interface Richiesta {
   id: string;
   titolo_progetto: string;
+  descrizione_progetto: string;
+  coprogramma?: Coprogramma[];
+  data_inizio: string;
+  data_fine: string;
+  autorizzazioni?: string;
   categoria: string;
   tipo_evento: string;
-  descrizione_progetto: string;
   referente_nome: string;
   referente_cognome: string;
   referente_email: string;
   referente_telefono: string;
   referente_data_nascita: string;
+  referente_codice_fiscale?: string;
   luogo_svolgimento: string;
-  data_inizio: string;
-  data_fine: string;
-  numero_partecipanti: number;
+  numero_partecipanti: string;
+  descrizione_gruppo?: string;
   categoria_descrizione: string;
   descrizione_evento: string;
   altro?: string;
-  partecipanti: Array<{
-    nome: string;
-    cognome: string;
-    email: string;
-    telefono: string;
-    dataNascita: string;
-  }>;
+  partecipanti: Partecipante[];
+  figure_supporto?: FiguraSupporto[];
   spese_attrezzature: Array<{
     descrizione: string;
     quantita: number;
@@ -165,19 +190,23 @@ const RichiesteCallIdeeTab = () => {
     try {
       const dataToExport = singleRequest ? [singleRequest] : filteredRichieste;
       
-      // Prepare CSV data with ALL database fields
+      // Prepare CSV data with ALL database fields including new ones
       const csvData = dataToExport.map(r => ({
         ID: r.id,
         "Titolo Progetto": r.titolo_progetto,
         "Descrizione Progetto": r.descrizione_progetto,
+        "Coprogramma": JSON.stringify(r.coprogramma || []),
         "Data Inizio": r.data_inizio,
         "Data Fine": r.data_fine,
+        "Autorizzazioni": r.autorizzazioni || '',
         "Referente Nome": r.referente_nome,
         "Referente Cognome": r.referente_cognome,
         "Referente Email": r.referente_email,
         "Referente Telefono": r.referente_telefono,
         "Referente Data Nascita": r.referente_data_nascita,
+        "Referente Codice Fiscale": r.referente_codice_fiscale || '',
         "Numero Partecipanti": r.numero_partecipanti,
+        "Descrizione Gruppo": r.descrizione_gruppo || '',
         "Luogo Svolgimento": r.luogo_svolgimento,
         "Categoria": r.categoria,
         "Categoria Descrizione": r.categoria_descrizione || '',
@@ -185,6 +214,7 @@ const RichiesteCallIdeeTab = () => {
         "Descrizione Evento": r.descrizione_evento || '',
         "Altro": r.altro || '',
         "Partecipanti JSON": JSON.stringify(r.partecipanti || []),
+        "Figure Supporto JSON": JSON.stringify(r.figure_supporto || []),
         "Totale Spese Attrezzature": r.spese_attrezzature?.reduce((sum, s) => sum + (s.costo * s.quantita), 0) || 0,
         "Totale Spese Servizi": r.spese_servizi?.reduce((sum, s) => sum + (s.costo * s.quantita), 0) || 0,
         "SIAE": r.spese_generali?.siae || 0,
@@ -260,67 +290,25 @@ const RichiesteCallIdeeTab = () => {
     if (!selectedRequest) return;
 
     try {
-      // Usa la funzione helper di Supabase per maggiore sicurezza
-      const { data, error } = await supabase.rpc('update_evaluation', {
-        request_id: selectedRequest.id,
-        new_score: evaluationData.punteggio,
-        new_status: evaluationData.stato,
-        evaluator_notes: evaluationData.note_valutatore,
-        evaluator_name: "Admin" // In un'app reale, questo sarebbe l'utente corrente
-      });
+      const evaluationPayload = {
+        ...evaluationData,
+        data_valutazione: new Date().toISOString(),
+        valutatore: "Admin"
+      };
 
-      if (error) {
-        // Fallback al metodo diretto se la funzione RPC non è disponibile
-        console.warn("RPC function not available, using direct update:", error);
+      const { error } = await supabase
+        .from("call_idee_giovani")
+        .update({ valutazione: evaluationPayload })
+        .eq("id", selectedRequest.id);
 
-        const evaluationPayload = {
-          ...evaluationData,
-          data_valutazione: new Date().toISOString(),
-          valutatore: "Admin"
-        };
+      if (error) throw error;
 
-        const { error: directError } = await supabase
-          .from("call_idee_giovani")
-          .update({ valutazione: evaluationPayload })
-          .eq("id", selectedRequest.id);
-
-        if (directError) throw directError;
-
-        // Update local state
-        setRichieste(prev => prev.map(r =>
-          r.id === selectedRequest.id
-            ? { ...r, valutazione: evaluationPayload }
-            : r
-        ));
-      } else {
-        // Se la funzione RPC ha funzionato, ricarica i dati
-        const { data: updatedData, error: fetchError } = await supabase
-          .from("call_idee_giovani")
-          .select("*")
-          .eq("id", selectedRequest.id)
-          .single();
-
-        if (!fetchError && updatedData) {
-          setRichieste(prev => prev.map(r =>
-            r.id === selectedRequest.id ? updatedData : r
-          ));
-        } else {
-          // Fallback al payload locale
-          const evaluationPayload = {
-            punteggio: evaluationData.punteggio,
-            stato: evaluationData.stato,
-            note_valutatore: evaluationData.note_valutatore,
-            data_valutazione: new Date().toISOString(),
-            valutatore: "Admin"
-          };
-
-          setRichieste(prev => prev.map(r =>
-            r.id === selectedRequest.id
-              ? { ...r, valutazione: evaluationPayload }
-              : r
-          ));
-        }
-      }
+      // Update local state
+      setRichieste(prev => prev.map(r =>
+        r.id === selectedRequest.id
+          ? { ...r, valutazione: evaluationPayload }
+          : r
+      ));
 
       toast({
         title: "Valutazione salvata!",
@@ -574,6 +562,12 @@ const RichiesteCallIdeeTab = () => {
                         <Phone className="w-4 h-4 mr-2" />
                         <span>{r.referente_telefono}</span>
                       </div>
+                      {r.referente_codice_fiscale && (
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          <span className="font-mono text-xs">{r.referente_codice_fiscale}</span>
+                        </div>
+                      )}
                       <div className="flex items-center text-sm text-muted-foreground">
                         <MapPin className="w-4 h-4 mr-2" />
                         <span className="truncate">{r.luogo_svolgimento}</span>
@@ -592,6 +586,48 @@ const RichiesteCallIdeeTab = () => {
                     {isExpanded && (
                       <div className="px-6 pb-4 border-t border-border/30 bg-gray-50/50 dark:bg-card/50">
                         <div className="py-4 space-y-4">
+                          {/* Coprogramma */}
+                          {r.coprogramma && r.coprogramma.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold text-sm text-primary mb-2 flex items-center">
+                                <Activity className="w-4 h-4 mr-1" />
+                                Coprogramma ({r.coprogramma.length} attività)
+                              </h4>
+                              <div className="space-y-2">
+                                {r.coprogramma.map((c, i) => (
+                                  <div key={i} className="text-xs bg-white dark:bg-card rounded px-3 py-2 border">
+                                    <div className="font-medium text-primary">{c.attivita}</div>
+                                    <div className="text-muted-foreground">{c.descrizione}</div>
+                                    <div className="text-xs text-muted-foreground mt-1">
+                                      <Calendar className="w-3 h-3 inline mr-1" />
+                                      {c.mesi}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Autorizzazioni */}
+                          {r.autorizzazioni && (
+                            <div>
+                              <h4 className="font-semibold text-sm text-primary mb-2">Autorizzazioni</h4>
+                              <p className="text-xs text-muted-foreground bg-white dark:bg-card rounded px-3 py-2 border">
+                                {r.autorizzazioni}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Descrizione Gruppo */}
+                          {r.descrizione_gruppo && (
+                            <div>
+                              <h4 className="font-semibold text-sm text-primary mb-2">Descrizione Gruppo</h4>
+                              <p className="text-xs text-muted-foreground bg-white dark:bg-card rounded px-3 py-2 border">
+                                {r.descrizione_gruppo}
+                              </p>
+                            </div>
+                          )}
+
                           {/* Detailed Description */}
                           <div>
                             <h4 className="font-semibold text-sm text-primary mb-2">Descrizione Dettagliata</h4>
@@ -622,6 +658,30 @@ const RichiesteCallIdeeTab = () => {
                                   <div key={i} className="text-xs bg-white dark:bg-card rounded px-2 py-1 border">
                                     <span className="font-medium">{p.nome} {p.cognome}</span>
                                     <span className="text-muted-foreground ml-2">{p.email}</span>
+                                    {p.codiceFiscale && (
+                                      <span className="text-muted-foreground ml-2 font-mono">CF: {p.codiceFiscale}</span>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Figure di Supporto */}
+                          {r.figure_supporto && r.figure_supporto.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold text-sm text-primary mb-2 flex items-center">
+                                <ThumbsUp className="w-4 h-4 mr-1" />
+                                Figure di Supporto ({r.figure_supporto.length})
+                              </h4>
+                              <div className="max-h-32 overflow-y-auto space-y-1">
+                                {r.figure_supporto.map((f, i) => (
+                                  <div key={i} className="text-xs bg-white dark:bg-card rounded px-2 py-1 border">
+                                    <span className="font-medium">{f.nome} {f.cognome}</span>
+                                    <span className="text-muted-foreground ml-2">{f.email}</span>
+                                    {f.codiceFiscale && (
+                                      <span className="text-muted-foreground ml-2 font-mono">CF: {f.codiceFiscale}</span>
+                                    )}
                                   </div>
                                 ))}
                               </div>

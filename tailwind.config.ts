@@ -18,6 +18,12 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'default': ['Life Savers', 'serif'],
+				'life-savers': ['Life Savers', 'serif'],
+				'ink-free': ['Ink Free', 'cursive'],
+				'handwritten': ['Ink Free', 'cursive'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -186,7 +192,7 @@ export default {
 					},
 					'50%': {
 						opacity: '0',
-						transform: 'scale(1.1)'
+						transform: 'scale(1.05)'
 					},
 					'100%': {
 						opacity: '1',
@@ -200,7 +206,7 @@ export default {
 					},
 					'50%': {
 						opacity: '1',
-						transform: 'scale(1.1)'
+						transform: 'scale(1.05)'
 					},
 					'100%': {
 						opacity: '0',
@@ -303,8 +309,8 @@ export default {
 				'shake': 'shake 0.5s ease-in-out',
 				'color-fade': 'color-fade 3s ease-in-out infinite',
 				'white-overlay': 'white-overlay 3s ease-in-out infinite',
-				'logo-fade-out': 'logo-fade-out 1.5s ease-in-out infinite',
-				'logo-fade-in': 'logo-fade-in 1.5s ease-in-out infinite',
+				'logo-fade-out': 'logo-fade-out 0.8s ease-in-out infinite',
+				'logo-fade-in': 'logo-fade-in 0.8s ease-in-out infinite',
 				'spin-slow': 'spin-slow 8s linear infinite',
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
 				'gradient-shift': 'gradient-shift 6s ease-in-out infinite',
