@@ -166,7 +166,7 @@ const PartnersStrip = () => {
                       }}
                     />
                   ) : null}
-                  <div className={`${partner.logo ? 'hidden' : ''}`}>
+                  <div className={`${partner.logo ? 'hidden' : ''} ${partner.type === 'partner' ? 'text-primary' : partner.type === 'network' ? 'text-accent' : 'text-heart'}`}>
                     {getIcon(partner)}
                   </div>
 
