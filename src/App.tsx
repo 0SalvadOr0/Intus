@@ -96,6 +96,7 @@ const App = () => {
               </Suspense>
               <Footer />
             </BrowserRouter>
+            <CookieConsent />
           </div>
         </TooltipProvider>
       </AuthProvider>
