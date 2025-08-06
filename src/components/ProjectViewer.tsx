@@ -110,32 +110,68 @@ const ProjectViewer = () => {
   const handleShare = async () => {
     if (!project) return;
 
+    const shareText = `${project.titolo}\n\n${project.descrizione_breve}\n\n${window.location.href}`;
     const shareData = {
       title: project.titolo,
       text: project.descrizione_breve,
       url: window.location.href
     };
 
-    const fallbackToClipboard = async () => {
+    // Fallback manual: create a temporary textarea and copy
+    const fallbackManualCopy = () => {
       try {
-        await navigator.clipboard.writeText(`${project.titolo}\n\n${project.descrizione_breve}\n\n${window.location.href}`);
+        const textArea = document.createElement('textarea');
+        textArea.value = shareText;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        if (successful) {
+          setCopySuccess(true);
+          toast({
+            title: "Link copiato! 📋",
+            description: "Il link del progetto è stato copiato negli appunti."
+          });
+          setTimeout(() => setCopySuccess(false), 2000);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error('Errore copia manuale:', error);
+        return false;
+      }
+    };
+
+    // Fallback to clipboard API with proper error handling
+    const fallbackToClipboard = async () => {
+      // Check if clipboard API is available and has permission
+      if (!navigator.clipboard) {
+        return fallbackManualCopy();
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareText);
         setCopySuccess(true);
         toast({
           title: "Link copiato! 📋",
           description: "Il link del progetto è stato copiato negli appunti."
         });
         setTimeout(() => setCopySuccess(false), 2000);
+        return true;
       } catch (clipboardError) {
         console.error('Errore copia negli appunti:', clipboardError);
-        toast({
-          title: "Errore nella condivisione ❌",
-          description: "Impossibile condividere o copiare il link.",
-          variant: "destructive"
-        });
+        // Try manual copy as last resort
+        return fallbackManualCopy();
       }
     };
 
-    // Verifica supporto Web Share API e contesto sicuro
+    // Try Web Share API first (only if available and in secure context)
     if (navigator.share && window.isSecureContext) {
       try {
         await navigator.share(shareData);
@@ -147,24 +183,33 @@ const ProjectViewer = () => {
       } catch (error) {
         console.error('Errore Web Share API:', error);
 
-        // Se Web Share fallisce (NotAllowedError, ecc.), usa fallback
-        if (error instanceof Error &&
-            (error.name === 'NotAllowedError' ||
-             error.name === 'AbortError' ||
-             error.message.includes('Permission denied'))) {
-          console.log('Web Share non disponibile, uso fallback clipboard');
-          await fallbackToClipboard();
+        // Don't attempt fallback if user cancelled
+        if (error instanceof Error && error.name === 'AbortError') {
           return;
         }
 
-        // Per altri tipi di errore, prova comunque il fallback
-        await fallbackToClipboard();
+        // For permission errors or other issues, try clipboard fallback
+        const fallbackSuccess = await fallbackToClipboard();
+        if (!fallbackSuccess) {
+          toast({
+            title: "Condivisione non disponibile ⚠️",
+            description: "Copia manualmente il link dalla barra degli indirizzi.",
+            variant: "destructive"
+          });
+        }
         return;
       }
     }
 
-    // Fallback diretto se Web Share non è supportato
-    await fallbackToClipboard();
+    // Direct fallback if Web Share not supported
+    const fallbackSuccess = await fallbackToClipboard();
+    if (!fallbackSuccess) {
+      toast({
+        title: "Impossibile copiare automaticamente 📋",
+        description: "Copia il link dalla barra degli indirizzi del browser.",
+        variant: "destructive"
+      });
+    }
   };
 
   const nextImage = () => {
