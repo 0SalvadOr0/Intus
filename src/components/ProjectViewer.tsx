@@ -529,17 +529,17 @@ const ProjectViewer = () => {
 
       {/* Modal per immagini */}
       <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-        <DialogContent className="max-w-7xl w-full h-full max-h-[90vh] p-0 gap-0 bg-black/95">
+        <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 gap-0 bg-black/95 overflow-hidden">
           <VisuallyHidden>
             <DialogTitle>Visualizzazione immagine progetto</DialogTitle>
           </VisuallyHidden>
-          <div className="relative w-full h-full flex items-center justify-center">
+          <div className="relative w-full h-full min-h-[50vh] flex items-center justify-center p-4">
             {/* Close button */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsImageModalOpen(false)}
-              className="absolute top-4 right-4 z-50 text-white hover:bg-white/20"
+              className="absolute top-4 right-4 z-50 text-white hover:bg-white/20 bg-black/50 backdrop-blur-sm"
             >
               <X className="w-6 h-6" />
             </Button>
@@ -551,7 +551,7 @@ const ProjectViewer = () => {
                   variant="ghost"
                   size="icon"
                   onClick={prevImage}
-                  className="absolute left-4 z-50 text-white hover:bg-white/20"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 z-50 text-white hover:bg-white/20 bg-black/50 backdrop-blur-sm"
                 >
                   <ChevronLeft className="w-8 h-8" />
                 </Button>
@@ -559,25 +559,27 @@ const ProjectViewer = () => {
                   variant="ghost"
                   size="icon"
                   onClick={nextImage}
-                  className="absolute right-4 z-50 text-white hover:bg-white/20"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 text-white hover:bg-white/20 bg-black/50 backdrop-blur-sm"
                 >
                   <ChevronRight className="w-8 h-8" />
                 </Button>
               </>
             )}
 
-            {/* Image */}
-            <ImageWithFallback
-              src={projectImages[selectedImageIndex]}
-              alt={`Immagine ${selectedImageIndex + 1} del progetto`}
-              className="max-w-full max-h-full object-contain"
-              fallbackClassName="max-w-full max-h-full flex items-center justify-center"
-              onError={(url) => console.error('Errore caricamento immagine modal:', url)}
-            />
+            {/* Image Container with proper constraints */}
+            <div className="w-full h-full flex items-center justify-center">
+              <ImageWithFallback
+                src={projectImages[selectedImageIndex]}
+                alt={`Immagine ${selectedImageIndex + 1} del progetto`}
+                className="max-w-[calc(100vw-8rem)] max-h-[calc(100vh-8rem)] w-auto h-auto object-contain drop-shadow-2xl"
+                fallbackClassName="max-w-[calc(100vw-8rem)] max-h-[calc(100vh-8rem)] flex items-center justify-center"
+                onError={(url) => console.error('Errore caricamento immagine modal:', url)}
+              />
+            </div>
 
             {/* Image counter */}
             {projectImages.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
                 {selectedImageIndex + 1} / {projectImages.length}
               </div>
             )}
