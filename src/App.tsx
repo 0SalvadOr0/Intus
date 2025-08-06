@@ -32,6 +32,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ProjectViewer from "./components/ProjectViewer";
 import Footer from "./components/Footer";
+import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
 
