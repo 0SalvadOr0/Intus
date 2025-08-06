@@ -153,12 +153,12 @@ const PartnersStrip = () => {
                 {/* Glowing border effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
 
-                <div className={`relative z-10 p-3 rounded-xl bg-gradient-to-br ${partner.type === 'partner' ? 'from-primary to-primary/80' : partner.type === 'network' ? 'from-accent to-accent/80' : 'from-heart to-heart/80'} text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
+                <div className={`relative z-10 p-3 rounded-xl bg-white/90 backdrop-blur-sm border-2 ${partner.type === 'partner' ? 'border-primary/20' : partner.type === 'network' ? 'border-accent/20' : 'border-heart/20'} group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
                   {partner.logo ? (
                     <img
                       src={partner.logo}
                       alt={`${partner.name} logo`}
-                      className="w-8 h-8 object-contain filter brightness-0 invert"
+                      className="w-8 h-8 object-contain"
                       onError={(e) => {
                         // Fallback to icon if image fails to load
                         e.currentTarget.style.display = 'none';
