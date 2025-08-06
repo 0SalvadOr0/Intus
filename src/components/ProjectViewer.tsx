@@ -117,17 +117,41 @@ const ProjectViewer = () => {
       url: window.location.href
     };
 
-    // Fallback manual: create a temporary textarea and copy
-    const fallbackManualCopy = () => {
+    // Check if APIs are actually usable (not just available)
+    const isWebShareUsable = async () => {
+      if (!navigator.share || !window.isSecureContext) return false;
+      try {
+        // Test if we can use Web Share with a minimal payload
+        return navigator.canShare && navigator.canShare(shareData);
+      } catch {
+        return false;
+      }
+    };
+
+    const isClipboardUsable = async () => {
+      if (!navigator.clipboard) return false;
+      try {
+        // Check clipboard permissions
+        const permission = await navigator.permissions.query({ name: 'clipboard-write' as PermissionName });
+        return permission.state === 'granted' || permission.state === 'prompt';
+      } catch {
+        return false;
+      }
+    };
+
+    // Reliable manual copy method
+    const manualCopy = () => {
       try {
         const textArea = document.createElement('textarea');
         textArea.value = shareText;
         textArea.style.position = 'fixed';
         textArea.style.left = '-999999px';
         textArea.style.top = '-999999px';
+        textArea.style.opacity = '0';
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
+        textArea.setSelectionRange(0, 99999); // For mobile devices
 
         const successful = document.execCommand('copy');
         document.body.removeChild(textArea);
@@ -148,31 +172,8 @@ const ProjectViewer = () => {
       }
     };
 
-    // Fallback to clipboard API with proper error handling
-    const fallbackToClipboard = async () => {
-      // Check if clipboard API is available and has permission
-      if (!navigator.clipboard) {
-        return fallbackManualCopy();
-      }
-
-      try {
-        await navigator.clipboard.writeText(shareText);
-        setCopySuccess(true);
-        toast({
-          title: "Link copiato! 📋",
-          description: "Il link del progetto è stato copiato negli appunti."
-        });
-        setTimeout(() => setCopySuccess(false), 2000);
-        return true;
-      } catch (clipboardError) {
-        console.error('Errore copia negli appunti:', clipboardError);
-        // Try manual copy as last resort
-        return fallbackManualCopy();
-      }
-    };
-
-    // Try Web Share API first (only if available and in secure context)
-    if (navigator.share && window.isSecureContext) {
+    // Try Web Share only if it's actually usable
+    if (await isWebShareUsable()) {
       try {
         await navigator.share(shareData);
         toast({
@@ -181,33 +182,38 @@ const ProjectViewer = () => {
         });
         return;
       } catch (error) {
-        console.error('Errore Web Share API:', error);
-
-        // Don't attempt fallback if user cancelled
+        // If user cancelled, don't show error
         if (error instanceof Error && error.name === 'AbortError') {
           return;
         }
-
-        // For permission errors or other issues, try clipboard fallback
-        const fallbackSuccess = await fallbackToClipboard();
-        if (!fallbackSuccess) {
-          toast({
-            title: "Condivisione non disponibile ⚠️",
-            description: "Copia manualmente il link dalla barra degli indirizzi.",
-            variant: "destructive"
-          });
-        }
-        return;
+        console.log('Web Share fallito, uso metodo manuale');
       }
     }
 
-    // Direct fallback if Web Share not supported
-    const fallbackSuccess = await fallbackToClipboard();
-    if (!fallbackSuccess) {
+    // Try Clipboard API only if it's actually usable
+    if (await isClipboardUsable()) {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setCopySuccess(true);
+        toast({
+          title: "Link copiato! 📋",
+          description: "Il link del progetto è stato copiato negli appunti."
+        });
+        setTimeout(() => setCopySuccess(false), 2000);
+        return;
+      } catch (error) {
+        console.log('Clipboard API fallito, uso metodo manuale');
+      }
+    }
+
+    // Use manual copy as primary method when APIs are not available
+    const success = manualCopy();
+    if (!success) {
+      // Show user-friendly message with manual instructions
       toast({
-        title: "Impossibile copiare automaticamente 📋",
-        description: "Copia il link dalla barra degli indirizzi del browser.",
-        variant: "destructive"
+        title: "Condividi manualmente 📱",
+        description: "Seleziona e copia il link dalla barra degli indirizzi per condividere questo progetto.",
+        variant: "default"
       });
     }
   };
