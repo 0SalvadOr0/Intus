@@ -221,7 +221,11 @@ const ImmersiveDescription = () => {
 
       {/* Controls hint */}
       <div className="absolute top-8 left-8 text-xs text-muted-foreground/70 space-y-1">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 md:hidden">
+          <div className="w-4 h-4 border border-muted-foreground/30 rounded flex items-center justify-center text-[10px]">←→</div>
+          <span>Scorri orizzontalmente per navigare</span>
+        </div>
+        <div className="hidden md:flex items-center gap-2">
           <div className="w-4 h-4 border border-muted-foreground/30 rounded flex items-center justify-center text-[10px]">⌘</div>
           <span>Scroll, Space, ↓ per avanzare</span>
         </div>
