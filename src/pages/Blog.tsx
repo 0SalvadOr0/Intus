@@ -41,33 +41,70 @@ const Blog = () => {
 
   // 🔗 Share functionality implementation
   const handleShare = async (post: BlogPost) => {
+    const shareText = `${post.titolo}\n\n${post.excerpt}\n\n${window.location.href}?post=${post.id}`;
     const shareData = {
       title: post.titolo,
       text: post.excerpt,
       url: window.location.href + `?post=${post.id}`
     };
 
-    const fallbackToClipboard = async () => {
+    // Check if APIs are actually usable (not just available)
+    const isWebShareUsable = async () => {
+      if (!navigator.share || !window.isSecureContext) return false;
       try {
-        await navigator.clipboard.writeText(`${post.titolo}\n\n${post.excerpt}\n\n${shareData.url}`);
-        setCopySuccess(true);
-        toast({
-          title: "Link copiato! 📋",
-          description: "Il link dell'articolo è stato copiato negli appunti."
-        });
-        setTimeout(() => setCopySuccess(false), 2000);
-      } catch (clipboardError) {
-        console.error('Errore copia negli appunti:', clipboardError);
-        toast({
-          title: "Errore nella condivisione ❌",
-          description: "Impossibile condividere o copiare il link.",
-          variant: "destructive"
-        });
+        // Test if we can use Web Share with a minimal payload
+        return navigator.canShare && navigator.canShare(shareData);
+      } catch {
+        return false;
       }
     };
 
-    // Verifica supporto Web Share API e contesto sicuro
-    if (navigator.share && window.isSecureContext) {
+    const isClipboardUsable = async () => {
+      if (!navigator.clipboard) return false;
+      try {
+        // Check clipboard permissions
+        const permission = await navigator.permissions.query({ name: 'clipboard-write' as PermissionName });
+        return permission.state === 'granted' || permission.state === 'prompt';
+      } catch {
+        return false;
+      }
+    };
+
+    // Reliable manual copy method
+    const manualCopy = () => {
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = shareText;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        textArea.setSelectionRange(0, 99999); // For mobile devices
+
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        if (successful) {
+          setCopySuccess(true);
+          toast({
+            title: "Link copiato! 📋",
+            description: "Il link dell'articolo è stato copiato negli appunti."
+          });
+          setTimeout(() => setCopySuccess(false), 2000);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error('Errore copia manuale:', error);
+        return false;
+      }
+    };
+
+    // Try Web Share only if it's actually usable
+    if (await isWebShareUsable()) {
       try {
         await navigator.share(shareData);
         toast({
@@ -76,26 +113,40 @@ const Blog = () => {
         });
         return;
       } catch (error) {
-        console.error('Errore Web Share API:', error);
-
-        // Se Web Share fallisce (NotAllowedError, ecc.), usa fallback
-        if (error instanceof Error &&
-            (error.name === 'NotAllowedError' ||
-             error.name === 'AbortError' ||
-             error.message.includes('Permission denied'))) {
-          console.log('Web Share non disponibile, uso fallback clipboard');
-          await fallbackToClipboard();
+        // If user cancelled, don't show error
+        if (error instanceof Error && error.name === 'AbortError') {
           return;
         }
-
-        // Per altri tipi di errore, prova comunque il fallback
-        await fallbackToClipboard();
-        return;
+        console.log('Web Share fallito, uso metodo manuale');
       }
     }
 
-    // Fallback diretto se Web Share non è supportato
-    await fallbackToClipboard();
+    // Try Clipboard API only if it's actually usable
+    if (await isClipboardUsable()) {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setCopySuccess(true);
+        toast({
+          title: "Link copiato! 📋",
+          description: "Il link dell'articolo è stato copiato negli appunti."
+        });
+        setTimeout(() => setCopySuccess(false), 2000);
+        return;
+      } catch (error) {
+        console.log('Clipboard API fallito, uso metodo manuale');
+      }
+    }
+
+    // Use manual copy as primary method when APIs are not available
+    const success = manualCopy();
+    if (!success) {
+      // Show user-friendly message with manual instructions
+      toast({
+        title: "Condividi manualmente 📱",
+        description: "Seleziona e copia il link dalla barra degli indirizzi per condividere questo articolo.",
+        variant: "default"
+      });
+    }
   };
 
   // 🗂️ Enhanced data fetching with content field

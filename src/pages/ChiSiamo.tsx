@@ -109,6 +109,34 @@ const ImmersiveDescription = () => {
     }, 300);
   }, [isTransitioning, sentences.length, closeImmersive]);
 
+  const handleSwipe = useCallback((direction: 'left' | 'right') => {
+    const now = Date.now();
+    if (now - lastScrollTime.current < 1000 || isTransitioning) return;
+
+    lastScrollTime.current = now;
+    setIsTransitioning(true);
+
+    setTimeout(() => {
+      setCurrentSentence(prev => {
+        if (direction === 'left') {
+          // Swipe left - next sentence
+          const next = prev + 1;
+          if (next >= sentences.length) {
+            setTimeout(() => {
+              closeImmersive();
+            }, 3000);
+            return prev;
+          }
+          return next;
+        } else {
+          // Swipe right - previous sentence
+          return Math.max(0, prev - 1);
+        }
+      });
+      setIsTransitioning(false);
+    }, 300);
+  }, [isTransitioning, sentences.length, closeImmersive]);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -124,12 +152,28 @@ const ImmersiveDescription = () => {
     const handleTouchEnd = (e: TouchEvent) => {
       const endY = e.changedTouches[0].clientY;
       const endX = e.changedTouches[0].clientX;
-      const diffY = startY - endY;
-      const diffX = Math.abs(startX - endX);
+      const diffY = Math.abs(startY - endY);
+      const diffX = startX - endX;
 
-      // Solo se è uno swipe verticale (non orizzontale)
-      if (diffY > 50 && diffX < 100) {
-        handleScroll(e as any);
+      // Check if it's a mobile device by screen width
+      const isMobile = window.innerWidth < 768;
+
+      if (isMobile) {
+        // Mobile: horizontal swipe
+        if (Math.abs(diffX) > 50 && diffY < 100) {
+          if (diffX > 0) {
+            // Swipe left - next
+            handleSwipe('left');
+          } else {
+            // Swipe right - previous
+            handleSwipe('right');
+          }
+        }
+      } else {
+        // Desktop: vertical scroll
+        if (Math.abs(startY - endY) > 50 && Math.abs(diffX) < 100) {
+          handleScroll(e as any);
+        }
       }
     };
 
@@ -177,7 +221,11 @@ const ImmersiveDescription = () => {
 
       {/* Controls hint */}
       <div className="absolute top-8 left-8 text-xs text-muted-foreground/70 space-y-1">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 md:hidden">
+          <div className="w-4 h-4 border border-muted-foreground/30 rounded flex items-center justify-center text-[10px]">←→</div>
+          <span>Scorri orizzontalmente per navigare</span>
+        </div>
+        <div className="hidden md:flex items-center gap-2">
           <div className="w-4 h-4 border border-muted-foreground/30 rounded flex items-center justify-center text-[10px]">⌘</div>
           <span>Scroll, Space, ↓ per avanzare</span>
         </div>
@@ -228,11 +276,12 @@ const ImmersiveDescription = () => {
         </div>
 
         {/* Scroll hint */}
-        <div className="absolute mt-7 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground flex items-center gap-2">
+        <div className="absolute mt-7 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground flex items-center gap-2 text-center">
           {currentSentence < sentences.length - 1 ? (
             <>
               <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
-              <span>Scorri verso il basso per continuare</span>
+              <span className="hidden md:inline">Scorri verso il basso per continuare</span>
+              <span className="md:hidden">Scorri orizzontalmente per continuare</span>
               <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
             </>
           ) : (
@@ -1007,8 +1056,8 @@ const ChiSiamo = () => {
                 <div className="relative z-10 flex items-center gap-6">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative p-4 rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                      <img src="https://www.addiopizzotravel.it/img/assets/logo-ciano.png" alt="Addiopizzo Travel Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
+                    <div className="relative p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-primary/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
+                      <img src="https://www.addiopizzotravel.it/img/assets/logo-ciano.png" alt="Addiopizzo Travel Logo" className="w-16 h-10 object-contain" />
                     </div>
                     {/* Sparkle effects */}
                     <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
@@ -1048,8 +1097,8 @@ const ChiSiamo = () => {
                 <div className="relative z-10 flex items-center gap-6">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-accent to-accent/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative p-4 rounded-2xl bg-gradient-to-br from-accent to-accent/80 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                      <img src="https://www.educazioneambientale.com/img/logo_2x.png" alt="Palma Nana Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
+                    <div className="relative p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-accent/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
+                      <img src="https://www.educazioneambientale.com/img/logo_2x.png" alt="Palma Nana Logo" className="w-16 h-10 object-contain" />
                     </div>
                     {/* Sparkle effects */}
                     <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
@@ -1100,8 +1149,8 @@ const ChiSiamo = () => {
                 <div className="relative z-10">
                   <div className="relative mb-4">
                     <div className="absolute inset-0 bg-gradient-to-br from-accent to-accent/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative p-3 rounded-xl bg-gradient-to-br from-accent to-accent/80 text-white group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
-                      <img src="https://reteiter.it/wp-content/uploads/2023/07/logo_ITER-copia-copia.png" alt="Rete Iter Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
+                    <div className="relative p-3 rounded-xl bg-white/90 backdrop-blur-sm border-2 border-accent/20 group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
+                      <img src="https://reteiter.it/wp-content/uploads/2023/07/logo_ITER-copia-copia.png" alt="Rete Iter Logo" className="w-12 h-8 mx-auto object-contain" />
                     </div>
                   </div>
                   <div className="text-center">
@@ -1127,8 +1176,8 @@ const ChiSiamo = () => {
                 <div className="relative z-10">
                   <div className="relative mb-4">
                     <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative p-3 rounded-xl bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
-                      <img src="https://www.sipuofare.net/wp-content/uploads/2024/10/loghi-si-puo-fare-09.png" alt="Rete Si può fare Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
+                    <div className="relative p-3 rounded-xl bg-white/90 backdrop-blur-sm border-2 border-heart/20 group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
+                      <img src="https://www.sipuofare.net/wp-content/uploads/2024/10/loghi-si-puo-fare-09.png" alt="Rete Si può fare Logo" className="w-12 h-8 mx-auto object-contain" />
                     </div>
                   </div>
                   <div className="text-center">
@@ -1154,8 +1203,8 @@ const ChiSiamo = () => {
                 <div className="relative z-10">
                   <div className="relative mb-4">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 text-white group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
-                      <img src="../files/logos/lab_legalità.jpg" alt="Laboratorio della Legalità Logo" className="w-12 h-8 mx-auto object-contain filter brightness-0 invert" />
+                    <div className="relative p-3 rounded-xl bg-white/90 backdrop-blur-sm border-2 border-primary/20 group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
+                      <img src="../files/logos/lab_legalità.jpg" alt="Laboratorio della Legalità Logo" className="w-12 h-8 mx-auto object-contain" />
                     </div>
                   </div>
                   <div className="text-center">
@@ -1202,8 +1251,8 @@ const ChiSiamo = () => {
                 <div className="relative z-10 flex items-center gap-6">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative p-4 rounded-2xl bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                      <img src="../files/logos/cuore_rosso.png" alt="INTUS Corleone Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
+                    <div className="relative p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-heart/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
+                      <img src="../files/logos/cuore_rosso.png" alt="INTUS Corleone Logo" className="w-16 h-10 object-contain" />
                     </div>
                     {/* Sparkle effects */}
                     <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>

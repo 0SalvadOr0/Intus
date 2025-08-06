@@ -110,33 +110,70 @@ const ProjectViewer = () => {
   const handleShare = async () => {
     if (!project) return;
 
+    const shareText = `${project.titolo}\n\n${project.descrizione_breve}\n\n${window.location.href}`;
     const shareData = {
       title: project.titolo,
       text: project.descrizione_breve,
       url: window.location.href
     };
 
-    const fallbackToClipboard = async () => {
+    // Check if APIs are actually usable (not just available)
+    const isWebShareUsable = async () => {
+      if (!navigator.share || !window.isSecureContext) return false;
       try {
-        await navigator.clipboard.writeText(`${project.titolo}\n\n${project.descrizione_breve}\n\n${window.location.href}`);
-        setCopySuccess(true);
-        toast({
-          title: "Link copiato! 📋",
-          description: "Il link del progetto è stato copiato negli appunti."
-        });
-        setTimeout(() => setCopySuccess(false), 2000);
-      } catch (clipboardError) {
-        console.error('Errore copia negli appunti:', clipboardError);
-        toast({
-          title: "Errore nella condivisione ❌",
-          description: "Impossibile condividere o copiare il link.",
-          variant: "destructive"
-        });
+        // Test if we can use Web Share with a minimal payload
+        return navigator.canShare && navigator.canShare(shareData);
+      } catch {
+        return false;
       }
     };
 
-    // Verifica supporto Web Share API e contesto sicuro
-    if (navigator.share && window.isSecureContext) {
+    const isClipboardUsable = async () => {
+      if (!navigator.clipboard) return false;
+      try {
+        // Check clipboard permissions
+        const permission = await navigator.permissions.query({ name: 'clipboard-write' as PermissionName });
+        return permission.state === 'granted' || permission.state === 'prompt';
+      } catch {
+        return false;
+      }
+    };
+
+    // Reliable manual copy method
+    const manualCopy = () => {
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = shareText;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        textArea.setSelectionRange(0, 99999); // For mobile devices
+
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        if (successful) {
+          setCopySuccess(true);
+          toast({
+            title: "Link copiato! 📋",
+            description: "Il link del progetto è stato copiato negli appunti."
+          });
+          setTimeout(() => setCopySuccess(false), 2000);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error('Errore copia manuale:', error);
+        return false;
+      }
+    };
+
+    // Try Web Share only if it's actually usable
+    if (await isWebShareUsable()) {
       try {
         await navigator.share(shareData);
         toast({
@@ -145,26 +182,40 @@ const ProjectViewer = () => {
         });
         return;
       } catch (error) {
-        console.error('Errore Web Share API:', error);
-
-        // Se Web Share fallisce (NotAllowedError, ecc.), usa fallback
-        if (error instanceof Error &&
-            (error.name === 'NotAllowedError' ||
-             error.name === 'AbortError' ||
-             error.message.includes('Permission denied'))) {
-          console.log('Web Share non disponibile, uso fallback clipboard');
-          await fallbackToClipboard();
+        // If user cancelled, don't show error
+        if (error instanceof Error && error.name === 'AbortError') {
           return;
         }
-
-        // Per altri tipi di errore, prova comunque il fallback
-        await fallbackToClipboard();
-        return;
+        console.log('Web Share fallito, uso metodo manuale');
       }
     }
 
-    // Fallback diretto se Web Share non è supportato
-    await fallbackToClipboard();
+    // Try Clipboard API only if it's actually usable
+    if (await isClipboardUsable()) {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setCopySuccess(true);
+        toast({
+          title: "Link copiato! 📋",
+          description: "Il link del progetto è stato copiato negli appunti."
+        });
+        setTimeout(() => setCopySuccess(false), 2000);
+        return;
+      } catch (error) {
+        console.log('Clipboard API fallito, uso metodo manuale');
+      }
+    }
+
+    // Use manual copy as primary method when APIs are not available
+    const success = manualCopy();
+    if (!success) {
+      // Show user-friendly message with manual instructions
+      toast({
+        title: "Condividi manualmente 📱",
+        description: "Seleziona e copia il link dalla barra degli indirizzi per condividere questo progetto.",
+        variant: "default"
+      });
+    }
   };
 
   const nextImage = () => {
@@ -529,17 +580,17 @@ const ProjectViewer = () => {
 
       {/* Modal per immagini */}
       <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-        <DialogContent className="max-w-7xl w-full h-full max-h-[90vh] p-0 gap-0 bg-black/95">
+        <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 gap-0 bg-black/95 overflow-hidden">
           <VisuallyHidden>
             <DialogTitle>Visualizzazione immagine progetto</DialogTitle>
           </VisuallyHidden>
-          <div className="relative w-full h-full flex items-center justify-center">
+          <div className="relative w-full h-full min-h-[50vh] flex items-center justify-center p-4">
             {/* Close button */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsImageModalOpen(false)}
-              className="absolute top-4 right-4 z-50 text-white hover:bg-white/20"
+              className="absolute top-4 right-4 z-50 text-white hover:bg-white/20 bg-black/50 backdrop-blur-sm"
             >
               <X className="w-6 h-6" />
             </Button>
@@ -551,7 +602,7 @@ const ProjectViewer = () => {
                   variant="ghost"
                   size="icon"
                   onClick={prevImage}
-                  className="absolute left-4 z-50 text-white hover:bg-white/20"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 z-50 text-white hover:bg-white/20 bg-black/50 backdrop-blur-sm"
                 >
                   <ChevronLeft className="w-8 h-8" />
                 </Button>
@@ -559,25 +610,27 @@ const ProjectViewer = () => {
                   variant="ghost"
                   size="icon"
                   onClick={nextImage}
-                  className="absolute right-4 z-50 text-white hover:bg-white/20"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 text-white hover:bg-white/20 bg-black/50 backdrop-blur-sm"
                 >
                   <ChevronRight className="w-8 h-8" />
                 </Button>
               </>
             )}
 
-            {/* Image */}
-            <ImageWithFallback
-              src={projectImages[selectedImageIndex]}
-              alt={`Immagine ${selectedImageIndex + 1} del progetto`}
-              className="max-w-full max-h-full object-contain"
-              fallbackClassName="max-w-full max-h-full flex items-center justify-center"
-              onError={(url) => console.error('Errore caricamento immagine modal:', url)}
-            />
+            {/* Image Container with proper constraints */}
+            <div className="w-full h-full flex items-center justify-center">
+              <ImageWithFallback
+                src={projectImages[selectedImageIndex]}
+                alt={`Immagine ${selectedImageIndex + 1} del progetto`}
+                className="max-w-[calc(100vw-8rem)] max-h-[calc(100vh-8rem)] w-auto h-auto object-contain drop-shadow-2xl"
+                fallbackClassName="max-w-[calc(100vw-8rem)] max-h-[calc(100vh-8rem)] flex items-center justify-center"
+                onError={(url) => console.error('Errore caricamento immagine modal:', url)}
+              />
+            </div>
 
             {/* Image counter */}
             {projectImages.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
                 {selectedImageIndex + 1} / {projectImages.length}
               </div>
             )}
