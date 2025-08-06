@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
+import emailjs from '@emailjs/browser';
 
 const Contatti = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,11 @@ const Contatti = () => {
   });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+
+  // 🔧 EmailJS Configuration
+  const EMAILJS_SERVICE_ID = 'service_6qcmccw';
+  const EMAILJS_TEMPLATE_ID = 'template_e4rlw3n';
+  const EMAILJS_PUBLIC_KEY = '5meFHp3dVPzQY6bYS';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -29,15 +35,30 @@ const Contatti = () => {
     setLoading(true);
 
     try {
-      // For now, we'll just show a success message
-      // You can implement email sending with Supabase Edge Functions later
+      // 📧 EmailJS Send Implementation
+      const templateParams = {
+        from_name: formData.nome,
+        from_email: formData.email,
+        message: formData.messaggio,
+        to_email: 'grizzaffigiovy219@gmail.com',
+        reply_to: formData.email
+      };
+
+      const response = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      console.log('✅ Email sent successfully:', response.status, response.text);
       
       toast({
-        title: "Messaggio inviato!",
+        title: "✅ Messaggio inviato!",
         description: "Ti contatteremo presto. Grazie per averci scritto.",
       });
 
-      // Reset form
+      // 🔄 Reset form
       setFormData({
         nome: "",
         email: "",
@@ -45,9 +66,11 @@ const Contatti = () => {
       });
 
     } catch (error) {
+      console.error('❌ Email send failed:', error);
+      
       toast({
-        title: "Errore",
-        description: "Si è verificato un errore nell'invio del messaggio.",
+        title: "❌ Errore",
+        description: "Si è verificato un errore nell'invio del messaggio. Riprova più tardi.",
         variant: "destructive"
       });
     } finally {
@@ -59,7 +82,7 @@ const Contatti = () => {
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="animate-fade-in-up">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4">Contatti</h1>
+          <h1 className="text-4xl font-bold mb-4">📞 Contatti</h1>
           <p className="text-muted-foreground text-lg">
             Siamo qui per ascoltarti. Contattaci per qualsiasi informazione.
           </p>
@@ -72,7 +95,7 @@ const Contatti = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mail className="w-5 h-5" />
-                Informazioni di Contatto
+                📋 Informazioni di Contatto
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -83,7 +106,7 @@ const Contatti = () => {
                   <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold">Email</p>
+                  <p className="font-semibold">📧 Email</p>
                   <a 
                     href="mailto:amministratore@intus.it" 
                     className="text-primary hover:underline"
@@ -99,7 +122,7 @@ const Contatti = () => {
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold">Telefono</p>
+                  <p className="font-semibold">📱 Telefono</p>
                   <a 
                     href="tel:+393896783589" 
                     className="text-primary hover:underline"
@@ -115,7 +138,7 @@ const Contatti = () => {
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold">Indirizzo</p>
+                  <p className="font-semibold">📍 Indirizzo</p>
                   <p className="text-muted-foreground">
                     Via Fra Girolamo da Corleone, 3<br />
                     90034 Corleone (PA)
@@ -125,7 +148,7 @@ const Contatti = () => {
 
               {/* Organization Info */}
               <div className="pt-4 border-t">
-                <h3 className="font-semibold mb-2">INTUS CORLEONE APS</h3>
+                <h3 className="font-semibold mb-2">🏛️ INTUS CORLEONE APS</h3>
                 <p className="text-sm text-muted-foreground">
                   Associazione di Promozione Sociale dedicata allo sviluppo 
                   del territorio e al supporto dei giovani nel territorio di Corleone.
@@ -139,14 +162,14 @@ const Contatti = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Send className="w-5 h-5" />
-                Invia un Messaggio
+                📝 Invia un Messaggio
               </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 
                 <div className="space-y-2">
-                  <Label htmlFor="nome">Nome e Cognome *</Label>
+                  <Label htmlFor="nome">👤 Nome e Cognome *</Label>
                   <Input
                     id="nome"
                     name="nome"
@@ -159,7 +182,7 @@ const Contatti = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
+                  <Label htmlFor="email">📧 Email *</Label>
                   <Input
                     id="email"
                     name="email"
@@ -172,7 +195,7 @@ const Contatti = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="messaggio">Messaggio *</Label>
+                  <Label htmlFor="messaggio">💬 Messaggio *</Label>
                   <Textarea
                     id="messaggio"
                     name="messaggio"
@@ -192,18 +215,18 @@ const Contatti = () => {
                   {loading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                      Invio in corso...
+                      🔄 Invio in corso...
                     </>
                   ) : (
                     <>
                       <Send className="w-4 h-4 mr-2" />
-                      Invia Messaggio
+                      🚀 Invia Messaggio
                     </>
                   )}
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  I campi contrassegnati con * sono obbligatori.<br />
+                  ⚠️ I campi contrassegnati con * sono obbligatori.<br />
                   Leggi la nostra <a href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</a> per informazioni sul trattamento dei dati.
                 </p>
               </form>

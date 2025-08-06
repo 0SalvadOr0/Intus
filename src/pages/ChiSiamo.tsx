@@ -1203,7 +1203,7 @@ const ChiSiamo = () => {
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
                     <div className="relative p-4 rounded-2xl bg-gradient-to-br from-heart to-heart/80 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                      <img src="https://cdn.builder.io/api/v1/image/assets%2Fc0f7b2c705d74b75bd52d5dc56b5532f%2Fee5f13ead30543ed802e6bb6351f9e3e?format=webp&width=800" alt="INTUS Corleone Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
+                      <img src="../files/logos/cuore_rosso.png" alt="INTUS Corleone Logo" className="w-16 h-10 object-contain filter brightness-0 invert" />
                     </div>
                     {/* Sparkle effects */}
                     <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>

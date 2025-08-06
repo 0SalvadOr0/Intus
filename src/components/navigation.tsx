@@ -36,7 +36,7 @@ const Navigation = () => {
           <Link to="/" className="flex items-center space-x-3 group">
             <div className="flex flex-col">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2Fc0f7b2c705d74b75bd52d5dc56b5532f%2Fee5f13ead30543ed802e6bb6351f9e3e?format=webp&width=800"
+                src="../files/logos/cuore_rosso.png"
                 alt="Intus Corleone APS Logo"
                 className="h-10 w-auto object-contain"
               />

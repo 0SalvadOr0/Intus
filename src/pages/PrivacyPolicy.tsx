@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const PrivacyPolicy = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="animate-fade-in-up">
+      <div className="animate-fade-in-up mt-10">
         <Card>
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-center">

@@ -48,7 +48,7 @@ const PartnersStrip = () => {
     {
       name: "INTUS Corleone",
       url: "https://www.facebook.com/share/1GKyTE79ML/",
-      logo: "https://cdn.builder.io/api/v1/image/assets%2Fc0f7b2c705d74b75bd52d5dc56b5532f%2Fee5f13ead30543ed802e6bb6351f9e3e?format=webp&width=800",
+      logo: "../files/logos/cuore_rosso.png",
       type: "social",
       description: "La nostra pagina Facebook"
     }

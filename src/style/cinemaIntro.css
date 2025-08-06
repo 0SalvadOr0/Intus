@@ -1,0 +1,489 @@
+/* 🎬 Optimized Cinema Intro CSS - Performance Enhanced */
+
+/* 🚀 Hardware-accelerated animations for smooth performance */
+@keyframes float {
+  0%, 100% { 
+    transform: translate3d(0, 0, 0) rotate(0deg); 
+    opacity: 0.6;
+  }
+  33% { 
+    transform: translate3d(0, -8px, 0) rotate(1deg); 
+    opacity: 0.8;
+  }
+  66% { 
+    transform: translate3d(0, 4px, 0) rotate(-1deg); 
+    opacity: 0.4;
+  }
+}
+
+@keyframes bounce-in {
+  0% { 
+    transform: scale3d(0, 0, 1) rotate(0deg); 
+    opacity: 0; 
+  }
+  50% { 
+    transform: scale3d(1.15, 1.15, 1) rotate(180deg); 
+    opacity: 1; 
+  }
+  100% { 
+    transform: scale3d(1, 1, 1) rotate(360deg); 
+    opacity: 0.8; 
+  }
+}
+
+@keyframes spin-slow {
+  0% { transform: rotate3d(0, 0, 1, 0deg); }
+  100% { transform: rotate3d(0, 0, 1, 360deg); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { 
+    opacity: 0.7; 
+    transform: scale3d(1, 1, 1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale3d(1.03, 1.03, 1); 
+  }
+}
+
+@keyframes load-bar {
+  0% { 
+    width: 0%; 
+    transform: translateX(-100%);
+  }
+  50% {
+    width: 60%;
+    transform: translateX(0%);
+  }
+  100% { 
+    width: 100%; 
+    transform: translateX(0%);
+  }
+}
+
+@keyframes pulse-heart {
+  0%, 100% { 
+    transform: scale3d(1, 1, 1); 
+    filter: brightness(1);
+  }
+  50% { 
+    transform: scale3d(1.1, 1.1, 1); 
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* 🎯 Optimized animation classes with will-change for performance */
+.animate-float { 
+  animation: float 3s ease-in-out infinite; 
+  will-change: transform, opacity;
+}
+
+.animate-bounce-in { 
+  animation: bounce-in 2s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+  will-change: transform, opacity;
+}
+
+.animate-spin-slow { 
+  animation: spin-slow 4s linear infinite; 
+  will-change: transform;
+}
+
+.animate-pulse-slow { 
+  animation: pulse-slow 3s ease-in-out infinite; 
+  will-change: transform, opacity;
+}
+
+.animate-load-bar { 
+  animation: load-bar 3s cubic-bezier(0.4, 0, 0.2, 1); 
+  will-change: width, transform;
+}
+
+.animate-pulse-heart { 
+  animation: pulse-heart 2s ease-in-out infinite; 
+  will-change: transform, filter;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* 📱 Mobile-first responsive breakpoints */
+@media (max-width: 640px) {
+  /* 🔧 Reduced animation complexity for mobile performance */
+  .animate-float { 
+    animation-duration: 4s; 
+    animation-iteration-count: 3; /* Limit iterations */
+  }
+  
+  .animate-bounce-in { 
+    animation-duration: 1.5s; 
+  }
+  
+  .animate-spin-slow { 
+    animation-duration: 6s; /* Slower for better mobile performance */
+  }
+  
+  .animate-pulse-slow { 
+    animation-duration: 4s; 
+  }
+}
+
+/* 💻 Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .animate-float { 
+    animation-duration: 3.5s; 
+  }
+}
+
+/* 🖥️ Desktop enhancements */
+@media (min-width: 1025px) {
+  .animate-float { 
+    animation-duration: 3s; 
+  }
+  
+  /* Enhanced glow effects for larger screens */
+  .animate-pulse-slow {
+    filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3));
+  }
+}
+
+/* 🎨 Performance-optimized gradient backgrounds */
+.cinema-gradient-bg {
+  background: linear-gradient(135deg, #000000 0%, #1f2937 35%, #000000 100%);
+  background-attachment: fixed;
+}
+
+/* ✨ Lens flare effect with CSS variables for better performance */
+.lens-flare {
+  --flare-size: 100px;
+  background: radial-gradient(
+    circle at center,
+    rgba(59, 130, 246, 0.3) 0%,
+    rgba(147, 51, 234, 0.2) 30%,
+    transparent 60%
+  );
+  width: var(--flare-size);
+  height: var(--flare-size);
+  border-radius: 50%;
+  filter: blur(2px);
+  animation: pulse-slow 2s ease-in-out infinite;
+}
+
+/* 🌟 Optimized particle system */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* 🎭 Logo glow effects */
+.logo-glow {
+  filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.4))
+          drop-shadow(0 0 40px rgba(147, 51, 234, 0.3))
+          drop-shadow(0 0 60px rgba(236, 72, 153, 0.2));
+}
+
+/* 📊 Loading bar shimmer effect */
+.loading-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* 🎬 Cinema border effect */
+.cinema-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.cinema-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* 🌈 Professional color palette variables */
+:root {
+  --cinema-primary: #1e40af;
+  --cinema-secondary: #7c3aed;
+  --cinema-accent: #ec4899;
+  --cinema-success: #10b981;
+  --cinema-warning: #f59e0b;
+  --cinema-error: #ef4444;
+  --cinema-dark: #111827;
+  --cinema-light: #f9fafb;
+}
+
+/* 🔧 Utility classes for common cinema effects */
+.cinema-shadow {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7),
+              0 10px 20px -5px rgba(0, 0, 0, 0.4);
+}
+
+.cinema-glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5),
+              0 0 40px rgba(147, 51, 234, 0.3),
+              0 0 60px rgba(236, 72, 153, 0.1);
+}
+
+.cinema-text-glow {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.8),
+               0 0 20px rgba(147, 51, 234, 0.6),
+               0 0 30px rgba(236, 72, 153, 0.4);
+}
+
+/* 🎪 Advanced visual effects for premium experience */
+.cinema-hologram {
+  background: linear-gradient(
+    45deg,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(147, 51, 234, 0.1) 25%,
+    rgba(236, 72, 153, 0.1) 50%,
+    rgba(147, 51, 234, 0.1) 75%,
+    rgba(59, 130, 246, 0.1) 100%
+  );
+  background-size: 200% 200%;
+  animation: hologram-shift 4s ease-in-out infinite;
+}
+
+@keyframes hologram-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* 🎬 Film grain effect for authentic cinema feel */
+.film-grain {
+  position: relative;
+  overflow: hidden;
+}
+
+.film-grain::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23ffffff' fill-opacity='0.4' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+  animation: grain-move 0.1s steps(10) infinite;
+  pointer-events: none;
+}
+
+@keyframes grain-move {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(1px, -1px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1px, 1px); }
+}
+
+/* 🎯 Focus ring animations */
+.focus-ring {
+  position: relative;
+}
+
+.focus-ring::before,
+.focus-ring::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: focus-pulse 3s ease-in-out infinite;
+}
+
+.focus-ring::before {
+  width: 100%;
+  height: 100%;
+  animation-delay: 0s;
+}
+
+.focus-ring::after {
+  width: 120%;
+  height: 120%;
+  animation-delay: 1s;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes focus-pulse {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+/* 🌟 Sparkle animation system */
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #fbbf24 0%, transparent 70%);
+  border-radius: 50%;
+  animation: sparkle-dance 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sparkle-dance {
+  0%, 100% { 
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% { 
+    transform: scale(1) rotate(180deg);
+    opacity: 1;
+  }
+}
+
+/* 📺 CRT monitor effect for retro cinema feel */
+.crt-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.crt-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 🎨 Professional color transitions */
+.color-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.color-transition:hover {
+  filter: brightness(1.1) saturate(1.2);
+  transform: scale(1.02);
+}
+
+/* ⚡ Performance optimizations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.reduce-motion {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* 📱 Touch-friendly mobile interactions */
+@media (hover: none) and (pointer: coarse) {
+  .animate-float {
+    animation-duration: 5s;
+    animation-iteration-count: 2;
+  }
+  
+  .sparkle {
+    animation-duration: 3s;
+  }
+  
+  .film-grain::after {
+    animation: none;
+  }
+}
+
+/* 🔋 Battery-saving mode for mobile devices */
+@media (prefers-reduced-motion: reduce) {
+  .reduce-motion,
+  .animate-float,
+  .animate-bounce-in,
+  .animate-spin-slow,
+  .animate-pulse-slow,
+  .animate-load-bar,
+  .animate-pulse-heart,
+  .animate-shimmer {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  
+  .film-grain::after,
+  .focus-ring::before,
+  .focus-ring::after {
+    animation: none !important;
+  }
+}
+
+/* 🌙 Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cinema-primary: #3b82f6;
+    --cinema-secondary: #8b5cf6;
+    --cinema-accent: #ec4899;
+  }
+  
+  .lens-flare {
+    background: radial-gradient(
+      circle at center,
+      rgba(59, 130, 246, 0.4) 0%,
+      rgba(147, 51, 234, 0.3) 30%,
+      transparent 60%
+    );
+  }
+}
+
+/* 🎭 High contrast mode support */
+@media (prefers-contrast: high) {
+  .cinema-text-glow {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 1);
+  }
+  
+  .lens-flare {
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0.3) 30%,
+      transparent 60%
+    );
+  }
+}
