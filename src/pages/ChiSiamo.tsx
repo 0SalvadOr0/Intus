@@ -152,12 +152,28 @@ const ImmersiveDescription = () => {
     const handleTouchEnd = (e: TouchEvent) => {
       const endY = e.changedTouches[0].clientY;
       const endX = e.changedTouches[0].clientX;
-      const diffY = startY - endY;
-      const diffX = Math.abs(startX - endX);
+      const diffY = Math.abs(startY - endY);
+      const diffX = startX - endX;
 
-      // Solo se è uno swipe verticale (non orizzontale)
-      if (diffY > 50 && diffX < 100) {
-        handleScroll(e as any);
+      // Check if it's a mobile device by screen width
+      const isMobile = window.innerWidth < 768;
+
+      if (isMobile) {
+        // Mobile: horizontal swipe
+        if (Math.abs(diffX) > 50 && diffY < 100) {
+          if (diffX > 0) {
+            // Swipe left - next
+            handleSwipe('left');
+          } else {
+            // Swipe right - previous
+            handleSwipe('right');
+          }
+        }
+      } else {
+        // Desktop: vertical scroll
+        if (Math.abs(startY - endY) > 50 && Math.abs(diffX) < 100) {
+          handleScroll(e as any);
+        }
       }
     };
 
