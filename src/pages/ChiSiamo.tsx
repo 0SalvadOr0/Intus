@@ -276,11 +276,12 @@ const ImmersiveDescription = () => {
         </div>
 
         {/* Scroll hint */}
-        <div className="absolute mt-7 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground flex items-center gap-2">
+        <div className="absolute mt-7 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground flex items-center gap-2 text-center">
           {currentSentence < sentences.length - 1 ? (
             <>
               <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
-              <span>Scorri verso il basso per continuare</span>
+              <span className="hidden md:inline">Scorri verso il basso per continuare</span>
+              <span className="md:hidden">Scorri orizzontalmente per continuare</span>
               <div className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
             </>
           ) : (
