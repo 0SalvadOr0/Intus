@@ -109,6 +109,34 @@ const ImmersiveDescription = () => {
     }, 300);
   }, [isTransitioning, sentences.length, closeImmersive]);
 
+  const handleSwipe = useCallback((direction: 'left' | 'right') => {
+    const now = Date.now();
+    if (now - lastScrollTime.current < 1000 || isTransitioning) return;
+
+    lastScrollTime.current = now;
+    setIsTransitioning(true);
+
+    setTimeout(() => {
+      setCurrentSentence(prev => {
+        if (direction === 'left') {
+          // Swipe left - next sentence
+          const next = prev + 1;
+          if (next >= sentences.length) {
+            setTimeout(() => {
+              closeImmersive();
+            }, 3000);
+            return prev;
+          }
+          return next;
+        } else {
+          // Swipe right - previous sentence
+          return Math.max(0, prev - 1);
+        }
+      });
+      setIsTransitioning(false);
+    }, 300);
+  }, [isTransitioning, sentences.length, closeImmersive]);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
