@@ -155,7 +155,7 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
 });
 
 // Get all documents from archivio
-app.get('/api/documenti', (req, res) => {
+app.get('/api/documents', (req, res) => {
   try {
     const files = fs.readdirSync(archivioDir);
     const documents = files.map(file => {
