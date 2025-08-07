@@ -33,56 +33,47 @@ const ArchivioDocumenti = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Mock data per testing - in produzione sarà sostituito con chiamata API
-  const mockDocuments: Document[] = [
-    {
-      id: "1",
-      name: "Statuto Associazione",
-      description: "Statuto ufficiale dell'Associazione INTUS Corleone APS",
-      category: "Documenti Legali",
-      uploadDate: "2024-01-15",
-      size: "2.4 MB",
-      type: "PDF",
-      url: "/files/archivio/statuto.pdf"
-    },
-    {
-      id: "2", 
-      name: "Bilancio Sociale 2023",
-      description: "Bilancio sociale e report attività anno 2023",
-      category: "Bilanci",
-      uploadDate: "2024-03-20",
-      size: "5.1 MB",
-      type: "PDF",
-      url: "/files/archivio/bilancio-2023.pdf"
-    },
-    {
-      id: "3",
-      name: "Regolamento Call Idee Giovani",
-      description: "Regolamento completo per la partecipazione al bando Call Idee Giovani",
-      category: "Bandi",
-      uploadDate: "2024-06-10",
-      size: "1.8 MB", 
-      type: "PDF",
-      url: "/files/archivio/regolamento-call-idee.pdf"
-    },
-    {
-      id: "4",
-      name: "Protocollo Sicurezza",
-      description: "Protocollo per la sicurezza durante le attività associative",
-      category: "Protocolli",
-      uploadDate: "2024-02-05",
-      size: "950 KB",
-      type: "PDF",
-      url: "/files/archivio/protocollo-sicurezza.pdf"
+  const fetchDocuments = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('http://localhost:3001/api/all-documents');
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Server non disponibile`);
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.documents) {
+        // Transform server response to match our Document interface
+        const transformedDocs = result.documents.map((doc: any) => ({
+          id: doc.id,
+          name: doc.originalName || doc.name,
+          description: doc.description || 'Documento caricato',
+          category: doc.category || 'Generale',
+          uploadDate: new Date(doc.uploadDate).toLocaleDateString('it-IT'),
+          size: doc.size,
+          type: doc.type,
+          url: doc.url
+        }));
+
+        setDocuments(transformedDocs);
+      } else {
+        throw new Error('Formato risposta non valido');
+      }
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      setError(error instanceof Error ? error.message : 'Errore nel caricamento documenti');
+      setDocuments([]); // Set empty array on error
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   useEffect(() => {
-    // Simula caricamento documenti
-    setTimeout(() => {
-      setDocuments(mockDocuments);
-      setLoading(false);
-    }, 1000);
+    fetchDocuments();
   }, []);
 
   const categories = ["all", ...Array.from(new Set(documents.map(doc => doc.category)))];
