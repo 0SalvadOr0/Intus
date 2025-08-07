@@ -17,7 +17,7 @@ const Navigation = () => {
     { path: "/", label: "Home", icon: Home },
     { path: "/chi-siamo", label: "Chi Siamo", icon: Users },
     { path: "/le-nostre-attivita", label: "Le Nostre Attività", icon: FolderOpen },
-    { path: "/presenta-progetto", label: "Call Idee Giovani", icon: DollarSign, highlight: true },
+    { path: "/presenta-progetto", label: "In evidenza", icon: DollarSign, highlight: true },
     { path: "/blog", label: "Blog", icon: FileText },
     { path: "/dashboard", label: "Dashboard", icon: Settings },
   ];
