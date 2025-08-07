@@ -263,8 +263,11 @@ const FileUploader = ({
                       rel="noopener noreferrer"
                       className="text-xs text-primary hover:underline"
                     >
-                      Visualizza file
+                      Visualizza allegato
                     </a>
+                    <p className="text-xs text-blue-600 dark:text-blue-400">
+                      📁 Salvato in: files/allegati/
+                    </p>
                   </div>
                 </div>
                 {onFileRemove && (
