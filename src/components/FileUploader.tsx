@@ -106,24 +106,12 @@ const FileUploader = ({
         fileType: file.type
       });
 
-      // First, check if the bucket exists by trying to list files
-      const { data: listData, error: listError } = await supabase.storage
-        .from('files')
-        .list('', { limit: 1 });
+      // Try to upload to the 'files' bucket first, with fallback to 'blog-images'
+      let uploadResult;
+      let bucketUsed = 'files';
 
-      if (listError) {
-        console.error('Bucket access error:', listError);
-        // If bucket doesn't exist or we can't access it, show a specific error
-        toast({
-          title: "Errore di configurazione",
-          description: "Il bucket di storage non è accessibile. Verificare la configurazione Supabase.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Upload to Supabase Storage in the allegati folder
-      const { data, error } = await supabase.storage
+      // First attempt: 'files' bucket
+      uploadResult = await supabase.storage
         .from('files')
         .upload(`allegati/${fileName}`, file, {
           cacheControl: '3600',
@@ -133,6 +121,25 @@ const FileUploader = ({
             setUploadProgress(percent);
           }
         });
+
+      // If 'files' bucket fails, try 'blog-images' bucket as fallback
+      if (uploadResult.error) {
+        console.log('Failed to upload to files bucket, trying blog-images fallback...');
+        bucketUsed = 'blog-images';
+        uploadResult = await supabase.storage
+          .from('blog-images')
+          .upload(`allegati/${fileName}`, file, {
+            cacheControl: '3600',
+            upsert: false,
+            onUploadProgress: (progress) => {
+              const percent = (progress.loaded / progress.total) * 100;
+              setUploadProgress(percent);
+            }
+          });
+      }
+
+      const { data, error } = uploadResult;
+      console.log(`Upload result using ${bucketUsed} bucket:`, { data, error });
 
       console.log('Upload result:', { data, error });
 
