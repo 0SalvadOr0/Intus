@@ -1539,20 +1539,18 @@ const Dashboard = () => {
                   <Label htmlFor="project-participants-direct">Partecipanti Diretti</Label>
                   <Input
                     id="project-participants-direct"
-                    type="number"
-                    placeholder="Numero partecipanti diretti"
+                    placeholder="es. Istituto X, Associazione Y, 50 studenti"
                     value={getCurrentProject()?.partecipanti_diretti || ""}
-                    onChange={(e) => updateCurrentProject({ partecipanti_diretti: parseInt(e.target.value) || 0 })}
+                    onChange={(e) => updateCurrentProject({ partecipanti_diretti: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="project-participants-indirect">Partecipanti Indiretti</Label>
                   <Input
                     id="project-participants-indirect"
-                    type="number"
-                    placeholder="Numero partecipanti indiretti"
+                    placeholder="es. Comunità locale, Famiglie, 200 cittadini"
                     value={getCurrentProject()?.partecipanti_indiretti || ""}
-                    onChange={(e) => updateCurrentProject({ partecipanti_indiretti: parseInt(e.target.value) || 0 })}
+                    onChange={(e) => updateCurrentProject({ partecipanti_indiretti: e.target.value })}
                   />
                 </div>
               </div>
