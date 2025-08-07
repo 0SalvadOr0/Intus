@@ -26,6 +26,7 @@ const ChiSiamo = lazy(() => import("./pages/ChiSiamo"));
 const LeNostreAttivita = lazy(() => import("./pages/LeNostreAttivita"));
 const PresentaProgetto = lazy(() => import("./pages/PresentaProgetto"));
 const Blog = lazy(() => import("./pages/Blog"));
+const ArchivioDocumenti = lazy(() => import("./pages/ArchivioDocumenti"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Contatti = lazy(() => import("./pages/Contatti"));
 import Dashboard from "./pages/Dashboard";
