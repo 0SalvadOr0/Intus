@@ -209,12 +209,15 @@ const FileUploader = ({
         <div className="space-y-4">
           <div className="flex flex-col items-center">
             <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-            <p className="text-sm font-medium">Carica allegati</p>
+            <p className="text-sm font-medium">Carica allegati (Call Idee)</p>
             <p className="text-xs text-muted-foreground">
               Tipi supportati: {acceptedTypes.join(', ')} | Max {maxFileSize} MB per file
             </p>
             <p className="text-xs text-muted-foreground">
               File caricati: {uploadedFiles.length}/{maxFiles}
+            </p>
+            <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+              📁 I file verranno salvati in: files/allegati/
             </p>
           </div>
           
