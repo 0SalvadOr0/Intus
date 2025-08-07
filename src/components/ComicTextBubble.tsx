@@ -34,9 +34,9 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
       }`}>
         
         {/* Speech bubble tail */}
-        <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
-          <div className="w-0 h-0 border-l-[20px] border-r-[20px] border-t-[24px] border-l-transparent border-r-transparent border-t-black dark:border-t-white"></div>
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-0 h-0 border-l-[16px] border-r-[16px] border-t-[20px] border-l-transparent border-r-transparent border-t-white dark:border-t-gray-900"></div>
+        <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2">
+          <div className="w-0 h-0 border-l-[18px] border-r-[18px] border-t-[22px] border-l-transparent border-r-transparent border-t-black dark:border-t-white"></div>
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-0 h-0 border-l-[15px] border-r-[15px] border-t-[19px] border-l-transparent border-r-transparent border-t-white dark:border-t-gray-900"></div>
         </div>
 
         {/* Comic text styling */}
