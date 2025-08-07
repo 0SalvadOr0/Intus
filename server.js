@@ -150,7 +150,7 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
       originalName: req.file.originalname,
       name: name || req.file.originalname,
       description: description || '',
-      category: category || 'Generale',
+      category: category || 'Documenti Ufficiali',
       fileUrl: `/files/archivio/${req.file.filename}`,
       fileSize: req.file.size,
       mimeType: req.file.mimetype,
