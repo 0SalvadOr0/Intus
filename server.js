@@ -37,9 +37,16 @@ if (!fs.existsSync(archivioDir)) {
 // 🗃️ Multer Storage Configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // 🎯 Dynamic directory selection based on upload type
-    const uploadType = req.body.uploadType || 'allegati';
-    const targetDir = uploadType === 'archivio' ? archivioDir : allegatiDir;
+    // 🎯 Dynamic directory selection based on endpoint
+    let targetDir = allegatiDir; // default for /api/upload-allegato
+
+    // Check the URL to determine the correct directory
+    if (req.url.includes('/api/upload-documento')) {
+      targetDir = archivioDir;
+    } else if (req.url.includes('/api/upload-allegato')) {
+      targetDir = allegatiDir;
+    }
+
     cb(null, targetDir);
   },
   filename: (req, file, cb) => {
@@ -143,7 +150,7 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
       originalName: req.file.originalname,
       name: name || req.file.originalname,
       description: description || '',
-      category: category || 'Generale',
+      category: category || 'Documenti Ufficiali',
       fileUrl: `/files/archivio/${req.file.filename}`,
       fileSize: req.file.size,
       mimeType: req.file.mimetype,

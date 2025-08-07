@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, File, X, FileText, FileImage } from "lucide-react";
 
-interface FileUploaderProps {
+interface DocumentUploaderProps {
   onFileUpload: (url: string, fileName: string) => void;
   onFileRemove?: (url: string) => void;
   uploadedFiles?: Array<{ url: string; name: string }>;
@@ -13,14 +13,14 @@ interface FileUploaderProps {
   maxFileSize?: number; // in MB
 }
 
-const FileUploader = ({
+const DocumentUploader = ({
   onFileUpload,
   onFileRemove,
   uploadedFiles = [],
   maxFiles = 5,
   acceptedTypes = ['.pdf', '.doc', '.docx'],
   maxFileSize = 10
-}: FileUploaderProps) => {
+}: DocumentUploaderProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -97,7 +97,7 @@ const FileUploader = ({
       return;
     }
 
-    console.log('Starting local upload process...');
+    console.log('Starting document upload to archivio...');
     setIsUploading(true);
     setUploadProgress(0);
 
@@ -107,7 +107,7 @@ const FileUploader = ({
       const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const fileName = `${timestamp}_${sanitizedName}`;
 
-      console.log('Attempting to upload file locally:', {
+      console.log('Attempting to upload document to archivio:', {
         originalName: file.name,
         sanitizedName,
         fileName,
@@ -115,10 +115,12 @@ const FileUploader = ({
         fileType: file.type
       });
 
-      // Create FormData for local upload
+      // Create FormData for document upload (goes to archivio)
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('fileName', fileName);
+      formData.append('name', file.name);
+      formData.append('description', 'Documento caricato dalla dashboard');
+      formData.append('category', 'Documenti Ufficiali');
 
       // Simulate progress for visual feedback
       const progressInterval = setInterval(() => {
@@ -131,8 +133,8 @@ const FileUploader = ({
         });
       }, 100);
 
-      // Upload to backend server
-      const response = await fetch('http://localhost:3001/api/upload-allegato', {
+      // Upload to backend server (archivio directory)
+      const response = await fetch('http://localhost:3001/api/upload-documento', {
         method: 'POST',
         body: formData
       });
@@ -152,22 +154,22 @@ const FileUploader = ({
       if (result.success) {
         onFileUpload(result.fileUrl, result.originalName || file.name);
         toast({
-          title: "Allegato caricato!",
-          description: `${result.originalName || file.name} salvato in files/allegati/ (Call Idee)`
+          title: "Documento caricato!",
+          description: `${result.originalName || file.name} salvato in files/archivio/`
         });
       } else {
         throw new Error(result.error || 'Upload failed');
       }
 
     } catch (error) {
-      console.error('Errore upload locale:', error);
+      console.error('Errore upload documento:', error);
       console.error('Catch error details:', {
         message: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
         error: error
       });
 
-      const errorMessage = error instanceof Error ? error.message : "Si è verificato un errore durante il caricamento del file.";
+      const errorMessage = error instanceof Error ? error.message : "Si è verificato un errore durante il caricamento del documento.";
 
       toast({
         title: "Errore nel caricamento",
@@ -187,8 +189,8 @@ const FileUploader = ({
     if (onFileRemove) {
       onFileRemove(fileUrl);
       toast({
-        title: "Allegato rimosso",
-        description: "L'allegato è stato rimosso dalla lista."
+        title: "Documento rimosso",
+        description: "Il documento è stato rimosso dalla lista."
       });
     }
   };
@@ -209,15 +211,15 @@ const FileUploader = ({
         <div className="space-y-4">
           <div className="flex flex-col items-center">
             <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-            <p className="text-sm font-medium">Carica allegati (Call Idee)</p>
+            <p className="text-sm font-medium">Carica documenti nell'archivio</p>
             <p className="text-xs text-muted-foreground">
               Tipi supportati: {acceptedTypes.join(', ')} | Max {maxFileSize} MB per file
             </p>
             <p className="text-xs text-muted-foreground">
-              File caricati: {uploadedFiles.length}/{maxFiles}
+              Documenti caricati: {uploadedFiles.length}/{maxFiles}
             </p>
-            <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-              📁 I file verranno salvati in: files/allegati/
+            <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+              📁 I documenti verranno salvati in: files/archivio/
             </p>
           </div>
           
@@ -238,7 +240,7 @@ const FileUploader = ({
             className="w-full"
           >
             <Upload className="w-4 h-4 mr-2" />
-            {uploadedFiles.length >= maxFiles ? "Limite raggiunto" : "Seleziona file"}
+            {uploadedFiles.length >= maxFiles ? "Limite raggiunto" : "Seleziona documento"}
           </Button>
         </div>
       </div>
@@ -246,7 +248,7 @@ const FileUploader = ({
       {/* Uploaded Files List */}
       {uploadedFiles.length > 0 && (
         <div className="space-y-2">
-          <p className="text-sm font-medium">File caricati:</p>
+          <p className="text-sm font-medium">Documenti caricati:</p>
           <div className="space-y-2">
             {uploadedFiles.map((file, index) => (
               <div
@@ -263,10 +265,10 @@ const FileUploader = ({
                       rel="noopener noreferrer"
                       className="text-xs text-primary hover:underline"
                     >
-                      Visualizza allegato
+                      Visualizza documento
                     </a>
-                    <p className="text-xs text-blue-600 dark:text-blue-400">
-                      📁 Salvato in: files/allegati/
+                    <p className="text-xs text-green-600 dark:text-green-400">
+                      📁 Salvato in: files/archivio/
                     </p>
                   </div>
                 </div>
@@ -290,4 +292,4 @@ const FileUploader = ({
   );
 };
 
-export default FileUploader;
+export default DocumentUploader;
