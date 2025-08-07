@@ -709,6 +709,7 @@ const Dashboard = () => {
             <TabButton id="create" label="Nuovo Articolo" icon={Plus} />
             <TabButton id="create-project" label="Nuovo Progetto" icon={FolderOpen} />
             <TabButton id="richieste-call-idee" label="Richieste Call Idee" icon={Eye} />
+            <TabButton id="analytics" label="Analytics" icon={TrendingUp} />
             <TabButton id="documents" label="Gestione Documenti" icon={Archive} />
 
         {activeTab === "content" && (
