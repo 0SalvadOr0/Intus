@@ -13,16 +13,23 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use('/files', express.static('files'));
 
-// Ensure allegati directory exists
+// Ensure allegati and archivio directories exist
 const allegatiDir = path.join(__dirname, 'files', 'allegati');
+const archivioDir = path.join(__dirname, 'files', 'archivio');
 if (!fs.existsSync(allegatiDir)) {
   fs.mkdirSync(allegatiDir, { recursive: true });
+}
+if (!fs.existsSync(archivioDir)) {
+  fs.mkdirSync(archivioDir, { recursive: true });
 }
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, allegatiDir);
+    // Use different directory based on upload type
+    const uploadType = req.body.uploadType || 'allegati';
+    const targetDir = uploadType === 'archivio' ? archivioDir : allegatiDir;
+    cb(null, targetDir);
   },
   filename: (req, file, cb) => {
     const timestamp = Date.now();
@@ -101,6 +108,111 @@ app.use((error, req, res, next) => {
     success: false,
     error: error.message || 'Errore del server'
   });
+});
+
+// Upload document to archivio
+app.post('/api/upload-documento', upload.single('file'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        error: 'Nessun file caricato'
+      });
+    }
+
+    const { name, description, category } = req.body;
+
+    console.log('Document uploaded:', {
+      filename: req.file.filename,
+      originalname: req.file.originalname,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+      name,
+      description,
+      category
+    });
+
+    res.json({
+      success: true,
+      fileName: req.file.filename,
+      originalName: req.file.originalname,
+      name: name || req.file.originalname,
+      description: description || '',
+      category: category || 'Generale',
+      fileUrl: `/files/archivio/${req.file.filename}`,
+      fileSize: req.file.size,
+      mimeType: req.file.mimetype,
+      uploadDate: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Errore durante l\'upload del documento'
+    });
+  }
+});
+
+// Get all documents from archivio
+app.get('/api/documenti', (req, res) => {
+  try {
+    const files = fs.readdirSync(archivioDir);
+    const documents = files.map(file => {
+      const filePath = path.join(archivioDir, file);
+      const stats = fs.statSync(filePath);
+      const ext = path.extname(file).toLowerCase();
+
+      return {
+        id: file,
+        name: file,
+        originalName: file,
+        description: 'Documento dell\'archivio',
+        category: 'Generale',
+        fileUrl: `/files/archivio/${file}`,
+        fileSize: `${(stats.size / 1024 / 1024).toFixed(2)} MB`,
+        mimeType: ext === '.pdf' ? 'application/pdf' : 'application/octet-stream',
+        uploadDate: stats.birthtime.toISOString(),
+        type: ext.replace('.', '').toUpperCase()
+      };
+    });
+
+    res.json({ success: true, documents });
+  } catch (error) {
+    console.error('Error fetching documents:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Errore nel recupero dei documenti'
+    });
+  }
+});
+
+// Delete document from archivio
+app.delete('/api/documenti/:filename', (req, res) => {
+  try {
+    const { filename } = req.params;
+    const filePath = path.join(archivioDir, filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        error: 'Documento non trovato'
+      });
+    }
+
+    fs.unlinkSync(filePath);
+
+    res.json({
+      success: true,
+      message: 'Documento eliminato con successo'
+    });
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Errore durante l\'eliminazione del documento'
+    });
+  }
 });
 
 // Health check endpoint
