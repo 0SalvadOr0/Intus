@@ -138,17 +138,20 @@ const Dashboard = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/documents');
+      const response = await fetch('http://localhost:3001/api/all-documents');
       if (response.ok) {
         const result = await response.json();
-        setDocuments(result.documents || result);
+        if (result.success && result.documents) {
+          setDocuments(result.documents);
+        } else {
+          setDocuments([]);
+        }
       } else {
         console.warn('Backend server not available, using empty document list');
         setDocuments([]);
       }
     } catch (error) {
-      console.warn('Backend server not available:', error.message);
-      // Use empty array as fallback instead of mock data
+      console.warn('Backend server not available:', error instanceof Error ? error.message : 'Unknown error');
       setDocuments([]);
     }
   };
@@ -1193,8 +1196,8 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Project Ranking and Recent Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Project Ranking, Recent Activity, and Documents */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Project Ranking */}
               <div className="animate-fade-in-up" style={{animationDelay: '0.8s'}}>
                 <ProjectRanking />
@@ -1227,6 +1230,63 @@ const Dashboard = () => {
                           <span className="text-sm text-muted-foreground">{activity.time}</span>
                         </div>
                       ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recent Documents */}
+              <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up" style={{animationDelay: '0.9s'}}>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Archive className="w-5 h-5 mr-2 text-primary" />
+                    Documenti Recenti
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {documents.length === 0 ? (
+                      <div className="text-center text-muted-foreground">
+                        <Archive className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">Nessun documento</p>
+                      </div>
+                    ) : (
+                      documents.slice(0, 5).map((doc, index) => (
+                        <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-primary flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-sm truncate">{doc.originalName || doc.name}</div>
+                              <div className="text-xs text-muted-foreground flex items-center gap-2">
+                                <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">
+                                  {doc.category}
+                                </span>
+                                <span>{doc.size}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => window.open(doc.url, '_blank')}
+                            className="h-8 w-8 p-0 flex-shrink-0"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ))
+                    )}
+                    {documents.length > 5 && (
+                      <div className="pt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => setActiveTab("documents")}
+                        >
+                          Vedi tutti ({documents.length})
+                        </Button>
+                      </div>
                     )}
                   </div>
                 </CardContent>

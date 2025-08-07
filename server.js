@@ -160,12 +160,12 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
   }
 });
 
-// 📋 Document List Retrieval Endpoint
+// 📋 Document List Retrieval Endpoint (Archivio Only)
 app.get('/api/documents', (req, res) => {
   try {
     // 📂 Read archivio directory contents
     const files = fs.readdirSync(archivioDir);
-    
+
     // 🔄 Transform files into document objects
     const documents = files.map(file => {
       const filePath = path.join(archivioDir, file);
@@ -177,21 +177,93 @@ app.get('/api/documents', (req, res) => {
         name: file,
         originalName: file,
         description: 'Documento dell\'archivio',
-        category: 'Generale',
+        category: 'Documenti Ufficiali',
         fileUrl: `/files/archivio/${file}`,
         fileSize: `${(stats.size / 1024 / 1024).toFixed(2)} MB`,
         mimeType: ext === '.pdf' ? 'application/pdf' : 'application/octet-stream',
         uploadDate: stats.birthtime.toISOString(),
-        type: ext.replace('.', '').toUpperCase()
+        type: ext.replace('.', '').toUpperCase(),
+        source: 'archivio'
       };
     });
 
     // ✅ Return document list
     res.json({ success: true, documents });
-    
+
   } catch (error) {
     // ⚠️ Error handling
     console.error('❌ Error fetching documents:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Errore nel recupero dei documenti'
+    });
+  }
+});
+
+// 📋 Unified Document List (Archivio + Allegati) Endpoint
+app.get('/api/all-documents', (req, res) => {
+  try {
+    const allDocuments = [];
+
+    // 📂 Read archivio directory contents
+    if (fs.existsSync(archivioDir)) {
+      const archivioFiles = fs.readdirSync(archivioDir);
+
+      archivioFiles.forEach(file => {
+        const filePath = path.join(archivioDir, file);
+        const stats = fs.statSync(filePath);
+        const ext = path.extname(file).toLowerCase();
+
+        allDocuments.push({
+          id: `archivio_${file}`,
+          name: file,
+          originalName: file,
+          description: 'Documento ufficiale dell\'archivio',
+          category: 'Documenti Ufficiali',
+          url: `/files/archivio/${file}`,
+          size: `${(stats.size / 1024 / 1024).toFixed(2)} MB`,
+          mimeType: ext === '.pdf' ? 'application/pdf' : 'application/octet-stream',
+          uploadDate: stats.birthtime.toISOString(),
+          type: ext.replace('.', '').toUpperCase(),
+          source: 'archivio'
+        });
+      });
+    }
+
+    // 📎 Read allegati directory contents
+    if (fs.existsSync(allegatiDir)) {
+      const allegatiFiles = fs.readdirSync(allegatiDir);
+
+      allegatiFiles.forEach(file => {
+        const filePath = path.join(allegatiDir, file);
+        const stats = fs.statSync(filePath);
+        const ext = path.extname(file).toLowerCase();
+
+        allDocuments.push({
+          id: `allegati_${file}`,
+          name: file,
+          originalName: file,
+          description: 'Allegato da Call Idee Giovani',
+          category: 'Allegati Call Idee',
+          url: `/files/allegati/${file}`,
+          size: `${(stats.size / 1024 / 1024).toFixed(2)} MB`,
+          mimeType: ext === '.pdf' ? 'application/pdf' : 'application/octet-stream',
+          uploadDate: stats.birthtime.toISOString(),
+          type: ext.replace('.', '').toUpperCase(),
+          source: 'allegati'
+        });
+      });
+    }
+
+    // 📅 Sort by upload date (newest first)
+    allDocuments.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+
+    // ✅ Return unified document list
+    res.json({ success: true, documents: allDocuments });
+
+  } catch (error) {
+    // ⚠️ Error handling
+    console.error('❌ Error fetching all documents:', error);
     res.status(500).json({
       success: false,
       error: 'Errore nel recupero dei documenti'
