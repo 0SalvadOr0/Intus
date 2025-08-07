@@ -64,6 +64,7 @@ interface Project {
 const Dashboard = () => {
   const { toast } = useToast();
   const { user, signOut } = useAuth();
+  const { getTotalViews, getGeneralStats, getPopularPages, getVisitorStats } = useAnalyticsStats();
   const [activeTab, setActiveTab] = useState("overview");
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
@@ -74,7 +75,15 @@ const Dashboard = () => {
     publishedPosts: 0,
     draftPosts: 0,
     totalProjects: 0,
-    totalViews: 0
+    totalViews: 0,
+    totalViewsToday: 0,
+    uniqueVisitorsToday: 0,
+    viewsLastHour: 0
+  });
+  const [analyticsData, setAnalyticsData] = useState({
+    popularPages: [],
+    visitorStats: [],
+    isLoading: true
   });
 
   useEffect(() => {
