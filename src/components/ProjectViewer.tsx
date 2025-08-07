@@ -44,8 +44,8 @@ interface Project {
   pubblicato: boolean;
   partner?: Array<{nome: string, link?: string, capofila?: boolean}>;
   ruolo_intus?: string;
-  partecipanti_diretti?: number;
-  partecipanti_indiretti?: number;
+  partecipanti_diretti?: string;
+  partecipanti_indiretti?: string;
   ente_finanziatore?: string;
 }
 
@@ -589,9 +589,6 @@ const ProjectViewer = () => {
                                 <span className="font-medium">Indiretti:</span> {project.partecipanti_indiretti}
                               </div>
                             )}
-                            <div className="text-sm font-medium border-t pt-1">
-                              Totale: {(project.partecipanti_diretti || 0) + (project.partecipanti_indiretti || 0)}
-                            </div>
                           </div>
                         ) : (
                           project.numero_partecipanti
