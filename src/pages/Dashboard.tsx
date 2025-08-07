@@ -400,6 +400,13 @@ const Dashboard = () => {
       change: "+100%",
       icon: FolderOpen,
       color: "text-primary"
+    },
+    {
+      title: "Visitatori Oggi",
+      value: stats.uniqueVisitorsToday.toString(),
+      change: `Ultima ora: ${stats.viewsLastHour}`,
+      icon: Users,
+      color: "text-heart"
     }
   ];
 
