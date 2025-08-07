@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import PartnersStrip from "@/components/PartnersStrip";
 import ComicTextBubble from "@/components/ComicTextBubble";
 import MappaProgettiHome from "@/components/MappaProgettiHome";
-import AttivitaCategories from "@/components/AttivitaCategories";
+import AttivitaGrid from "@/components/AttivitaGrid";
 import { useTheme } from "next-themes";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
@@ -225,7 +225,14 @@ const Home = () => {
       </section>
 
       {/* Le Nostre Attività */}
-      <AttivitaCategories />
+      <section className="py-16 md:py-20 px-4">
+        <div className="container mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-8 animate-fade-in-up">
+            Le Nostre <span className="bg-gradient-to-r from-primary via-accent to-heart bg-clip-text text-transparent">Attività</span>
+          </h2>
+          <AttivitaGrid />
+        </div>
+      </section>
 
       {/* Mappa Progetti Integrata */}
       <MappaProgettiHome />
