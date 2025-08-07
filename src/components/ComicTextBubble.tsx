@@ -81,9 +81,9 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
 
       {/* Thought bubble trail */}
       <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        <div className="w-3 h-3 bg-white dark:bg-gray-900 border-2 border-black dark:border-white rounded-full animate-float"></div>
-        <div className="w-4 h-4 bg-white dark:bg-gray-900 border-2 border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.2s'}}></div>
-        <div className="w-5 h-5 bg-white dark:bg-gray-900 border-2 border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.4s'}}></div>
+        <div className="w-3 h-3 bg-white dark:bg-gray-900 border border-black dark:border-white rounded-full animate-float"></div>
+        <div className="w-4 h-4 bg-white dark:bg-gray-900 border border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.2s'}}></div>
+        <div className="w-5 h-5 bg-white dark:bg-gray-900 border border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.4s'}}></div>
       </div>
     </div>
   );
