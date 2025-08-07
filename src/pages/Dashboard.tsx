@@ -137,20 +137,19 @@ const Dashboard = () => {
   };
 
   const fetchDocuments = async () => {
-    // Mock data per ora - in futuro da sostituire con chiamata API
-    const mockDocs = [
-      {
-        id: 1,
-        name: "Statuto Associazione",
-        description: "Statuto ufficiale dell'associazione",
-        category: "Documenti Legali",
-        uploadDate: new Date().toISOString(),
-        size: "2.4 MB",
-        type: "PDF",
-        url: "/files/archivio/statuto.pdf"
+    try {
+      const response = await fetch('http://localhost:3001/api/documents');
+      if (response.ok) {
+        const docs = await response.json();
+        setDocuments(docs);
+      } else {
+        console.error('Failed to fetch documents');
+        setDocuments([]);
       }
-    ];
-    setDocuments(mockDocs);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      setDocuments([]);
+    }
   };
 
   const updateStats = (posts: any[]) => {
@@ -1008,14 +1007,37 @@ const Dashboard = () => {
                   </label>
                 </div>
                 <Button
-                  onClick={() => {
+                  onClick={async () => {
                     if (newDocument.name && newDocument.category && newDocument.file) {
-                      toast({
-                        title: "Documento caricato!",
-                        description: `${newDocument.name} è stato caricato con successo.`
-                      });
-                      setNewDocument({ name: "", description: "", category: "", file: null });
-                      fetchDocuments();
+                      try {
+                        const formData = new FormData();
+                        formData.append('file', newDocument.file);
+                        formData.append('name', newDocument.name);
+                        formData.append('description', newDocument.description);
+                        formData.append('category', newDocument.category);
+
+                        const response = await fetch('http://localhost:3001/api/upload-documento', {
+                          method: 'POST',
+                          body: formData
+                        });
+
+                        if (response.ok) {
+                          toast({
+                            title: "Documento caricato!",
+                            description: `${newDocument.name} è stato caricato con successo.`
+                          });
+                          setNewDocument({ name: "", description: "", category: "", file: null });
+                          fetchDocuments();
+                        } else {
+                          throw new Error('Upload failed');
+                        }
+                      } catch (error) {
+                        toast({
+                          title: "Errore upload",
+                          description: "Errore durante il caricamento del documento",
+                          variant: "destructive"
+                        });
+                      }
                     } else {
                       toast({
                         title: "Errore",
@@ -1088,10 +1110,25 @@ const Dashboard = () => {
                             size="sm"
                             variant="outline"
                             className="text-destructive hover:text-destructive"
-                            onClick={() => {
+                            onClick={async () => {
                               if (window.confirm('Sei sicuro di voler eliminare questo documento?')) {
-                                toast({ title: "Documento eliminato" });
-                                fetchDocuments();
+                                try {
+                                  const response = await fetch(`http://localhost:3001/api/documents/${doc.id}`, {
+                                    method: 'DELETE'
+                                  });
+                                  if (response.ok) {
+                                    toast({ title: "Documento eliminato" });
+                                    fetchDocuments();
+                                  } else {
+                                    throw new Error('Delete failed');
+                                  }
+                                } catch (error) {
+                                  toast({
+                                    title: "Errore",
+                                    description: "Errore durante l'eliminazione",
+                                    variant: "destructive"
+                                  });
+                                }
                               }
                             }}
                           >
