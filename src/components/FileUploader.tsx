@@ -111,10 +111,27 @@ const FileUploader = ({
         });
 
       if (error) {
-        console.error('Errore upload file:', error);
+        console.error('Errore upload file:', JSON.stringify(error, null, 2));
+        console.error('Error details:', {
+          message: error.message,
+          error: error.error,
+          statusCode: error.statusCode,
+          details: error
+        });
+
+        let errorMessage = "Si è verificato un errore durante il caricamento del file.";
+
+        if (error.message) {
+          errorMessage = error.message;
+        } else if (error.error) {
+          errorMessage = error.error;
+        } else if (typeof error === 'string') {
+          errorMessage = error;
+        }
+
         toast({
           title: "Errore nel caricamento",
-          description: error.message || "Si è verificato un errore durante il caricamento del file.",
+          description: errorMessage,
           variant: "destructive"
         });
         return;
@@ -135,9 +152,17 @@ const FileUploader = ({
 
     } catch (error) {
       console.error('Errore generico upload:', error);
+      console.error('Catch error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        error: error
+      });
+
+      const errorMessage = error instanceof Error ? error.message : "Si è verificato un errore durante il caricamento del file.";
+
       toast({
         title: "Errore nel caricamento",
-        description: "Si è verificato un errore durante il caricamento del file.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
