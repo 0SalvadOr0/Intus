@@ -425,13 +425,12 @@ const CallIdeeGiovani = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="sociale">Sociale e Volontariato</SelectItem>
-                            <SelectItem value="ambientale">Ambientale e Sostenibilità</SelectItem>
-                            <SelectItem value="culturale">Culturale e Artistico</SelectItem>
-                            <SelectItem value="educativo">Educativo e Formativo</SelectItem>
-                            <SelectItem value="tecnologico">Tecnologico e Innovativo</SelectItem>
-                            <SelectItem value="sportivo">Sportivo e Benessere</SelectItem>
-                            <SelectItem value="imprenditoriale">Imprenditoriale</SelectItem>
+                            <SelectItem value="Animazione territoriale">Animazione territoriale</SelectItem>
+                            <SelectItem value="Educazione alla legalità">Educazione alla legalità</SelectItem>
+                            <SelectItem value="Politiche giovanili">Politiche giovanili</SelectItem>
+                            <SelectItem value="Sviluppo di ricerche/Intervento">Sviluppo di ricerche/Intervento</SelectItem>
+                            <SelectItem value="Promozione del territorio">Promozione del territorio</SelectItem>
+                            <SelectItem value="Inclusione sociale">Inclusione sociale</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
