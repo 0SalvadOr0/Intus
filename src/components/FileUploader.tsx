@@ -149,8 +149,6 @@ const FileUploader = ({
 
       console.log('Upload result:', result);
 
-      console.log('Upload result:', { data, error });
-
       if (result.success) {
         onFileUpload(result.fileUrl, result.originalName || file.name);
         toast({
