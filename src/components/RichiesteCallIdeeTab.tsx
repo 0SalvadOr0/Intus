@@ -751,6 +751,34 @@ const RichiesteCallIdeeTab = () => {
                             </div>
                           )}
 
+                          {/* Allegati */}
+                          {r.allegati && r.allegati.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold text-sm text-primary mb-2 flex items-center">
+                                <FileText className="w-4 h-4 mr-1" />
+                                Allegati ({r.allegati.length})
+                              </h4>
+                              <div className="space-y-2">
+                                {r.allegati.map((allegato, i) => (
+                                  <div key={i} className="flex items-center justify-between p-2 bg-white dark:bg-card rounded border">
+                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                      <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                                      <span className="text-sm font-medium truncate">{allegato.name}</span>
+                                    </div>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => window.open(allegato.url, '_blank')}
+                                      className="h-8 px-2 text-blue-600 hover:text-blue-700"
+                                    >
+                                      <Eye className="w-4 h-4" />
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
                           {/* Spese */}
                           <div className="grid grid-cols-1 gap-3">
                             {r.spese_attrezzature?.length > 0 && (
