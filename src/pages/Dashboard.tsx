@@ -1198,9 +1198,12 @@ const Dashboard = () => {
                       <SelectValue placeholder="Seleziona categoria" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Cittadinanza Attiva">Cittadinanza Attiva</SelectItem>
-                      <SelectItem value="Territorio">Territorio</SelectItem>
-                      <SelectItem value="Politiche Giovanili">Politiche Giovanili</SelectItem>
+                      <SelectItem value="Animazione territoriale">Animazione territoriale</SelectItem>
+                      <SelectItem value="Educazione alla legalità">Educazione alla legalità</SelectItem>
+                      <SelectItem value="Politiche giovanili">Politiche giovanili</SelectItem>
+                      <SelectItem value="Sviluppo di ricerche/Intervento">Sviluppo di ricerche/Intervento</SelectItem>
+                      <SelectItem value="Promozione del territorio">Promozione del territorio</SelectItem>
+                      <SelectItem value="Inclusione sociale">Inclusione sociale</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
