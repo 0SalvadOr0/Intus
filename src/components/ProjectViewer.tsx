@@ -38,11 +38,16 @@ interface Project {
   immagini: string[];
   immagine_copertina?: string;
   youtube_url?: string;
+  youtube_urls?: string[];
   status: "completed" | "ongoing" | "planned";
   data_inizio?: string;
   created_at: string;
   pubblicato: boolean;
-  partner?: Array<{nome: string, link?: string}>;
+  partner?: Array<{nome: string, link?: string, capofila?: boolean}>;
+  ruolo_intus?: string;
+  partecipanti_diretti?: string;
+  partecipanti_indiretti?: string;
+  ente_finanziatore?: string;
 }
 
 const ProjectViewer = () => {
@@ -368,17 +373,34 @@ const ProjectViewer = () => {
               </div>
             </div>
 
-            {project.youtube_url && (
-              <Button
-                variant="ghost"
-                asChild
-                className="bg-red-600/80 backdrop-blur-md text-white hover:bg-red-600 border border-red-600/50 transition-all duration-300"
-              >
-                <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
-                  <Play className="w-4 h-4 mr-2" />
-                  Video
-                </a>
-              </Button>
+            {(project.youtube_url || (project.youtube_urls && project.youtube_urls.length > 0)) && (
+              <div className="flex gap-2">
+                {project.youtube_url && (
+                  <Button
+                    variant="ghost"
+                    asChild
+                    className="bg-red-600/80 backdrop-blur-md text-white hover:bg-red-600 border border-red-600/50 transition-all duration-300"
+                  >
+                    <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
+                      <Play className="w-4 h-4 mr-2" />
+                      Video
+                    </a>
+                  </Button>
+                )}
+                {project.youtube_urls && project.youtube_urls.map((url, index) => (
+                  <Button
+                    key={index}
+                    variant="ghost"
+                    asChild
+                    className="bg-red-600/80 backdrop-blur-md text-white hover:bg-red-600 border border-red-600/50 transition-all duration-300"
+                  >
+                    <a href={url} target="_blank" rel="noopener noreferrer">
+                      <Play className="w-4 h-4 mr-2" />
+                      Video {index + 1}
+                    </a>
+                  </Button>
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -490,18 +512,51 @@ const ProjectViewer = () => {
                             href={partner.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted/80 rounded-lg transition-colors"
+                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                              partner.capofila
+                                ? 'bg-primary text-primary-foreground hover:bg-primary/90 border-2 border-primary-glow'
+                                : 'bg-muted hover:bg-muted/80'
+                            }`}
                           >
+                            {partner.capofila && <span className="mr-1 font-bold">★</span>}
                             {partner.nome}
                             <ExternalLink className="w-4 h-4" />
                           </a>
                         ) : (
-                          <Badge variant="outline" className="px-4 py-2">
+                          <Badge
+                            variant={partner.capofila ? "default" : "outline"}
+                            className={`px-4 py-2 ${
+                              partner.capofila
+                                ? 'bg-primary text-primary-foreground border-2 border-primary-glow'
+                                : ''
+                            }`}
+                          >
+                            {partner.capofila && <span className="mr-1">★</span>}
                             {partner.nome}
                           </Badge>
                         )}
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Ruolo di Intus */}
+              {project.ruolo_intus && (
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold">Ruolo di Intus</h3>
+                  <div className="bg-muted/50 rounded-lg p-4">
+                    <p className="text-foreground/90">{project.ruolo_intus}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Ente Finanziatore */}
+              {project.ente_finanziatore && (
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold">Ente Finanziatore</h3>
+                  <div className="bg-accent/10 rounded-lg p-4 border border-accent/20">
+                    <p className="text-foreground font-semibold">{project.ente_finanziatore}</p>
                   </div>
                 </div>
               )}
@@ -539,7 +594,24 @@ const ProjectViewer = () => {
                     <Users className="w-4 h-4 mt-0.5 text-primary" />
                     <div>
                       <div className="font-medium">Partecipanti</div>
-                      <div className="text-muted-foreground">{project.numero_partecipanti}</div>
+                      <div className="text-muted-foreground">
+                        {project.partecipanti_diretti || project.partecipanti_indiretti ? (
+                          <div className="space-y-1">
+                            {project.partecipanti_diretti && (
+                              <div className="text-sm">
+                                <span className="font-medium">Diretti:</span> {project.partecipanti_diretti}
+                              </div>
+                            )}
+                            {project.partecipanti_indiretti && (
+                              <div className="text-sm">
+                                <span className="font-medium">Indiretti:</span> {project.partecipanti_indiretti}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          project.numero_partecipanti
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -560,13 +632,25 @@ const ProjectViewer = () => {
                   <Share2 className="w-4 h-4 mr-2" />
                   Condividi progetto
                 </Button>
-                {project.youtube_url && (
-                  <Button variant="outline" className="w-full" asChild>
-                    <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
-                      <Play className="w-4 h-4 mr-2" />
-                      Guarda il video
-                    </a>
-                  </Button>
+                {(project.youtube_url || (project.youtube_urls && project.youtube_urls.length > 0)) && (
+                  <div className="space-y-2">
+                    {project.youtube_url && (
+                      <Button variant="outline" className="w-full" asChild>
+                        <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
+                          <Play className="w-4 h-4 mr-2" />
+                          Guarda il video
+                        </a>
+                      </Button>
+                    )}
+                    {project.youtube_urls && project.youtube_urls.map((url, index) => (
+                      <Button key={index} variant="outline" className="w-full" asChild>
+                        <a href={url} target="_blank" rel="noopener noreferrer">
+                          <Play className="w-4 h-4 mr-2" />
+                          Video {index + 1}
+                        </a>
+                      </Button>
+                    ))}
+                  </div>
                 )}
                 <Button variant="outline" className="w-full" onClick={() => navigate('/le-nostre-attivita')}>
                   <ArrowLeft className="w-4 h-4 mr-2" />

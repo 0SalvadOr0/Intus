@@ -29,14 +29,14 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
       </div>
 
       {/* Main speech bubble */}
-      <div className={`relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-2xl border-4 border-black dark:border-white transition-all duration-1000 transform${
+      <div className={`relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-black dark:border-white transition-all duration-1000 transform${
         isVisible ? 'scale-100 opacity-100 rotate-0' : 'scale-95 opacity-0 rotate-1'
       }`}>
         
         {/* Speech bubble tail */}
-        <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
-          <div className="w-0 h-0 border-l-[20px] border-r-[20px] border-t-[24px] border-l-transparent border-r-transparent border-t-black dark:border-t-white"></div>
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-0 h-0 border-l-[16px] border-r-[16px] border-t-[20px] border-l-transparent border-r-transparent border-t-white dark:border-t-gray-900"></div>
+        <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2">
+          <div className="w-0 h-0 border-l-[18px] border-r-[18px] border-t-[22px] border-l-transparent border-r-transparent border-t-black dark:border-t-white"></div>
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-0 h-0 border-l-[15px] border-r-[15px] border-t-[19px] border-l-transparent border-r-transparent border-t-white dark:border-t-gray-900"></div>
         </div>
 
         {/* Comic text styling */}
@@ -81,9 +81,9 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
 
       {/* Thought bubble trail */}
       <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        <div className="w-3 h-3 bg-white dark:bg-gray-900 border-2 border-black dark:border-white rounded-full animate-float"></div>
-        <div className="w-4 h-4 bg-white dark:bg-gray-900 border-2 border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.2s'}}></div>
-        <div className="w-5 h-5 bg-white dark:bg-gray-900 border-2 border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.4s'}}></div>
+        <div className="w-3 h-3 bg-white dark:bg-gray-900 border border-black dark:border-white rounded-full animate-float"></div>
+        <div className="w-4 h-4 bg-white dark:bg-gray-900 border border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.2s'}}></div>
+        <div className="w-5 h-5 bg-white dark:bg-gray-900 border border-black dark:border-white rounded-full animate-float" style={{animationDelay: '0.4s'}}></div>
       </div>
     </div>
   );

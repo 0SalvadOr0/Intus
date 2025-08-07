@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect, lazy, Suspense } from "react";
+import { useAnalytics } from "@/hooks/use-analytics";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -12,6 +13,12 @@ const ScrollToTop = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  return null;
+};
+
+const AnalyticsTracker = () => {
+  // This component will automatically track page views using the useAnalytics hook
+  useAnalytics();
   return null;
 };
 
@@ -73,6 +80,7 @@ const App = () => {
           >
             <BrowserRouter>
               <ScrollToTop />
+              <AnalyticsTracker />
               <Navigation />
               <Suspense  fallback={<SmoothLoadingScreen  isVisible={true} message="Caricamento pagina" />}>
                 <Routes>
