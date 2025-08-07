@@ -138,17 +138,20 @@ const Dashboard = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/documents');
+      const response = await fetch('http://localhost:3001/api/all-documents');
       if (response.ok) {
         const result = await response.json();
-        setDocuments(result.documents || result);
+        if (result.success && result.documents) {
+          setDocuments(result.documents);
+        } else {
+          setDocuments([]);
+        }
       } else {
         console.warn('Backend server not available, using empty document list');
         setDocuments([]);
       }
     } catch (error) {
-      console.warn('Backend server not available:', error.message);
-      // Use empty array as fallback instead of mock data
+      console.warn('Backend server not available:', error instanceof Error ? error.message : 'Unknown error');
       setDocuments([]);
     }
   };
