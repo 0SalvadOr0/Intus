@@ -42,7 +42,11 @@ interface Project {
   data_inizio?: string;
   created_at: string;
   pubblicato: boolean;
-  partner?: Array<{nome: string, link?: string}>;
+  partner?: Array<{nome: string, link?: string, capofila?: boolean}>;
+  ruolo_intus?: string;
+  partecipanti_diretti?: number;
+  partecipanti_indiretti?: number;
+  ente_finanziatore?: string;
 }
 
 const ProjectViewer = () => {
@@ -490,18 +494,51 @@ const ProjectViewer = () => {
                             href={partner.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted/80 rounded-lg transition-colors"
+                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                              partner.capofila
+                                ? 'bg-primary text-primary-foreground hover:bg-primary/90 border-2 border-primary-glow'
+                                : 'bg-muted hover:bg-muted/80'
+                            }`}
                           >
+                            {partner.capofila && <span className="mr-1 font-bold">★</span>}
                             {partner.nome}
                             <ExternalLink className="w-4 h-4" />
                           </a>
                         ) : (
-                          <Badge variant="outline" className="px-4 py-2">
+                          <Badge
+                            variant={partner.capofila ? "default" : "outline"}
+                            className={`px-4 py-2 ${
+                              partner.capofila
+                                ? 'bg-primary text-primary-foreground border-2 border-primary-glow'
+                                : ''
+                            }`}
+                          >
+                            {partner.capofila && <span className="mr-1">★</span>}
                             {partner.nome}
                           </Badge>
                         )}
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Ruolo di Intus */}
+              {project.ruolo_intus && (
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold">Ruolo di Intus</h3>
+                  <div className="bg-muted/50 rounded-lg p-4">
+                    <p className="text-foreground/90">{project.ruolo_intus}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Ente Finanziatore */}
+              {project.ente_finanziatore && (
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold">Ente Finanziatore</h3>
+                  <div className="bg-accent/10 rounded-lg p-4 border border-accent/20">
+                    <p className="text-foreground font-semibold">{project.ente_finanziatore}</p>
                   </div>
                 </div>
               )}
@@ -539,7 +576,27 @@ const ProjectViewer = () => {
                     <Users className="w-4 h-4 mt-0.5 text-primary" />
                     <div>
                       <div className="font-medium">Partecipanti</div>
-                      <div className="text-muted-foreground">{project.numero_partecipanti}</div>
+                      <div className="text-muted-foreground">
+                        {project.partecipanti_diretti || project.partecipanti_indiretti ? (
+                          <div className="space-y-1">
+                            {project.partecipanti_diretti && (
+                              <div className="text-sm">
+                                <span className="font-medium">Diretti:</span> {project.partecipanti_diretti}
+                              </div>
+                            )}
+                            {project.partecipanti_indiretti && (
+                              <div className="text-sm">
+                                <span className="font-medium">Indiretti:</span> {project.partecipanti_indiretti}
+                              </div>
+                            )}
+                            <div className="text-sm font-medium border-t pt-1">
+                              Totale: {(project.partecipanti_diretti || 0) + (project.partecipanti_indiretti || 0)}
+                            </div>
+                          </div>
+                        ) : (
+                          project.numero_partecipanti
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
