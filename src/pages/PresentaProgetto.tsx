@@ -477,26 +477,6 @@ const CallIdeeGiovani = () => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="autorizzazioni"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Autorizzazioni (Opzionale)</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Eventuali autorizzazioni o permessi necessari per il progetto..."
-                          className="min-h-[80px]"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Campo opzionale per allegare informazioni su autorizzazioni necessarie
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </CardContent>
             </Card>
 
