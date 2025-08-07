@@ -128,39 +128,22 @@ const FileUploader = ({
         fileType: file.type
       });
 
-      // Try to upload to the 'files' bucket first, with fallback to 'blog-images'
-      let uploadResult;
-      let bucketUsed = 'files';
-
-      // First attempt: 'files' bucket
-      uploadResult = await supabase.storage
-        .from('files')
+      // Use the blog-images bucket (which is known to work) for file uploads
+      const bucketUsed = 'blog-images';
+      const { data, error } = await supabase.storage
+        .from(bucketUsed)
         .upload(`allegati/${fileName}`, file, {
           cacheControl: '3600',
           upsert: false,
+          contentType: file.type,
           onUploadProgress: (progress) => {
-            const percent = (progress.loaded / progress.total) * 100;
-            setUploadProgress(percent);
-          }
-        });
-
-      // If 'files' bucket fails, try 'blog-images' bucket as fallback
-      if (uploadResult.error) {
-        console.log('Failed to upload to files bucket, trying blog-images fallback...');
-        bucketUsed = 'blog-images';
-        uploadResult = await supabase.storage
-          .from('blog-images')
-          .upload(`allegati/${fileName}`, file, {
-            cacheControl: '3600',
-            upsert: false,
-            onUploadProgress: (progress) => {
+            if (progress.total && progress.total > 0) {
               const percent = (progress.loaded / progress.total) * 100;
               setUploadProgress(percent);
             }
-          });
-      }
+          }
+        });
 
-      const { data, error } = uploadResult;
       console.log(`Upload result using ${bucketUsed} bucket:`, { data, error });
 
       console.log('Upload result:', { data, error });
