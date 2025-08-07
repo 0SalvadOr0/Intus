@@ -55,7 +55,10 @@ const FileUploader = ({
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      console.log('No files selected');
+      return;
+    }
 
     if (uploadedFiles.length >= maxFiles) {
       toast({
@@ -67,6 +70,12 @@ const FileUploader = ({
     }
 
     const file = files[0];
+    console.log('File selected:', {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      lastModified: file.lastModified
+    });
 
     // Validate file type
     if (!isValidFileType(file.name)) {
@@ -89,8 +98,21 @@ const FileUploader = ({
       return;
     }
 
+    console.log('Starting upload process...');
     setIsUploading(true);
     setUploadProgress(0);
+
+    // Check Supabase client
+    if (!supabase) {
+      console.error('Supabase client not available');
+      toast({
+        title: "Errore di configurazione",
+        description: "Client Supabase non disponibile.",
+        variant: "destructive"
+      });
+      setIsUploading(false);
+      return;
+    }
 
     try {
       // Generate unique filename
