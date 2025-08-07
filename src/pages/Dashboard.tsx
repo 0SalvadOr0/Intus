@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAnalyticsStats } from "@/hooks/use-analytics";
 import {
   Plus,
   Edit,
@@ -63,6 +64,7 @@ interface Project {
 const Dashboard = () => {
   const { toast } = useToast();
   const { user, signOut } = useAuth();
+  const { getTotalViews, getGeneralStats, getPopularPages, getVisitorStats } = useAnalyticsStats();
   const [activeTab, setActiveTab] = useState("overview");
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
@@ -73,7 +75,15 @@ const Dashboard = () => {
     publishedPosts: 0,
     draftPosts: 0,
     totalProjects: 0,
-    totalViews: 0
+    totalViews: 0,
+    totalViewsToday: 0,
+    uniqueVisitorsToday: 0,
+    viewsLastHour: 0
+  });
+  const [analyticsData, setAnalyticsData] = useState({
+    popularPages: [],
+    visitorStats: [],
+    isLoading: true
   });
 
   useEffect(() => {
@@ -81,6 +91,7 @@ const Dashboard = () => {
     fetchProjects();
     fetchCallIdeeRequests();
     fetchDocuments();
+    fetchAnalyticsData();
     // eslint-disable-next-line
   }, []);
 
@@ -156,17 +167,57 @@ const Dashboard = () => {
     }
   };
 
+  const fetchAnalyticsData = async () => {
+    try {
+      setAnalyticsData(prev => ({ ...prev, isLoading: true }));
+
+      // Fetch total views
+      const totalViews = await getTotalViews();
+
+      // Fetch general stats
+      const generalStats = await getGeneralStats();
+
+      // Fetch popular pages
+      const popularPages = await getPopularPages(10);
+
+      // Fetch visitor stats for last 30 days
+      const visitorStats = await getVisitorStats(30);
+
+      // Update stats state
+      setStats(prev => ({
+        ...prev,
+        totalViews: totalViews || prev.totalViews,
+        totalViewsToday: generalStats?.total_views_today || 0,
+        uniqueVisitorsToday: generalStats?.unique_visitors_today || 0,
+        viewsLastHour: generalStats?.views_last_hour || 0
+      }));
+
+      // Update analytics data
+      setAnalyticsData({
+        popularPages: popularPages || [],
+        visitorStats: visitorStats || [],
+        isLoading: false
+      });
+
+    } catch (error) {
+      console.error('Errore nel caricamento analytics:', error);
+      setAnalyticsData(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
   const updateStats = (posts: any[]) => {
     const publishedPosts = posts.filter(p => p.pubblicato === true).length;
     const draftPosts = posts.filter(p => p.pubblicato === false).length;
 
-    setStats({
+    setStats(prev => ({
+      ...prev,
       totalPosts: posts.length,
       publishedPosts,
       draftPosts,
       totalProjects: projects.length,
-      totalViews: posts.reduce((sum, post) => sum + (post.views || 0), 0)
-    });
+      // Keep analytics totalViews, fallback to blog views if not available
+      totalViews: prev.totalViews || posts.reduce((sum, post) => sum + (post.views || 0), 0)
+    }));
   };
 
   // Pubblica un articolo
@@ -250,11 +301,16 @@ const Dashboard = () => {
     categoria: "",
     numero_partecipanti: 0,
     luoghi: [] as string[],
-    partner: [] as Array<{nome: string, link?: string}>,
+    partner: [] as Array<{nome: string, link?: string, capofila?: boolean}>,
     youtube_url: "",
+    youtube_urls: [] as string[],
     immagini: [] as string[],
     data_inizio: "",
-    status: "planned" as const
+    status: "planned" as const,
+    ruolo_intus: "",
+    partecipanti_diretti: "",
+    partecipanti_indiretti: "",
+    ente_finanziatore: ""
   });
 
   const [editingProject, setEditingProject] = useState<any>(null);
@@ -327,7 +383,7 @@ const Dashboard = () => {
     {
       title: "Visualizzazioni Totali",
       value: stats.totalViews > 1000 ? `${(stats.totalViews / 1000).toFixed(1)}K` : stats.totalViews.toString(),
-      change: "+15%",
+      change: `Oggi: ${stats.totalViewsToday}`,
       icon: Eye,
       color: "text-accent"
     },
@@ -344,6 +400,13 @@ const Dashboard = () => {
       change: "+100%",
       icon: FolderOpen,
       color: "text-primary"
+    },
+    {
+      title: "Visitatori Oggi",
+      value: stats.uniqueVisitorsToday.toString(),
+      change: `Ultima ora: ${stats.viewsLastHour}`,
+      icon: Users,
+      color: "text-heart"
     }
   ];
 
@@ -646,6 +709,7 @@ const Dashboard = () => {
             <TabButton id="create" label="Nuovo Articolo" icon={Plus} />
             <TabButton id="create-project" label="Nuovo Progetto" icon={FolderOpen} />
             <TabButton id="richieste-call-idee" label="Richieste Call Idee" icon={Eye} />
+            <TabButton id="analytics" label="Analytics" icon={TrendingUp} />
             <TabButton id="documents" label="Gestione Documenti" icon={Archive} />
 
         {activeTab === "content" && (
@@ -954,6 +1018,121 @@ const Dashboard = () => {
         )}
         {activeTab === "richieste-call-idee" && (
           <RichiesteCallIdeeTab />
+        )}
+
+        {/* Analytics Tab */}
+        {activeTab === "analytics" && (
+          <div className="space-y-8">
+            {/* Analytics Overview */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <TrendingUp className="w-5 h-5 mr-2 text-primary" />
+                  Statistiche del Sito
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {analyticsData.isLoading ? (
+                  <div className="text-center text-muted-foreground">Caricamento statistiche...</div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="text-center p-4 bg-primary/10 rounded-lg">
+                      <div className="text-2xl font-bold text-primary">{stats.totalViews}</div>
+                      <div className="text-sm text-muted-foreground">Visualizzazioni Totali</div>
+                    </div>
+                    <div className="text-center p-4 bg-accent/10 rounded-lg">
+                      <div className="text-2xl font-bold text-accent">{stats.totalViewsToday}</div>
+                      <div className="text-sm text-muted-foreground">Visualizzazioni Oggi</div>
+                    </div>
+                    <div className="text-center p-4 bg-heart/10 rounded-lg">
+                      <div className="text-2xl font-bold text-heart">{stats.uniqueVisitorsToday}</div>
+                      <div className="text-sm text-muted-foreground">Visitatori Unici Oggi</div>
+                    </div>
+                    <div className="text-center p-4 bg-green-500/10 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">{stats.viewsLastHour}</div>
+                      <div className="text-sm text-muted-foreground">Visite Ultima Ora</div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Popular Pages */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Eye className="w-5 h-5 mr-2 text-primary" />
+                  Pagine Più Visitate
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {analyticsData.isLoading ? (
+                  <div className="text-center text-muted-foreground">Caricamento...</div>
+                ) : analyticsData.popularPages.length === 0 ? (
+                  <div className="text-center text-muted-foreground">Nessun dato disponibile ancora.</div>
+                ) : (
+                  <div className="space-y-4">
+                    {analyticsData.popularPages.slice(0, 10).map((page: any, index: number) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex-1">
+                          <div className="font-medium">{page.page_path}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {page.unique_visits} visitatori unici
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xl font-bold text-primary">{page.views}</div>
+                          <div className="text-xs text-muted-foreground">visualizzazioni</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Visitor Trends */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <BarChart3 className="w-5 h-5 mr-2 text-primary" />
+                  Andamento Visitatori (Ultimi 30 giorni)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {analyticsData.isLoading ? (
+                  <div className="text-center text-muted-foreground">Caricamento...</div>
+                ) : analyticsData.visitorStats.length === 0 ? (
+                  <div className="text-center text-muted-foreground">Nessun dato disponibile ancora.</div>
+                ) : (
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {analyticsData.visitorStats.slice(0, 15).map((stat: any, index: number) => (
+                      <div key={index} className="flex items-center justify-between p-2 border-b border-border/50">
+                        <div className="text-sm">
+                          {new Date(stat.date).toLocaleDateString('it-IT')}
+                        </div>
+                        <div className="flex gap-4 text-sm">
+                          <span className="text-primary">{stat.total_views} visualizzazioni</span>
+                          <span className="text-accent">{stat.unique_visitors} visitatori</span>
+                          {stat.registered_users > 0 && (
+                            <span className="text-heart">{stat.registered_users} utenti registrati</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Refresh Button */}
+            <div className="flex justify-center">
+              <Button onClick={fetchAnalyticsData} variant="outline">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                Aggiorna Statistiche
+              </Button>
+            </div>
+          </div>
         )}
 
         {activeTab === "documents" && (
@@ -1443,9 +1622,14 @@ const Dashboard = () => {
                         luoghi: [],
                         partner: [],
                         youtube_url: "",
+                        youtube_urls: [],
                         immagini: [],
                         data_inizio: "",
-                        status: "planned"
+                        status: "planned",
+                        ruolo_intus: "",
+                        partecipanti_diretti: "",
+                        partecipanti_indiretti: "",
+                        ente_finanziatore: ""
                       });
                     }}
                   >
@@ -1515,13 +1699,34 @@ const Dashboard = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="project-participants">Partecipanti</Label>
+                  <Label htmlFor="project-participants">Partecipanti Totali</Label>
                   <Input
                     id="project-participants"
                     type="number"
                     placeholder="Numero stimato"
                     value={getCurrentProject()?.numero_partecipanti || ""}
                     onChange={(e) => updateCurrentProject({ numero_partecipanti: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="project-participants-direct">Partecipanti Diretti</Label>
+                  <Input
+                    id="project-participants-direct"
+                    placeholder="es. Istituto X, Associazione Y, 50 studenti"
+                    value={getCurrentProject()?.partecipanti_diretti || ""}
+                    onChange={(e) => updateCurrentProject({ partecipanti_diretti: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-participants-indirect">Partecipanti Indiretti</Label>
+                  <Input
+                    id="project-participants-indirect"
+                    placeholder="es. Comunità locale, Famiglie, 200 cittadini"
+                    value={getCurrentProject()?.partecipanti_indiretti || ""}
+                    onChange={(e) => updateCurrentProject({ partecipanti_indiretti: e.target.value })}
                   />
                 </div>
               </div>
@@ -1541,12 +1746,34 @@ const Dashboard = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="project-youtube">Link YouTube (opzionale)</Label>
+                  <Label htmlFor="project-youtube">Link YouTube Principale (opzionale)</Label>
                   <Input
                     id="project-youtube"
                     placeholder="https://www.youtube.com/watch?v=..."
                     value={getCurrentProject()?.youtube_url || ""}
                     onChange={(e) => updateCurrentProject({ youtube_url: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="project-intus-role">Ruolo di Intus</Label>
+                  <Textarea
+                    id="project-intus-role"
+                    placeholder="Descrivi il ruolo di Intus nel progetto..."
+                    value={getCurrentProject()?.ruolo_intus || ""}
+                    onChange={(e) => updateCurrentProject({ ruolo_intus: e.target.value })}
+                    className="min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-funding-entity">Ente Finanziatore</Label>
+                  <Input
+                    id="project-funding-entity"
+                    placeholder="Nome dell'ente che finanzia il progetto"
+                    value={getCurrentProject()?.ente_finanziatore || ""}
+                    onChange={(e) => updateCurrentProject({ ente_finanziatore: e.target.value })}
                   />
                 </div>
               </div>
@@ -1571,6 +1798,121 @@ const Dashboard = () => {
                     onChange={(e) => updateCurrentProject({ contenuto: e.target.value })}
                     className="min-h-[150px]"
                   />
+                </div>
+              </div>
+
+              {/* YouTube URLs aggiuntivi */}
+              <div className="space-y-4">
+                <Label>Link YouTube Aggiuntivi</Label>
+                <div className="border rounded-lg p-4 space-y-4">
+                  {getCurrentProject()?.youtube_urls?.map((url: string, index: number) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-muted/50 rounded border">
+                      <div className="flex-1">
+                        <Input
+                          placeholder="https://www.youtube.com/watch?v=..."
+                          value={url}
+                          onChange={(e) => {
+                            const newUrls = [...(getCurrentProject()?.youtube_urls || [])];
+                            newUrls[index] = e.target.value;
+                            updateCurrentProject({ youtube_urls: newUrls });
+                          }}
+                        />
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const newUrls = getCurrentProject()?.youtube_urls?.filter((_: string, i: number) => i !== index) || [];
+                          updateCurrentProject({ youtube_urls: newUrls });
+                        }}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        ✕
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newUrls = [...(getCurrentProject()?.youtube_urls || []), ""];
+                      updateCurrentProject({ youtube_urls: newUrls });
+                    }}
+                    className="w-full"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Aggiungi Link YouTube
+                  </Button>
+                </div>
+              </div>
+
+              {/* Partner Section */}
+              <div className="space-y-4">
+                <Label>Partner del Progetto</Label>
+                <div className="border rounded-lg p-4 space-y-4">
+                  {getCurrentProject()?.partner?.map((partner: any, index: number) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-muted/50 rounded border">
+                      <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <Input
+                          placeholder="Nome partner"
+                          value={partner.nome || ""}
+                          onChange={(e) => {
+                            const newPartners = [...(getCurrentProject()?.partner || [])];
+                            newPartners[index] = { ...newPartners[index], nome: e.target.value };
+                            updateCurrentProject({ partner: newPartners });
+                          }}
+                        />
+                        <Input
+                          placeholder="Link (opzionale)"
+                          value={partner.link || ""}
+                          onChange={(e) => {
+                            const newPartners = [...(getCurrentProject()?.partner || [])];
+                            newPartners[index] = { ...newPartners[index], link: e.target.value };
+                            updateCurrentProject({ partner: newPartners });
+                          }}
+                        />
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            id={`capofila-${index}`}
+                            checked={partner.capofila || false}
+                            onChange={(e) => {
+                              const newPartners = [...(getCurrentProject()?.partner || [])];
+                              newPartners[index] = { ...newPartners[index], capofila: e.target.checked };
+                              updateCurrentProject({ partner: newPartners });
+                            }}
+                            className="rounded border-gray-300"
+                          />
+                          <label htmlFor={`capofila-${index}`} className="text-sm font-medium">
+                            ⭐ Capofila
+                          </label>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const newPartners = getCurrentProject()?.partner?.filter((_: any, i: number) => i !== index) || [];
+                          updateCurrentProject({ partner: newPartners });
+                        }}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        ✕
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newPartners = [...(getCurrentProject()?.partner || []), { nome: "", link: "", capofila: false }];
+                      updateCurrentProject({ partner: newPartners });
+                    }}
+                    className="w-full"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Aggiungi Partner
+                  </Button>
                 </div>
               </div>
 
