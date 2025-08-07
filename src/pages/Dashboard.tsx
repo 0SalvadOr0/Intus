@@ -167,6 +167,44 @@ const Dashboard = () => {
     }
   };
 
+  const fetchAnalyticsData = async () => {
+    try {
+      setAnalyticsData(prev => ({ ...prev, isLoading: true }));
+
+      // Fetch total views
+      const totalViews = await getTotalViews();
+
+      // Fetch general stats
+      const generalStats = await getGeneralStats();
+
+      // Fetch popular pages
+      const popularPages = await getPopularPages(10);
+
+      // Fetch visitor stats for last 30 days
+      const visitorStats = await getVisitorStats(30);
+
+      // Update stats state
+      setStats(prev => ({
+        ...prev,
+        totalViews: totalViews || prev.totalViews,
+        totalViewsToday: generalStats?.total_views_today || 0,
+        uniqueVisitorsToday: generalStats?.unique_visitors_today || 0,
+        viewsLastHour: generalStats?.views_last_hour || 0
+      }));
+
+      // Update analytics data
+      setAnalyticsData({
+        popularPages: popularPages || [],
+        visitorStats: visitorStats || [],
+        isLoading: false
+      });
+
+    } catch (error) {
+      console.error('Errore nel caricamento analytics:', error);
+      setAnalyticsData(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
   const updateStats = (posts: any[]) => {
     const publishedPosts = posts.filter(p => p.pubblicato === true).length;
     const draftPosts = posts.filter(p => p.pubblicato === false).length;
