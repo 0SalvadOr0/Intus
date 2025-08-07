@@ -250,11 +250,15 @@ const Dashboard = () => {
     categoria: "",
     numero_partecipanti: 0,
     luoghi: [] as string[],
-    partner: [] as Array<{nome: string, link?: string}>,
+    partner: [] as Array<{nome: string, link?: string, capofila?: boolean}>,
     youtube_url: "",
     immagini: [] as string[],
     data_inizio: "",
-    status: "planned" as const
+    status: "planned" as const,
+    ruolo_intus: "",
+    partecipanti_diretti: 0,
+    partecipanti_indiretti: 0,
+    ente_finanziatore: ""
   });
 
   const [editingProject, setEditingProject] = useState<any>(null);
@@ -1445,7 +1449,11 @@ const Dashboard = () => {
                         youtube_url: "",
                         immagini: [],
                         data_inizio: "",
-                        status: "planned"
+                        status: "planned",
+                        ruolo_intus: "",
+                        partecipanti_diretti: 0,
+                        partecipanti_indiretti: 0,
+                        ente_finanziatore: ""
                       });
                     }}
                   >
@@ -1515,13 +1523,36 @@ const Dashboard = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="project-participants">Partecipanti</Label>
+                  <Label htmlFor="project-participants">Partecipanti Totali</Label>
                   <Input
                     id="project-participants"
                     type="number"
                     placeholder="Numero stimato"
                     value={getCurrentProject()?.numero_partecipanti || ""}
                     onChange={(e) => updateCurrentProject({ numero_partecipanti: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="project-participants-direct">Partecipanti Diretti</Label>
+                  <Input
+                    id="project-participants-direct"
+                    type="number"
+                    placeholder="Numero partecipanti diretti"
+                    value={getCurrentProject()?.partecipanti_diretti || ""}
+                    onChange={(e) => updateCurrentProject({ partecipanti_diretti: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-participants-indirect">Partecipanti Indiretti</Label>
+                  <Input
+                    id="project-participants-indirect"
+                    type="number"
+                    placeholder="Numero partecipanti indiretti"
+                    value={getCurrentProject()?.partecipanti_indiretti || ""}
+                    onChange={(e) => updateCurrentProject({ partecipanti_indiretti: parseInt(e.target.value) || 0 })}
                   />
                 </div>
               </div>
@@ -1551,6 +1582,28 @@ const Dashboard = () => {
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="project-intus-role">Ruolo di Intus</Label>
+                  <Textarea
+                    id="project-intus-role"
+                    placeholder="Descrivi il ruolo di Intus nel progetto..."
+                    value={getCurrentProject()?.ruolo_intus || ""}
+                    onChange={(e) => updateCurrentProject({ ruolo_intus: e.target.value })}
+                    className="min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="project-funding-entity">Ente Finanziatore</Label>
+                  <Input
+                    id="project-funding-entity"
+                    placeholder="Nome dell'ente che finanzia il progetto"
+                    value={getCurrentProject()?.ente_finanziatore || ""}
+                    onChange={(e) => updateCurrentProject({ ente_finanziatore: e.target.value })}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="project-description-short">Descrizione Breve *</Label>
@@ -1571,6 +1624,76 @@ const Dashboard = () => {
                     onChange={(e) => updateCurrentProject({ contenuto: e.target.value })}
                     className="min-h-[150px]"
                   />
+                </div>
+              </div>
+
+              {/* Partner Section */}
+              <div className="space-y-4">
+                <Label>Partner del Progetto</Label>
+                <div className="border rounded-lg p-4 space-y-4">
+                  {getCurrentProject()?.partner?.map((partner: any, index: number) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-muted/50 rounded border">
+                      <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <Input
+                          placeholder="Nome partner"
+                          value={partner.nome || ""}
+                          onChange={(e) => {
+                            const newPartners = [...(getCurrentProject()?.partner || [])];
+                            newPartners[index] = { ...newPartners[index], nome: e.target.value };
+                            updateCurrentProject({ partner: newPartners });
+                          }}
+                        />
+                        <Input
+                          placeholder="Link (opzionale)"
+                          value={partner.link || ""}
+                          onChange={(e) => {
+                            const newPartners = [...(getCurrentProject()?.partner || [])];
+                            newPartners[index] = { ...newPartners[index], link: e.target.value };
+                            updateCurrentProject({ partner: newPartners });
+                          }}
+                        />
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            id={`capofila-${index}`}
+                            checked={partner.capofila || false}
+                            onChange={(e) => {
+                              const newPartners = [...(getCurrentProject()?.partner || [])];
+                              newPartners[index] = { ...newPartners[index], capofila: e.target.checked };
+                              updateCurrentProject({ partner: newPartners });
+                            }}
+                            className="rounded border-gray-300"
+                          />
+                          <label htmlFor={`capofila-${index}`} className="text-sm font-medium">
+                            ⭐ Capofila
+                          </label>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const newPartners = getCurrentProject()?.partner?.filter((_: any, i: number) => i !== index) || [];
+                          updateCurrentProject({ partner: newPartners });
+                        }}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        ✕
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newPartners = [...(getCurrentProject()?.partner || []), { nome: "", link: "", capofila: false }];
+                      updateCurrentProject({ partner: newPartners });
+                    }}
+                    className="w-full"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Aggiungi Partner
+                  </Button>
                 </div>
               </div>
 
