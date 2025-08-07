@@ -22,7 +22,10 @@ import {
   Youtube,
   MapPin,
   Users,
-  LogOut
+  LogOut,
+  Upload,
+  Download,
+  Archive
 } from "lucide-react";
 import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
 import BlogImageUploader from "@/components/BlogImageUploader";
@@ -77,6 +80,7 @@ const Dashboard = () => {
     fetchBlogPosts();
     fetchProjects();
     fetchCallIdeeRequests();
+    fetchDocuments();
     // eslint-disable-next-line
   }, []);
 
@@ -130,6 +134,23 @@ const Dashboard = () => {
     if (!error && data) {
       setCallIdeeRequests(data);
     }
+  };
+
+  const fetchDocuments = async () => {
+    // Mock data per ora - in futuro da sostituire con chiamata API
+    const mockDocs = [
+      {
+        id: 1,
+        name: "Statuto Associazione",
+        description: "Statuto ufficiale dell'associazione",
+        category: "Documenti Legali",
+        uploadDate: new Date().toISOString(),
+        size: "2.4 MB",
+        type: "PDF",
+        url: "/files/archivio/statuto.pdf"
+      }
+    ];
+    setDocuments(mockDocs);
   };
 
   const updateStats = (posts: any[]) => {
@@ -237,6 +258,13 @@ const Dashboard = () => {
   const [isEditingProject, setIsEditingProject] = useState(false);
   const [editingPost, setEditingPost] = useState<any>(null);
   const [isEditingPost, setIsEditingPost] = useState(false);
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [newDocument, setNewDocument] = useState({
+    name: "",
+    description: "",
+    category: "",
+    file: null as File | null
+  });
 
   // Helper per gestire i cambiamenti nei form
   const getCurrentProject = () => isEditingProject ? editingProject : newProject;
@@ -615,6 +643,7 @@ const Dashboard = () => {
             <TabButton id="create" label="Nuovo Articolo" icon={Plus} />
             <TabButton id="create-project" label="Nuovo Progetto" icon={FolderOpen} />
             <TabButton id="richieste-call-idee" label="Richieste Call Idee" icon={Eye} />
+            <TabButton id="documents" label="Gestione Documenti" icon={Archive} />
 
         {activeTab === "content" && (
           <div className="space-y-8">
@@ -922,6 +951,160 @@ const Dashboard = () => {
         )}
         {activeTab === "richieste-call-idee" && (
           <RichiesteCallIdeeTab />
+        )}
+
+        {activeTab === "documents" && (
+          <div className="space-y-8">
+            {/* Upload New Document */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Upload className="w-5 h-5 mr-2 text-primary" />
+                  Carica Nuovo Documento
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Nome documento"
+                    value={newDocument.name}
+                    onChange={(e) => setNewDocument(prev => ({ ...prev, name: e.target.value }))}
+                  />
+                  <Input
+                    placeholder="Categoria"
+                    value={newDocument.category}
+                    onChange={(e) => setNewDocument(prev => ({ ...prev, category: e.target.value }))}
+                  />
+                </div>
+                <Input
+                  placeholder="Descrizione"
+                  value={newDocument.description}
+                  onChange={(e) => setNewDocument(prev => ({ ...prev, description: e.target.value }))}
+                />
+                <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setNewDocument(prev => ({ ...prev, file }));
+                      }
+                    }}
+                    className="hidden"
+                    id="document-upload"
+                  />
+                  <label
+                    htmlFor="document-upload"
+                    className="cursor-pointer flex flex-col items-center gap-2"
+                  >
+                    <Upload className="w-8 h-8 text-muted-foreground" />
+                    <span className="text-sm font-medium">
+                      {newDocument.file ? newDocument.file.name : "Clicca per selezionare un file"}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      Formati supportati: PDF, DOC, DOCX
+                    </span>
+                  </label>
+                </div>
+                <Button
+                  onClick={() => {
+                    if (newDocument.name && newDocument.category && newDocument.file) {
+                      toast({
+                        title: "Documento caricato!",
+                        description: `${newDocument.name} è stato caricato con successo.`
+                      });
+                      setNewDocument({ name: "", description: "", category: "", file: null });
+                      fetchDocuments();
+                    } else {
+                      toast({
+                        title: "Errore",
+                        description: "Compila tutti i campi obbligatori",
+                        variant: "destructive"
+                      });
+                    }
+                  }}
+                  className="w-full"
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  Carica Documento
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Documents List */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Archive className="w-5 h-5 mr-2 text-primary" />
+                  Documenti Caricati ({documents.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {documents.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Archive className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>Nessun documento caricato</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {documents.map((doc, index) => (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          <FileText className="w-5 h-5 text-primary" />
+                          <div className="flex-1">
+                            <h4 className="font-semibold">{doc.name}</h4>
+                            <p className="text-sm text-muted-foreground">{doc.description}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                                {doc.category}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {doc.size} • {new Date(doc.uploadDate).toLocaleDateString('it-IT')}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button size="sm" variant="outline" onClick={() => window.open(doc.url, '_blank')}>
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              const link = document.createElement('a');
+                              link.href = doc.url;
+                              link.download = doc.name;
+                              link.click();
+                            }}
+                          >
+                            <Download className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => {
+                              if (window.confirm('Sei sicuro di voler eliminare questo documento?')) {
+                                toast({ title: "Documento eliminato" });
+                                fetchDocuments();
+                              }
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         )}
 
           </div>
