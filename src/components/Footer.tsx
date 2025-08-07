@@ -35,6 +35,11 @@ const Footer = () => {
           {/* Copyright */}
           <div className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} INTUS Corleone APS. Tutti i diritti riservati.
+            <p className="mt-1">
+              Sviluppato da <a href="mailto:giovanni.g.contatti@gmail.com" className="text-primary hover:underline">
+                Giovanni Grizzaffi
+              </a>
+            </p>
           </div>
         </div>
       </div>

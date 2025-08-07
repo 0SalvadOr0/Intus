@@ -238,7 +238,7 @@ app.get('/api/all-documents', (req, res) => {
     }
 
     // 📎 Read allegati directory contents
-    if (fs.existsSync(allegatiDir)) {
+    /*if (fs.existsSync(allegatiDir)) {
       const allegatiFiles = fs.readdirSync(allegatiDir);
 
       allegatiFiles.forEach(file => {
@@ -261,6 +261,7 @@ app.get('/api/all-documents', (req, res) => {
         });
       });
     }
+    */
 
     // 📅 Sort by upload date (newest first)
     allDocuments.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));

@@ -77,13 +77,6 @@ const Home = () => {
     logo: 'https://www.xn--arrivatalafelicit-4ob8k.it/wp-content/uploads/2023/11/LOGO_1WEB.jpg',
     link: 'https://www.xn--arrivatalafelicit-4ob8k.it/',
   },
-  {
-    titolo: 'Altro Sito Utile',
-    descrizione:
-      'Un altro sito interessante da esplorare per risorse locali e iniziative utili.',
-    logo: 'https://example.com/logo.png',
-    link: 'https://example.com',
-  },
   // Aggiungi altri siti qui
   ];
 
