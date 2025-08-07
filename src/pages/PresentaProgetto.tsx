@@ -106,6 +106,17 @@ const CallIdeeGiovani = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
+  const handleFileUpload = (url: string, name: string) => {
+    const currentAllegati = form.getValues("allegati") || [];
+    form.setValue("allegati", [...currentAllegati, { url, name }]);
+  };
+
+  const handleFileRemove = (url: string) => {
+    const currentAllegati = form.getValues("allegati") || [];
+    const filtered = currentAllegati.filter(file => file.url !== url);
+    form.setValue("allegati", filtered);
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -927,10 +938,10 @@ const CallIdeeGiovani = () => {
                     <FormItem>
                       <FormLabel>Altro</FormLabel>
                       <FormControl>
-                        <Textarea 
+                        <Textarea
                           placeholder="Aggiungi qualsiasi altra informazione rilevante per il progetto..."
                           className="min-h-[80px]"
-                          {...field} 
+                          {...field}
                         />
                       </FormControl>
                       <FormDescription>Campo opzionale</FormDescription>
@@ -938,6 +949,33 @@ const CallIdeeGiovani = () => {
                     </FormItem>
                   )}
                 />
+
+                {/* Allegati */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Allegati (Opzionale)
+                    </label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Carica documenti PDF o Word di supporto al progetto
+                    </p>
+                  </div>
+                  <FileUploader
+                    onFileUpload={(url, name) => {
+                      const currentAllegati = form.getValues("allegati") || [];
+                      form.setValue("allegati", [...currentAllegati, { url, name }]);
+                    }}
+                    onFileRemove={(url) => {
+                      const currentAllegati = form.getValues("allegati") || [];
+                      const filtered = currentAllegati.filter(file => file.url !== url);
+                      form.setValue("allegati", filtered);
+                    }}
+                    uploadedFiles={form.watch("allegati") || []}
+                    maxFiles={3}
+                    acceptedTypes={['.pdf', '.doc', '.docx']}
+                    maxFileSize={10}
+                  />
+                </div>
               </CardContent>
             </Card>
 
