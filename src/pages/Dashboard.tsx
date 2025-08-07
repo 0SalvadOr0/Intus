@@ -91,6 +91,7 @@ const Dashboard = () => {
     fetchProjects();
     fetchCallIdeeRequests();
     fetchDocuments();
+    fetchAnalyticsData();
     // eslint-disable-next-line
   }, []);
 
