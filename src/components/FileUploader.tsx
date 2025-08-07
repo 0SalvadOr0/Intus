@@ -181,7 +181,14 @@ const FileUploader = ({
         onFileUpload(urlData.publicUrl, file.name);
         toast({
           title: "File caricato!",
-          description: `${file.name} è stato caricato con successo.`
+          description: `${file.name} è stato caricato con successo (${bucketUsed}).`
+        });
+      } else {
+        console.error('Failed to generate public URL:', urlData);
+        toast({
+          title: "Errore URL",
+          description: "File caricato ma impossibile generare l'URL pubblico.",
+          variant: "destructive"
         });
       }
 
