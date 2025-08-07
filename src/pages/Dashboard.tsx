@@ -209,13 +209,15 @@ const Dashboard = () => {
     const publishedPosts = posts.filter(p => p.pubblicato === true).length;
     const draftPosts = posts.filter(p => p.pubblicato === false).length;
 
-    setStats({
+    setStats(prev => ({
+      ...prev,
       totalPosts: posts.length,
       publishedPosts,
       draftPosts,
       totalProjects: projects.length,
-      totalViews: posts.reduce((sum, post) => sum + (post.views || 0), 0)
-    });
+      // Keep analytics totalViews, fallback to blog views if not available
+      totalViews: prev.totalViews || posts.reduce((sum, post) => sum + (post.views || 0), 0)
+    }));
   };
 
   // Pubblica un articolo
