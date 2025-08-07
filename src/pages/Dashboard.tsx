@@ -256,8 +256,8 @@ const Dashboard = () => {
     data_inizio: "",
     status: "planned" as const,
     ruolo_intus: "",
-    partecipanti_diretti: 0,
-    partecipanti_indiretti: 0,
+    partecipanti_diretti: "",
+    partecipanti_indiretti: "",
     ente_finanziatore: ""
   });
 
