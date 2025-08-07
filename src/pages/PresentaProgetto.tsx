@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Send, Plus, Trash2, DollarSign, MapPin, Calendar, FileText, User, Users, AlertCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import CallIdeeNotice from "@/components/CallIdeeNotice";
+import FileUploader from "@/components/FileUploader";
 
 const partecipanteSchema = z.object({
   nome: z.string().min(2, "Nome richiesto"),
@@ -84,7 +85,13 @@ const formSchema = z.object({
   descrizioneEvento: z.string().min(20, "Descrizione evento richiesta (min 20 caratteri)"),
   
   altro: z.string().optional(),
-  
+
+  // Allegati
+  allegati: z.array(z.object({
+    url: z.string(),
+    name: z.string()
+  })).optional(),
+
   // Piano finanziario
   speseAttrezzature: z.array(spesaSchema).optional(),
   speseServizi: z.array(spesaSchema).optional(),
@@ -124,6 +131,7 @@ const CallIdeeGiovani = () => {
       tipoEvento: "",
       descrizioneEvento: "",
       altro: "",
+      allegati: [],
       speseAttrezzature: [],
       speseServizi: [],
       speseGenerali: {
@@ -186,6 +194,7 @@ const CallIdeeGiovani = () => {
         tipo_evento: values.tipoEvento,
         descrizione_evento: values.descrizioneEvento,
         altro: values.altro,
+        allegati: values.allegati,
         spese_attrezzature: values.speseAttrezzature,
         spese_servizi: values.speseServizi,
         spese_generali: values.speseGenerali,
