@@ -1,49 +1,63 @@
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const cors = require('cors');
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import cors from 'cors';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
+// 🔧 ES6 Module Configuration
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// 🚀 Express Application Setup
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
+// 🛠️ Middleware Configuration
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/files', express.static('files'));
 
-// Ensure allegati and archivio directories exist
+// 📁 Directory Structure Management
 const allegatiDir = path.join(__dirname, 'files', 'allegati');
 const archivioDir = path.join(__dirname, 'files', 'archivio');
+
+// ✅ Ensure Required Directories Exist
 if (!fs.existsSync(allegatiDir)) {
   fs.mkdirSync(allegatiDir, { recursive: true });
+  console.log(`📂 Created directory: ${allegatiDir}`);
 }
 if (!fs.existsSync(archivioDir)) {
   fs.mkdirSync(archivioDir, { recursive: true });
+  console.log(`📂 Created directory: ${archivioDir}`);
 }
 
-// Configure multer for file uploads
+// 🗃️ Multer Storage Configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // Use different directory based on upload type
+    // 🎯 Dynamic directory selection based on upload type
     const uploadType = req.body.uploadType || 'allegati';
     const targetDir = uploadType === 'archivio' ? archivioDir : allegatiDir;
     cb(null, targetDir);
   },
   filename: (req, file, cb) => {
+    // 🕒 Timestamp-based unique filename generation
     const timestamp = Date.now();
     const sanitizedName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
     cb(null, `${timestamp}_${sanitizedName}`);
   }
 });
 
+// 📋 File Upload Configuration & Validation
 const upload = multer({
   storage: storage,
   limits: { 
-    fileSize: 10 * 1024 * 1024 // 10MB limit
+    fileSize: 10 * 1024 * 1024 // 🎯 10MB file size limit
   },
   fileFilter: (req, file, cb) => {
+    // ✅ Allowed document types validation
     const allowedTypes = [
       'application/pdf',
       'application/msword',
@@ -58,9 +72,10 @@ const upload = multer({
   }
 });
 
-// Upload endpoint
+// 📤 Allegato Upload Endpoint
 app.post('/api/upload-allegato', upload.single('file'), (req, res) => {
   try {
+    // 🔍 File validation check
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -68,13 +83,15 @@ app.post('/api/upload-allegato', upload.single('file'), (req, res) => {
       });
     }
 
-    console.log('File uploaded:', {
+    // 📊 Upload success logging
+    console.log('📎 File uploaded:', {
       filename: req.file.filename,
       originalname: req.file.originalname,
       size: req.file.size,
       mimetype: req.file.mimetype
     });
 
+    // ✅ Success response structure
     res.json({
       success: true,
       fileName: req.file.filename,
@@ -85,7 +102,8 @@ app.post('/api/upload-allegato', upload.single('file'), (req, res) => {
     });
 
   } catch (error) {
-    console.error('Upload error:', error);
+    // ⚠️ Error handling & logging
+    console.error('❌ Upload error:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Errore durante l\'upload del file'
@@ -93,26 +111,10 @@ app.post('/api/upload-allegato', upload.single('file'), (req, res) => {
   }
 });
 
-// Error handling middleware
-app.use((error, req, res, next) => {
-  if (error instanceof multer.MulterError) {
-    if (error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({
-        success: false,
-        error: 'File troppo grande. Dimensione massima: 10MB'
-      });
-    }
-  }
-  
-  res.status(500).json({
-    success: false,
-    error: error.message || 'Errore del server'
-  });
-});
-
-// Upload document to archivio
+// 📚 Document Upload to Archivio Endpoint
 app.post('/api/upload-documento', upload.single('file'), (req, res) => {
   try {
+    // 🔍 File validation check
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -120,9 +122,11 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
       });
     }
 
+    // 📝 Document metadata extraction
     const { name, description, category } = req.body;
 
-    console.log('Document uploaded:', {
+    // 📊 Document upload logging
+    console.log('📄 Document uploaded:', {
       filename: req.file.filename,
       originalname: req.file.originalname,
       size: req.file.size,
@@ -132,6 +136,7 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
       category
     });
 
+    // ✅ Success response with metadata
     res.json({
       success: true,
       fileName: req.file.filename,
@@ -146,7 +151,8 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
     });
 
   } catch (error) {
-    console.error('Upload error:', error);
+    // ⚠️ Error handling & logging
+    console.error('❌ Upload error:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Errore durante l\'upload del documento'
@@ -154,10 +160,13 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
   }
 });
 
-// Get all documents from archivio
+// 📋 Document List Retrieval Endpoint
 app.get('/api/documents', (req, res) => {
   try {
+    // 📂 Read archivio directory contents
     const files = fs.readdirSync(archivioDir);
+    
+    // 🔄 Transform files into document objects
     const documents = files.map(file => {
       const filePath = path.join(archivioDir, file);
       const stats = fs.statSync(filePath);
@@ -177,9 +186,12 @@ app.get('/api/documents', (req, res) => {
       };
     });
 
+    // ✅ Return document list
     res.json({ success: true, documents });
+    
   } catch (error) {
-    console.error('Error fetching documents:', error);
+    // ⚠️ Error handling
+    console.error('❌ Error fetching documents:', error);
     res.status(500).json({
       success: false,
       error: 'Errore nel recupero dei documenti'
@@ -187,12 +199,13 @@ app.get('/api/documents', (req, res) => {
   }
 });
 
-// Delete document from archivio
+// 🗑️ Document Deletion Endpoint
 app.delete('/api/documents/:filename', (req, res) => {
   try {
     const { filename } = req.params;
     const filePath = path.join(archivioDir, filename);
 
+    // 🔍 File existence validation
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({
         success: false,
@@ -200,14 +213,19 @@ app.delete('/api/documents/:filename', (req, res) => {
       });
     }
 
+    // 🗑️ Delete file from filesystem
     fs.unlinkSync(filePath);
+    console.log(`🗑️ Document deleted: ${filename}`);
 
+    // ✅ Deletion success response
     res.json({
       success: true,
       message: 'Documento eliminato con successo'
     });
+    
   } catch (error) {
-    console.error('Error deleting document:', error);
+    // ⚠️ Error handling
+    console.error('❌ Error deleting document:', error);
     res.status(500).json({
       success: false,
       error: 'Errore durante l\'eliminazione del documento'
@@ -215,14 +233,43 @@ app.delete('/api/documents/:filename', (req, res) => {
   }
 });
 
-// Health check endpoint
+// ⚠️ Multer Error Handling Middleware
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        error: 'File troppo grande. Dimensione massima: 10MB'
+      });
+    }
+  }
+  
+  // 🚨 Generic error response
+  res.status(500).json({
+    success: false,
+    error: error.message || 'Errore del server'
+  });
+});
+
+// 🔍 Health Check Endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    directories: {
+      allegati: fs.existsSync(allegatiDir),
+      archivio: fs.existsSync(archivioDir)
+    }
+  });
 });
 
+// 🚀 Server Startup
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Allegati directory: ${allegatiDir}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📁 Allegati directory: ${allegatiDir}`);
+  console.log(`📚 Archivio directory: ${archivioDir}`);
+  console.log(`🌐 Health check: http://localhost:${PORT}/api/health`);
 });
 
-module.exports = app;
+// 📦 ES6 Module Export
+export default app;
