@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import PartnersStrip from "@/components/PartnersStrip";
 import ComicTextBubble from "@/components/ComicTextBubble";
 import MappaProgettiHome from "@/components/MappaProgettiHome";
+import AttivitaCategories from "@/components/AttivitaCategories";
 import { useTheme } from "next-themes";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
@@ -222,6 +223,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Le Nostre Attività */}
+      <AttivitaCategories />
 
       {/* Mappa Progetti Integrata */}
       <MappaProgettiHome />
