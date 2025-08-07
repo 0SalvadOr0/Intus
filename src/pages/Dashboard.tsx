@@ -1020,6 +1020,121 @@ const Dashboard = () => {
           <RichiesteCallIdeeTab />
         )}
 
+        {/* Analytics Tab */}
+        {activeTab === "analytics" && (
+          <div className="space-y-8">
+            {/* Analytics Overview */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <TrendingUp className="w-5 h-5 mr-2 text-primary" />
+                  Statistiche del Sito
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {analyticsData.isLoading ? (
+                  <div className="text-center text-muted-foreground">Caricamento statistiche...</div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="text-center p-4 bg-primary/10 rounded-lg">
+                      <div className="text-2xl font-bold text-primary">{stats.totalViews}</div>
+                      <div className="text-sm text-muted-foreground">Visualizzazioni Totali</div>
+                    </div>
+                    <div className="text-center p-4 bg-accent/10 rounded-lg">
+                      <div className="text-2xl font-bold text-accent">{stats.totalViewsToday}</div>
+                      <div className="text-sm text-muted-foreground">Visualizzazioni Oggi</div>
+                    </div>
+                    <div className="text-center p-4 bg-heart/10 rounded-lg">
+                      <div className="text-2xl font-bold text-heart">{stats.uniqueVisitorsToday}</div>
+                      <div className="text-sm text-muted-foreground">Visitatori Unici Oggi</div>
+                    </div>
+                    <div className="text-center p-4 bg-green-500/10 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">{stats.viewsLastHour}</div>
+                      <div className="text-sm text-muted-foreground">Visite Ultima Ora</div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Popular Pages */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Eye className="w-5 h-5 mr-2 text-primary" />
+                  Pagine Più Visitate
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {analyticsData.isLoading ? (
+                  <div className="text-center text-muted-foreground">Caricamento...</div>
+                ) : analyticsData.popularPages.length === 0 ? (
+                  <div className="text-center text-muted-foreground">Nessun dato disponibile ancora.</div>
+                ) : (
+                  <div className="space-y-4">
+                    {analyticsData.popularPages.slice(0, 10).map((page: any, index: number) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex-1">
+                          <div className="font-medium">{page.page_path}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {page.unique_visits} visitatori unici
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xl font-bold text-primary">{page.views}</div>
+                          <div className="text-xs text-muted-foreground">visualizzazioni</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Visitor Trends */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <BarChart3 className="w-5 h-5 mr-2 text-primary" />
+                  Andamento Visitatori (Ultimi 30 giorni)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {analyticsData.isLoading ? (
+                  <div className="text-center text-muted-foreground">Caricamento...</div>
+                ) : analyticsData.visitorStats.length === 0 ? (
+                  <div className="text-center text-muted-foreground">Nessun dato disponibile ancora.</div>
+                ) : (
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {analyticsData.visitorStats.slice(0, 15).map((stat: any, index: number) => (
+                      <div key={index} className="flex items-center justify-between p-2 border-b border-border/50">
+                        <div className="text-sm">
+                          {new Date(stat.date).toLocaleDateString('it-IT')}
+                        </div>
+                        <div className="flex gap-4 text-sm">
+                          <span className="text-primary">{stat.total_views} visualizzazioni</span>
+                          <span className="text-accent">{stat.unique_visitors} visitatori</span>
+                          {stat.registered_users > 0 && (
+                            <span className="text-heart">{stat.registered_users} utenti registrati</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Refresh Button */}
+            <div className="flex justify-center">
+              <Button onClick={fetchAnalyticsData} variant="outline">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                Aggiorna Statistiche
+              </Button>
+            </div>
+          </div>
+        )}
+
         {activeTab === "documents" && (
           <div className="space-y-8">
             {/* Upload New Document */}
