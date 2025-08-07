@@ -16,6 +16,12 @@ const ScrollToTop = () => {
   return null;
 };
 
+const AnalyticsTracker = () => {
+  // This component will automatically track page views using the useAnalytics hook
+  useAnalytics();
+  return null;
+};
+
 import Navigation from "./components/navigation";
 import { WelcomeToast } from "./components/ui/welcome-toast";
 import { AuthProvider } from "./contexts/AuthContext";
