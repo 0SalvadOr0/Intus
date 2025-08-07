@@ -252,6 +252,7 @@ const Dashboard = () => {
     luoghi: [] as string[],
     partner: [] as Array<{nome: string, link?: string, capofila?: boolean}>,
     youtube_url: "",
+    youtube_urls: [] as string[],
     immagini: [] as string[],
     data_inizio: "",
     status: "planned" as const,
@@ -1447,6 +1448,7 @@ const Dashboard = () => {
                         luoghi: [],
                         partner: [],
                         youtube_url: "",
+                        youtube_urls: [],
                         immagini: [],
                         data_inizio: "",
                         status: "planned",
@@ -1570,7 +1572,7 @@ const Dashboard = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="project-youtube">Link YouTube (opzionale)</Label>
+                  <Label htmlFor="project-youtube">Link YouTube Principale (opzionale)</Label>
                   <Input
                     id="project-youtube"
                     placeholder="https://www.youtube.com/watch?v=..."
@@ -1622,6 +1624,51 @@ const Dashboard = () => {
                     onChange={(e) => updateCurrentProject({ contenuto: e.target.value })}
                     className="min-h-[150px]"
                   />
+                </div>
+              </div>
+
+              {/* YouTube URLs aggiuntivi */}
+              <div className="space-y-4">
+                <Label>Link YouTube Aggiuntivi</Label>
+                <div className="border rounded-lg p-4 space-y-4">
+                  {getCurrentProject()?.youtube_urls?.map((url: string, index: number) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-muted/50 rounded border">
+                      <div className="flex-1">
+                        <Input
+                          placeholder="https://www.youtube.com/watch?v=..."
+                          value={url}
+                          onChange={(e) => {
+                            const newUrls = [...(getCurrentProject()?.youtube_urls || [])];
+                            newUrls[index] = e.target.value;
+                            updateCurrentProject({ youtube_urls: newUrls });
+                          }}
+                        />
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const newUrls = getCurrentProject()?.youtube_urls?.filter((_: string, i: number) => i !== index) || [];
+                          updateCurrentProject({ youtube_urls: newUrls });
+                        }}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        ✕
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newUrls = [...(getCurrentProject()?.youtube_urls || []), ""];
+                      updateCurrentProject({ youtube_urls: newUrls });
+                    }}
+                    className="w-full"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Aggiungi Link YouTube
+                  </Button>
                 </div>
               </div>
 
