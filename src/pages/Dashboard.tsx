@@ -1034,8 +1034,8 @@ const Dashboard = () => {
                         }
                       } catch (error) {
                         toast({
-                          title: "Errore upload",
-                          description: "Errore durante il caricamento del documento",
+                          title: "Server non disponibile",
+                          description: "Il server backend non è attivo. Avvia il server con 'node server.js' per utilizzare questa funzionalità.",
                           variant: "destructive"
                         });
                       }
@@ -1125,8 +1125,8 @@ const Dashboard = () => {
                                   }
                                 } catch (error) {
                                   toast({
-                                    title: "Errore",
-                                    description: "Errore durante l'eliminazione",
+                                    title: "Server non disponibile",
+                                    description: "Il server backend non è attivo. Avvia il server con 'node server.js'.",
                                     variant: "destructive"
                                   });
                                 }
