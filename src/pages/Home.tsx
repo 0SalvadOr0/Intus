@@ -69,6 +69,25 @@ const Home = () => {
     }
   ];
 
+  const sitiConsigliati = [
+  {
+    titolo: 'È arrivata la felicità',
+    descrizione:
+      '"È arrivata la felicità" - Un progetto che condividiamo e promuoviamo per la comunità e il territorio.',
+    logo: 'https://www.xn--arrivatalafelicit-4ob8k.it/wp-content/uploads/2023/11/LOGO_1WEB.jpg',
+    link: 'https://www.xn--arrivatalafelicit-4ob8k.it/',
+  },
+  {
+    titolo: 'Altro Sito Utile',
+    descrizione:
+      'Un altro sito interessante da esplorare per risorse locali e iniziative utili.',
+    logo: 'https://example.com/logo.png',
+    link: 'https://example.com',
+  },
+  // Aggiungi altri siti qui
+  ];
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       {/* Hero Section */}
@@ -92,7 +111,8 @@ const Home = () => {
                     <img
                       src="../files/logos/logo_cuore.png"
                       alt="Intus Corleone APS - Perdersi è scoprire"
-                      className="w-48 h-auto md:w-64 lg:w-72"
+                      className="w-48 h-auto md:w-64 lg:w-72 animate-pulse-heart"
+                      style={{animationDuration: '2.5s'}}
                     />
                   )}
 
@@ -297,50 +317,45 @@ const Home = () => {
             </Card>
 
             {/* Siti Consigliati */}
-            <Card className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 border-0 bg-gradient-to-br from-heart/5 via-background to-heart/10 animate-fade-in-up">
-              <div className="absolute inset-0 bg-gradient-to-br from-heart/10 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardContent className="relative p-8">
-                <div className="flex items-start space-x-6">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-heart to-primary rounded-2xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative bg-gradient-to-br from-heart to-primary p-4 rounded-2xl shadow-lg">
+            <div className="space-y-8 animate-fade-in-up">
+                <h3 className="text-2xl font-bold mb-6 text-center">
+                  <span className="bg-gradient-to-r from-heart via-primary to-heart bg-clip-text text-transparent">
+                    Siti Consigliati
+                  </span>
+                </h3>
+                {sitiConsigliati.map((sito, index) => (
+                  <Card
+                    key={index}
+                    className="group flex items-center gap-6 p-6 bg-background shadow-md hover:shadow-xl transition-all rounded-xl"
+                  >
+                    <div className="w-24 h-24 flex-shrink-0 relative">
                       <img
-                        src="https://www.xn--arrivatalafelicit-4ob8k.it/wp-content/uploads/2023/11/LOGO_1WEB.jpg"
-                        alt="È arrivata la felicità logo"
-                        className="w-8 h-8 object-contain rounded group-hover:animate-pulse"
+                        src={sito.logo}
+                        alt={`${sito.titolo} logo`}
+                        className="w-full h-full object-contain"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                           e.currentTarget.nextElementSibling?.classList.remove('hidden');
                         }}
                       />
-                      <Heart className="w-8 h-8 text-white hidden group-hover:animate-pulse" />
+                      <Heart className="w-8 h-8 text-heart hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                     </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-3">
-                      <h3 className="text-2xl font-bold group-hover:text-heart transition-colors">
-                        Siti Consigliati
-                      </h3>
-                      <div className="bg-heart/20 text-heart px-3 py-1 rounded-full text-xs font-semibold">
-                        CONSIGLIATO
-                      </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-semibold mb-2 group-hover:text-heart transition-colors">{sito.titolo}</h4>
+                      <p className="text-muted-foreground mb-4">{sito.descrizione}</p>
+                      <a
+                        href={sito.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center text-sm font-medium text-heart hover:underline"
+                      >
+                        Visita sito
+                        <span className="ml-1">→</span>
+                      </a>
                     </div>
-                    <p className="text-muted-foreground mb-6 leading-relaxed text-base">
-                      "È arrivata la felicità" - Un progetto che condividiamo e promuoviamo per la comunità e il territorio.
-                    </p>
-                    <a
-                      href="https://www.xn--arrivatalafelicit-4ob8k.it/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center bg-gradient-to-r from-heart to-primary text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
-                    >
-                      Visita sito
-                      <span className="ml-2 group-hover:translate-x-2 transition-transform duration-300">→</span>
-                    </a>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  </Card>
+                ))}
+            </div>
           </div>
         </div>
       </section>
