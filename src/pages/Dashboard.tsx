@@ -22,7 +22,10 @@ import {
   Youtube,
   MapPin,
   Users,
-  LogOut
+  LogOut,
+  Upload,
+  Download,
+  Archive
 } from "lucide-react";
 import RichiesteCallIdeeTab from "@/components/RichiesteCallIdeeTab";
 import BlogImageUploader from "@/components/BlogImageUploader";
@@ -77,6 +80,7 @@ const Dashboard = () => {
     fetchBlogPosts();
     fetchProjects();
     fetchCallIdeeRequests();
+    fetchDocuments();
     // eslint-disable-next-line
   }, []);
 
@@ -129,6 +133,23 @@ const Dashboard = () => {
       .order("created_at", { ascending: false });
     if (!error && data) {
       setCallIdeeRequests(data);
+    }
+  };
+
+  const fetchDocuments = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/documents');
+      if (response.ok) {
+        const result = await response.json();
+        setDocuments(result.documents || result);
+      } else {
+        console.warn('Backend server not available, using empty document list');
+        setDocuments([]);
+      }
+    } catch (error) {
+      console.warn('Backend server not available:', error.message);
+      // Use empty array as fallback instead of mock data
+      setDocuments([]);
     }
   };
 
@@ -237,6 +258,13 @@ const Dashboard = () => {
   const [isEditingProject, setIsEditingProject] = useState(false);
   const [editingPost, setEditingPost] = useState<any>(null);
   const [isEditingPost, setIsEditingPost] = useState(false);
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [newDocument, setNewDocument] = useState({
+    name: "",
+    description: "",
+    category: "",
+    file: null as File | null
+  });
 
   // Helper per gestire i cambiamenti nei form
   const getCurrentProject = () => isEditingProject ? editingProject : newProject;
@@ -615,6 +643,7 @@ const Dashboard = () => {
             <TabButton id="create" label="Nuovo Articolo" icon={Plus} />
             <TabButton id="create-project" label="Nuovo Progetto" icon={FolderOpen} />
             <TabButton id="richieste-call-idee" label="Richieste Call Idee" icon={Eye} />
+            <TabButton id="documents" label="Gestione Documenti" icon={Archive} />
 
         {activeTab === "content" && (
           <div className="space-y-8">
@@ -924,6 +953,203 @@ const Dashboard = () => {
           <RichiesteCallIdeeTab />
         )}
 
+        {activeTab === "documents" && (
+          <div className="space-y-8">
+            {/* Upload New Document */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Upload className="w-5 h-5 mr-2 text-primary" />
+                  Carica Nuovo Documento
+                </CardTitle>
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mt-2">
+                  <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                    📝 <strong>Nota:</strong> Per utilizzare l'upload e la gestione documenti, avvia il server backend con il comando: <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">./start-backend.sh</code> o <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">node server.js</code>
+                  </p>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Nome documento"
+                    value={newDocument.name}
+                    onChange={(e) => setNewDocument(prev => ({ ...prev, name: e.target.value }))}
+                  />
+                  <Input
+                    placeholder="Categoria"
+                    value={newDocument.category}
+                    onChange={(e) => setNewDocument(prev => ({ ...prev, category: e.target.value }))}
+                  />
+                </div>
+                <Input
+                  placeholder="Descrizione"
+                  value={newDocument.description}
+                  onChange={(e) => setNewDocument(prev => ({ ...prev, description: e.target.value }))}
+                />
+                <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setNewDocument(prev => ({ ...prev, file }));
+                      }
+                    }}
+                    className="hidden"
+                    id="document-upload"
+                  />
+                  <label
+                    htmlFor="document-upload"
+                    className="cursor-pointer flex flex-col items-center gap-2"
+                  >
+                    <Upload className="w-8 h-8 text-muted-foreground" />
+                    <span className="text-sm font-medium">
+                      {newDocument.file ? newDocument.file.name : "Clicca per selezionare un file"}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      Formati supportati: PDF, DOC, DOCX
+                    </span>
+                  </label>
+                </div>
+                <Button
+                  onClick={async () => {
+                    if (newDocument.name && newDocument.category && newDocument.file) {
+                      try {
+                        const formData = new FormData();
+                        formData.append('file', newDocument.file);
+                        formData.append('name', newDocument.name);
+                        formData.append('description', newDocument.description);
+                        formData.append('category', newDocument.category);
+
+                        const response = await fetch('http://localhost:3001/api/upload-documento', {
+                          method: 'POST',
+                          body: formData
+                        });
+
+                        if (response.ok) {
+                          toast({
+                            title: "Documento caricato!",
+                            description: `${newDocument.name} è stato caricato con successo.`
+                          });
+                          setNewDocument({ name: "", description: "", category: "", file: null });
+                          fetchDocuments();
+                        } else {
+                          throw new Error('Upload failed');
+                        }
+                      } catch (error) {
+                        toast({
+                          title: "Server non disponibile",
+                          description: "Il server backend non è attivo. Avvia il server con 'node server.js' per utilizzare questa funzionalità.",
+                          variant: "destructive"
+                        });
+                      }
+                    } else {
+                      toast({
+                        title: "Errore",
+                        description: "Compila tutti i campi obbligatori",
+                        variant: "destructive"
+                      });
+                    }
+                  }}
+                  className="w-full"
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  Carica Documento
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Documents List */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Archive className="w-5 h-5 mr-2 text-primary" />
+                  Documenti Caricati ({documents.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {documents.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Archive className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>Nessun documento caricato</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {documents.map((doc, index) => (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          <FileText className="w-5 h-5 text-primary" />
+                          <div className="flex-1">
+                            <h4 className="font-semibold">{doc.name}</h4>
+                            <p className="text-sm text-muted-foreground">{doc.description}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                                {doc.category}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {doc.size} • {new Date(doc.uploadDate).toLocaleDateString('it-IT')}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button size="sm" variant="outline" onClick={() => window.open(doc.url, '_blank')}>
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              const link = document.createElement('a');
+                              link.href = doc.url;
+                              link.download = doc.name;
+                              link.click();
+                            }}
+                          >
+                            <Download className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-destructive hover:text-destructive"
+                            onClick={async () => {
+                              if (window.confirm('Sei sicuro di voler eliminare questo documento?')) {
+                                try {
+                                  const response = await fetch(`http://localhost:3001/api/documents/${doc.id}`, {
+                                    method: 'DELETE'
+                                  });
+                                  if (response.ok) {
+                                    toast({ title: "Documento eliminato" });
+                                    fetchDocuments();
+                                  } else {
+                                    throw new Error('Delete failed');
+                                  }
+                                } catch (error) {
+                                  toast({
+                                    title: "Server non disponibile",
+                                    description: "Il server backend non è attivo. Avvia il server con 'node server.js'.",
+                                    variant: "destructive"
+                                  });
+                                }
+                              }
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
           </div>
         </div>
       </section>
@@ -1198,9 +1424,12 @@ const Dashboard = () => {
                       <SelectValue placeholder="Seleziona categoria" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Cittadinanza Attiva">Cittadinanza Attiva</SelectItem>
-                      <SelectItem value="Territorio">Territorio</SelectItem>
-                      <SelectItem value="Politiche Giovanili">Politiche Giovanili</SelectItem>
+                      <SelectItem value="Animazione territoriale">Animazione territoriale</SelectItem>
+                      <SelectItem value="Educazione alla legalità">Educazione alla legalità</SelectItem>
+                      <SelectItem value="Politiche giovanili">Politiche giovanili</SelectItem>
+                      <SelectItem value="Sviluppo di ricerche/Intervento">Sviluppo di ricerche/Intervento</SelectItem>
+                      <SelectItem value="Promozione del territorio">Promozione del territorio</SelectItem>
+                      <SelectItem value="Inclusione sociale">Inclusione sociale</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -713,10 +713,13 @@ const RichiesteCallIdeeTab = () => {
                               <div className="max-h-32 overflow-y-auto space-y-1">
                                 {r.partecipanti.map((p, i) => (
                                   <div key={i} className="text-xs bg-white dark:bg-card rounded px-2 py-1 border">
-                                    <span className="font-medium">{p.nome} {p.cognome}</span>
-                                    <span className="text-muted-foreground ml-2">{p.email}</span>
+                                    <div className="font-medium">{p.nome} {p.cognome}</div>
+                                    <div className="text-muted-foreground">{p.email}</div>
+                                    {p.dataNascita && (
+                                      <div className="text-muted-foreground">Nato il: {new Date(p.dataNascita).toLocaleDateString('it-IT')}</div>
+                                    )}
                                     {p.codiceFiscale && (
-                                      <span className="text-muted-foreground ml-2 font-mono">CF: {p.codiceFiscale}</span>
+                                      <div className="text-muted-foreground font-mono">CF: {p.codiceFiscale}</div>
                                     )}
                                   </div>
                                 ))}
@@ -734,10 +737,13 @@ const RichiesteCallIdeeTab = () => {
                               <div className="max-h-32 overflow-y-auto space-y-1">
                                 {r.figure_supporto.map((f, i) => (
                                   <div key={i} className="text-xs bg-white dark:bg-card rounded px-2 py-1 border">
-                                    <span className="font-medium">{f.nome} {f.cognome}</span>
-                                    <span className="text-muted-foreground ml-2">{f.email}</span>
+                                    <div className="font-medium">{f.nome} {f.cognome}</div>
+                                    <div className="text-muted-foreground">{f.email}</div>
+                                    {f.dataNascita && (
+                                      <div className="text-muted-foreground">Nato il: {new Date(f.dataNascita).toLocaleDateString('it-IT')}</div>
+                                    )}
                                     {f.codiceFiscale && (
-                                      <span className="text-muted-foreground ml-2 font-mono">CF: {f.codiceFiscale}</span>
+                                      <div className="text-muted-foreground font-mono">CF: {f.codiceFiscale}</div>
                                     )}
                                   </div>
                                 ))}

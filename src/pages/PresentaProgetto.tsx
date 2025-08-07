@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Send, Plus, Trash2, DollarSign, MapPin, Calendar, FileText, User, Users, AlertCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import CallIdeeNotice from "@/components/CallIdeeNotice";
+import FileUploader from "@/components/FileUploader";
 
 const partecipanteSchema = z.object({
   nome: z.string().min(2, "Nome richiesto"),
@@ -84,7 +85,13 @@ const formSchema = z.object({
   descrizioneEvento: z.string().min(20, "Descrizione evento richiesta (min 20 caratteri)"),
   
   altro: z.string().optional(),
-  
+
+  // Allegati
+  allegati: z.array(z.object({
+    url: z.string(),
+    name: z.string()
+  })).optional(),
+
   // Piano finanziario
   speseAttrezzature: z.array(spesaSchema).optional(),
   speseServizi: z.array(spesaSchema).optional(),
@@ -98,6 +105,17 @@ const formSchema = z.object({
 const CallIdeeGiovani = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  const handleFileUpload = (url: string, name: string) => {
+    const currentAllegati = form.getValues("allegati") || [];
+    form.setValue("allegati", [...currentAllegati, { url, name }]);
+  };
+
+  const handleFileRemove = (url: string) => {
+    const currentAllegati = form.getValues("allegati") || [];
+    const filtered = currentAllegati.filter(file => file.url !== url);
+    form.setValue("allegati", filtered);
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -124,6 +142,7 @@ const CallIdeeGiovani = () => {
       tipoEvento: "",
       descrizioneEvento: "",
       altro: "",
+      allegati: [],
       speseAttrezzature: [],
       speseServizi: [],
       speseGenerali: {
@@ -186,6 +205,7 @@ const CallIdeeGiovani = () => {
         tipo_evento: values.tipoEvento,
         descrizione_evento: values.descrizioneEvento,
         altro: values.altro,
+        allegati: values.allegati,
         spese_attrezzature: values.speseAttrezzature,
         spese_servizi: values.speseServizi,
         spese_generali: values.speseGenerali,
@@ -425,13 +445,12 @@ const CallIdeeGiovani = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="sociale">Sociale e Volontariato</SelectItem>
-                            <SelectItem value="ambientale">Ambientale e Sostenibilità</SelectItem>
-                            <SelectItem value="culturale">Culturale e Artistico</SelectItem>
-                            <SelectItem value="educativo">Educativo e Formativo</SelectItem>
-                            <SelectItem value="tecnologico">Tecnologico e Innovativo</SelectItem>
-                            <SelectItem value="sportivo">Sportivo e Benessere</SelectItem>
-                            <SelectItem value="imprenditoriale">Imprenditoriale</SelectItem>
+                            <SelectItem value="Animazione territoriale">Animazione territoriale</SelectItem>
+                            <SelectItem value="Educazione alla legalità">Educazione alla legalità</SelectItem>
+                            <SelectItem value="Politiche giovanili">Politiche giovanili</SelectItem>
+                            <SelectItem value="Sviluppo di ricerche/Intervento">Sviluppo di ricerche/Intervento</SelectItem>
+                            <SelectItem value="Promozione del territorio">Promozione del territorio</SelectItem>
+                            <SelectItem value="Inclusione sociale">Inclusione sociale</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -458,26 +477,6 @@ const CallIdeeGiovani = () => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="autorizzazioni"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Autorizzazioni (Opzionale)</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Eventuali autorizzazioni o permessi necessari per il progetto..."
-                          className="min-h-[80px]"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Campo opzionale per allegare informazioni su autorizzazioni necessarie
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </CardContent>
             </Card>
 
@@ -919,10 +918,10 @@ const CallIdeeGiovani = () => {
                     <FormItem>
                       <FormLabel>Altro</FormLabel>
                       <FormControl>
-                        <Textarea 
+                        <Textarea
                           placeholder="Aggiungi qualsiasi altra informazione rilevante per il progetto..."
                           className="min-h-[80px]"
-                          {...field} 
+                          {...field}
                         />
                       </FormControl>
                       <FormDescription>Campo opzionale</FormDescription>
@@ -930,6 +929,33 @@ const CallIdeeGiovani = () => {
                     </FormItem>
                   )}
                 />
+
+                {/* Allegati */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Allegati (Opzionale)
+                    </label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Carica documenti PDF o Word di supporto al progetto
+                    </p>
+                  </div>
+                  <FileUploader
+                    onFileUpload={(url, name) => {
+                      const currentAllegati = form.getValues("allegati") || [];
+                      form.setValue("allegati", [...currentAllegati, { url, name }]);
+                    }}
+                    onFileRemove={(url) => {
+                      const currentAllegati = form.getValues("allegati") || [];
+                      const filtered = currentAllegati.filter(file => file.url !== url);
+                      form.setValue("allegati", filtered);
+                    }}
+                    uploadedFiles={form.watch("allegati") || []}
+                    maxFiles={3}
+                    acceptedTypes={['.pdf', '.doc', '.docx']}
+                    maxFileSize={10}
+                  />
+                </div>
               </CardContent>
             </Card>
 

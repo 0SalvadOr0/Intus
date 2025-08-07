@@ -30,6 +30,7 @@ import {
   Clock,
   ExternalLink
 } from "lucide-react";
+import AttivitaGrid from "@/components/AttivitaGrid";
 
 // Componente immersivo a schermo intero per la descrizione
 const ImmersiveDescription = () => {
@@ -1318,6 +1319,19 @@ const ChiSiamo = () => {
         </div>
       </section>
 
+      {/* Le Nostre Attività */}
+      <section className="py-16 md:py-20 px-4">
+        <div className="container mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-8 animate-fade-in-up">
+            Le Nostre <span className="bg-gradient-to-r from-primary via-accent to-heart bg-clip-text text-transparent">Attività</span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed">
+            Scopri i nostri ambiti di intervento e i progetti che realizziamo per la comunità
+          </p>
+          <AttivitaGrid />
+        </div>
+      </section>
+
       {/* Timeline Section - La Nostra Storia Completa */}
       <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-muted/10 via-background to-muted/10">
         <div className="container mx-auto max-w-5xl">
@@ -1327,7 +1341,7 @@ const ChiSiamo = () => {
           <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto">
             28 anni di impegno per la legalità, l'educazione e lo sviluppo del territorio. Clicca sui progetti per espandere i dettagli.
           </p>
-          
+
           <TimelineComponent />
         </div>
       </section>
