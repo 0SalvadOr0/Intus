@@ -187,8 +187,8 @@ const FileUploader = ({
     if (onFileRemove) {
       onFileRemove(fileUrl);
       toast({
-        title: "File rimosso",
-        description: "Il file è stato rimosso dalla lista."
+        title: "Allegato rimosso",
+        description: "L'allegato è stato rimosso dalla lista."
       });
     }
   };
