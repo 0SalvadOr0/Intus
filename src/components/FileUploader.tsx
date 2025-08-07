@@ -131,28 +131,18 @@ const FileUploader = ({
         });
       }, 100);
 
-      // For development: simulate local file upload
-      // In production, this would be replaced with actual server upload
-      const result = await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          try {
-            // Create a blob URL for the file (development simulation)
-            const blobUrl = URL.createObjectURL(file);
-
-            // In production, the file would actually be saved to files/allegati/
-            resolve({
-              success: true,
-              fileName: fileName,
-              fileUrl: `/files/allegati/${fileName}`, // This would be the real path in production
-              blobUrl: blobUrl, // Temporary URL for development
-              fileSize: file.size,
-              isDevelopment: true
-            });
-          } catch (error) {
-            reject(error);
-          }
-        }, 1000); // Simulate upload time
+      // Upload to backend server
+      const response = await fetch('http://localhost:3001/api/upload-allegato', {
+        method: 'POST',
+        body: formData
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Errore di rete' }));
+        throw new Error(errorData.error || `HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
 
       clearInterval(progressInterval);
       setUploadProgress(100);
@@ -162,17 +152,10 @@ const FileUploader = ({
       console.log('Upload result:', { data, error });
 
       if (result.success) {
-        // Use blob URL for development, real path for production
-        const fileUrl = result.isDevelopment ? result.blobUrl : result.fileUrl;
-        onFileUpload(fileUrl, file.name);
-
-        const description = result.isDevelopment
-          ? `${file.name} caricato (modalità sviluppo - il file verrà salvato in files/allegati/ in produzione)`
-          : `${file.name} è stato caricato con successo in files/allegati/`;
-
+        onFileUpload(result.fileUrl, result.originalName || file.name);
         toast({
           title: "File caricato!",
-          description: description
+          description: `${result.originalName || file.name} salvato in files/allegati/`
         });
       } else {
         throw new Error(result.error || 'Upload failed');
