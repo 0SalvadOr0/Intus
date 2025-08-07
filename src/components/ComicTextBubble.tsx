@@ -29,7 +29,7 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
       </div>
 
       {/* Main speech bubble */}
-      <div className={`relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-2xl border-4 border-black dark:border-white transition-all duration-1000 transform${
+      <div className={`relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-black dark:border-white transition-all duration-1000 transform${
         isVisible ? 'scale-100 opacity-100 rotate-0' : 'scale-95 opacity-0 rotate-1'
       }`}>
         
