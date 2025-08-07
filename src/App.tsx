@@ -80,6 +80,7 @@ const App = () => {
           >
             <BrowserRouter>
               <ScrollToTop />
+              <AnalyticsTracker />
               <Navigation />
               <Suspense  fallback={<SmoothLoadingScreen  isVisible={true} message="Caricamento pagina" />}>
                 <Routes>
