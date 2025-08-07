@@ -962,6 +962,11 @@ const Dashboard = () => {
                   <Upload className="w-5 h-5 mr-2 text-primary" />
                   Carica Nuovo Documento
                 </CardTitle>
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mt-2">
+                  <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                    📝 <strong>Nota:</strong> Per utilizzare l'upload e la gestione documenti, avvia il server backend con il comando: <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">./start-backend.sh</code> o <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">node server.js</code>
+                  </p>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
