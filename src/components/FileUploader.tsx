@@ -97,7 +97,31 @@ const FileUploader = ({
       const timestamp = Date.now();
       const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const fileName = `${timestamp}_${sanitizedName}`;
-      
+
+      console.log('Attempting to upload file:', {
+        originalName: file.name,
+        sanitizedName,
+        fileName,
+        fileSize: file.size,
+        fileType: file.type
+      });
+
+      // First, check if the bucket exists by trying to list files
+      const { data: listData, error: listError } = await supabase.storage
+        .from('files')
+        .list('', { limit: 1 });
+
+      if (listError) {
+        console.error('Bucket access error:', listError);
+        // If bucket doesn't exist or we can't access it, show a specific error
+        toast({
+          title: "Errore di configurazione",
+          description: "Il bucket di storage non è accessibile. Verificare la configurazione Supabase.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       // Upload to Supabase Storage in the allegati folder
       const { data, error } = await supabase.storage
         .from('files')
@@ -109,6 +133,8 @@ const FileUploader = ({
             setUploadProgress(percent);
           }
         });
+
+      console.log('Upload result:', { data, error });
 
       if (error) {
         console.error('Errore upload file:', JSON.stringify(error, null, 2));
