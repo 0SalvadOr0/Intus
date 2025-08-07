@@ -9,6 +9,7 @@ import ComicTextBubble from "@/components/ComicTextBubble";
 import MappaProgettiHome from "@/components/MappaProgettiHome";
 import { useTheme } from "next-themes";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { link } from "fs";
 
 
 
@@ -77,6 +78,13 @@ const Home = () => {
     logo: 'https://www.xn--arrivatalafelicit-4ob8k.it/wp-content/uploads/2023/11/LOGO_1WEB.jpg',
     link: 'https://www.xn--arrivatalafelicit-4ob8k.it/',
   },
+  {
+    titolo: 'Centro PsicoPedagogico',
+    descrizione:
+      'Centro PsicoPedagogico - Un centro di riferimento per la salute mentale e il benessere psicologico nella nostra comunità.',
+    logo: 'https://www.metododanielenovara.it/wp-content/uploads/2022/02/Logo_CPP_Esteso_600x120_min.png',
+    link: 'https://www.metododanielenovara.it/'
+  }
   // Aggiungi altri siti qui
   ];
 
