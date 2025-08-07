@@ -188,7 +188,7 @@ app.get('/api/documents', (req, res) => {
 });
 
 // Delete document from archivio
-app.delete('/api/documenti/:filename', (req, res) => {
+app.delete('/api/documents/:filename', (req, res) => {
   try {
     const { filename } = req.params;
     const filePath = path.join(archivioDir, filename);
