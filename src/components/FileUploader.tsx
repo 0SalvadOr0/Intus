@@ -170,10 +170,12 @@ const FileUploader = ({
         return;
       }
 
-      // Get public URL
+      // Get public URL from the bucket that was successfully used
       const { data: urlData } = supabase.storage
-        .from('files')
+        .from(bucketUsed)
         .getPublicUrl(`allegati/${fileName}`);
+
+      console.log('Generated URL:', urlData);
 
       if (urlData?.publicUrl) {
         onFileUpload(urlData.publicUrl, file.name);
