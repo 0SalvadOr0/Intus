@@ -1333,6 +1333,7 @@ const ChiSiamo = () => {
       </section>
 
       {/* Timeline Section - La Nostra Storia Completa */}
+      {/*
       <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-muted/10 via-background to-muted/10">
         <div className="container mx-auto max-w-5xl">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 animate-fade-in-up">
@@ -1345,6 +1346,7 @@ const ChiSiamo = () => {
           <TimelineComponent />
         </div>
       </section>
+      */}
     </div>
   );
 };
