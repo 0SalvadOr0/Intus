@@ -96,25 +96,25 @@ const Home = () => {
         <div className="container mx-auto text-center relative">
           <div className="mb-12 md:mb-16">
             <div className="flex justify-center mb-8 md:mb-12">
-              <div className="flex items-center justify-center mb-8 md:mb-12 relative">
+              <div className="relative inline-block">
                 {/* Logo */}
                 {theme === "dark" ? (
-                    <AnimatedIntusLogo className="w-48 h-auto md:w-64 lg:w-72 animate-fade-in-up" />
+                    <AnimatedIntusLogo className="w-64 h-auto md:w-80 lg:w-96 animate-fade-in-up" />
                   ) : (
                     <img
                       src="../files/logos/logo_cuore.png"
                       alt="Intus Corleone APS - Perdersi è scoprire"
-                      className="w-48 h-auto md:w-64 lg:w-72 animate-pulse-heart"
+                      className="w-64 h-auto md:w-80 lg:w-96 animate-pulse-heart"
                       style={{animationDuration: '2.5s'}}
                     />
                   )}
 
-                {/* Testo accanto al logo */}
-                <div className="ml-4 text-left">
-                  <p className="text-2xl font-bold text-muted-foreground">
+                {/* Testo in basso a destra del logo */}
+                <div className="absolute bottom-0 right-0 text-right">
+                  <p className="text-lg md:text-xl lg:text-2xl font-bold text-muted-foreground">
                     Intus Corleone APS
                   </p>
-                  <p className="text-xl font-caveat text-muted-foreground mt-1">
+                  <p className="text-base md:text-lg lg:text-xl font-caveat text-muted-foreground mt-1">
                     Perdersi è scoprire
                   </p>
                 </div>
