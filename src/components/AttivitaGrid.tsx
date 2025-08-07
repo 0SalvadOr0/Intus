@@ -1,0 +1,111 @@
+import { useEffect, useState } from "react";
+
+const AttivitaGrid = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const activities = [
+    {
+      title: "Animazione territoriale",
+      href: "/le-nostre-attivita?categoria=Animazione+territoriale",
+      animationClass: "animate-fade-in-right"
+    },
+    {
+      title: "Educazione alla legalità", 
+      href: "/le-nostre-attivita?categoria=Educazione+alla+legalit%C3%A0",
+      animationClass: "animate-fade-in-left"
+    },
+    {
+      title: "Politiche giovanili",
+      href: "/le-nostre-attivita?categoria=Politiche+giovanili", 
+      animationClass: "animate-fade-in-left"
+    },
+    {
+      title: "Sviluppo di ricerche/Intervento",
+      href: "/le-nostre-attivita?categoria=Sviluppo+di+ricerche%2FIntervento",
+      animationClass: "animate-fade-in-right"
+    },
+    {
+      title: "Promozione del territorio",
+      href: "/le-nostre-attivita?categoria=Promozione+del+territorio",
+      animationClass: "animate-fade-in-right"
+    },
+    {
+      title: "Inclusione sociale",
+      href: "/le-nostre-attivita?categoria=Inclusione+sociale",
+      animationClass: "animate-fade-in-left"
+    }
+  ];
+
+  return (
+    <div 
+      className={`flex flex-wrap justify-center relative w-full transition-all duration-1000 ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      }`}
+      style={{ backgroundColor: 'rgb(241, 235, 225)' }}
+    >
+      {/* Background absolute div */}
+      <div className="absolute inset-0 h-full w-full"></div>
+      
+      {activities.map((activity, index) => (
+        <div
+          key={index}
+          className={`
+            box-border float-left relative text-center w-1/3 
+            ${activity.animationClass}
+          `}
+          style={{
+            animation: '1s ease 0s 1 normal both running',
+            animationDuration: '1s',
+            animationFillMode: 'both',
+            backgroundRepeat: 'no-repeat',
+            transform: activity.animationClass.includes('right') 
+              ? 'matrix(1, 0, 0, 1, 200, 0)' 
+              : 'matrix(1, 0, 0, 1, -200, 0)'
+          }}
+        >
+          <div className="box-border mb-10 mx-3 relative text-center">
+            <a
+              href={activity.href}
+              className="
+                inline-block relative text-center w-full cursor-pointer
+                bg-orange-500 text-white px-5 py-3 
+                rounded-full border-none text-base
+                transition-all duration-200 hover:bg-orange-600
+                hover:scale-105 transform
+              "
+              style={{
+                backgroundColor: 'rgb(255, 117, 14)',
+                borderRadius: '28px',
+                fontSize: '16.5px',
+                paddingBottom: '11px',
+                paddingLeft: '20px',
+                paddingRight: '20px',
+                paddingTop: '11px',
+                verticalAlign: 'middle',
+                transitionDuration: '0.2s',
+                overflow: 'hidden'
+              }}
+            >
+              <span 
+                className="inline text-center text-white cursor-pointer"
+                style={{
+                  fontSize: '16.5px',
+                  marginLeft: '10px',
+                  color: 'rgb(255, 255, 255)'
+                }}
+              >
+                {activity.title}
+              </span>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default AttivitaGrid;
