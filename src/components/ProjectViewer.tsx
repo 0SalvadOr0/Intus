@@ -38,6 +38,7 @@ interface Project {
   immagini: string[];
   immagine_copertina?: string;
   youtube_url?: string;
+  youtube_urls?: string[];
   status: "completed" | "ongoing" | "planned";
   data_inizio?: string;
   created_at: string;
@@ -372,17 +373,34 @@ const ProjectViewer = () => {
               </div>
             </div>
 
-            {project.youtube_url && (
-              <Button
-                variant="ghost"
-                asChild
-                className="bg-red-600/80 backdrop-blur-md text-white hover:bg-red-600 border border-red-600/50 transition-all duration-300"
-              >
-                <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
-                  <Play className="w-4 h-4 mr-2" />
-                  Video
-                </a>
-              </Button>
+            {(project.youtube_url || (project.youtube_urls && project.youtube_urls.length > 0)) && (
+              <div className="flex gap-2">
+                {project.youtube_url && (
+                  <Button
+                    variant="ghost"
+                    asChild
+                    className="bg-red-600/80 backdrop-blur-md text-white hover:bg-red-600 border border-red-600/50 transition-all duration-300"
+                  >
+                    <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
+                      <Play className="w-4 h-4 mr-2" />
+                      Video
+                    </a>
+                  </Button>
+                )}
+                {project.youtube_urls && project.youtube_urls.map((url, index) => (
+                  <Button
+                    key={index}
+                    variant="ghost"
+                    asChild
+                    className="bg-red-600/80 backdrop-blur-md text-white hover:bg-red-600 border border-red-600/50 transition-all duration-300"
+                  >
+                    <a href={url} target="_blank" rel="noopener noreferrer">
+                      <Play className="w-4 h-4 mr-2" />
+                      Video {index + 1}
+                    </a>
+                  </Button>
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -614,13 +632,25 @@ const ProjectViewer = () => {
                   <Share2 className="w-4 h-4 mr-2" />
                   Condividi progetto
                 </Button>
-                {project.youtube_url && (
-                  <Button variant="outline" className="w-full" asChild>
-                    <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
-                      <Play className="w-4 h-4 mr-2" />
-                      Guarda il video
-                    </a>
-                  </Button>
+                {(project.youtube_url || (project.youtube_urls && project.youtube_urls.length > 0)) && (
+                  <div className="space-y-2">
+                    {project.youtube_url && (
+                      <Button variant="outline" className="w-full" asChild>
+                        <a href={project.youtube_url} target="_blank" rel="noopener noreferrer">
+                          <Play className="w-4 h-4 mr-2" />
+                          Guarda il video
+                        </a>
+                      </Button>
+                    )}
+                    {project.youtube_urls && project.youtube_urls.map((url, index) => (
+                      <Button key={index} variant="outline" className="w-full" asChild>
+                        <a href={url} target="_blank" rel="noopener noreferrer">
+                          <Play className="w-4 h-4 mr-2" />
+                          Video {index + 1}
+                        </a>
+                      </Button>
+                    ))}
+                  </div>
                 )}
                 <Button variant="outline" className="w-full" onClick={() => navigate('/le-nostre-attivita')}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
