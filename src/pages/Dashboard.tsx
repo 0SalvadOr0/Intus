@@ -140,14 +140,15 @@ const Dashboard = () => {
     try {
       const response = await fetch('http://localhost:3001/api/documents');
       if (response.ok) {
-        const docs = await response.json();
-        setDocuments(docs);
+        const result = await response.json();
+        setDocuments(result.documents || result);
       } else {
-        console.error('Failed to fetch documents');
+        console.warn('Backend server not available, using empty document list');
         setDocuments([]);
       }
     } catch (error) {
-      console.error('Error fetching documents:', error);
+      console.warn('Backend server not available:', error.message);
+      // Use empty array as fallback instead of mock data
       setDocuments([]);
     }
   };
