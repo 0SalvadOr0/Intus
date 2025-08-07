@@ -383,7 +383,7 @@ const Dashboard = () => {
     {
       title: "Visualizzazioni Totali",
       value: stats.totalViews > 1000 ? `${(stats.totalViews / 1000).toFixed(1)}K` : stats.totalViews.toString(),
-      change: "+15%",
+      change: `Oggi: ${stats.totalViewsToday}`,
       icon: Eye,
       color: "text-accent"
     },
