@@ -82,6 +82,7 @@ const App = () => {
                   <Route path="/progetto/:id" element={<ProjectViewer />} />
                   <Route path="/presenta-progetto" element={<PresentaProgetto />} />
                   <Route path="/blog" element={<Blog />} />
+                  <Route path="/archivio-documenti" element={<ArchivioDocumenti />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/contatti" element={<Contatti />} />
                   <Route
