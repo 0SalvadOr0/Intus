@@ -320,31 +320,30 @@ const Home = () => {
                 {sitiConsigliati.map((sito, index) => (
                   <Card
                     key={index}
-                    className="group flex items-center gap-6 p-6 bg-background shadow-md hover:shadow-xl transition-all rounded-xl"
+                    className="group flex items-center gap-6 p-6 bg-gradient-to-r from-background via-muted/20 to-background shadow-md hover:shadow-xl transition-all rounded-xl border border-muted/20 hover:border-heart/30"
                   >
-                    <div className="w-24 h-24 flex-shrink-0 relative">
+                    <div className="w-16 h-16 flex-shrink-0 relative">
                       <img
                         src={sito.logo}
                         alt={`${sito.titolo} logo`}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain rounded-lg"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                           e.currentTarget.nextElementSibling?.classList.remove('hidden');
                         }}
                       />
-                      <Heart className="w-8 h-8 text-heart hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                      <Heart className="w-6 h-6 text-heart hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-xl font-semibold mb-2 group-hover:text-heart transition-colors">{sito.titolo}</h4>
-                      <p className="text-muted-foreground mb-4">{sito.descrizione}</p>
+                    <div className="flex-1 flex items-center justify-between">
+                      <h4 className="text-lg font-semibold group-hover:text-heart transition-colors">{sito.titolo}</h4>
                       <a
                         href={sito.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center text-sm font-medium text-heart hover:underline"
+                        className="inline-flex items-center px-4 py-2 bg-heart/10 hover:bg-heart/20 text-heart hover:text-heart/90 rounded-lg font-medium transition-all duration-300 group-hover:scale-105"
                       >
                         Visita sito
-                        <span className="ml-1">→</span>
+                        <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
                       </a>
                     </div>
                   </Card>
