@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { CalendarDays, MapPin, Users, ExternalLink, Play, Eye } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import { supabase } from "@/lib/supabaseClient";
 
@@ -26,7 +26,9 @@ interface Project {
 }
 
 const LeNostreAttivita = () => {
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get('categoria');
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || "all");
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +36,12 @@ const LeNostreAttivita = () => {
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [categoryFromUrl]);
 
   const fetchProjects = async () => {
     try {
