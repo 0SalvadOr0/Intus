@@ -152,8 +152,8 @@ const FileUploader = ({
       if (result.success) {
         onFileUpload(result.fileUrl, result.originalName || file.name);
         toast({
-          title: "File caricato!",
-          description: `${result.originalName || file.name} salvato in files/allegati/`
+          title: "Allegato caricato!",
+          description: `${result.originalName || file.name} salvato in files/allegati/ (Call Idee)`
         });
       } else {
         throw new Error(result.error || 'Upload failed');
