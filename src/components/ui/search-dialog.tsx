@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Search, FileText, Users, FolderOpen, DollarSign, Home } from "lucide-react";
+import { Search, FileText, Users, FolderOpen, DollarSign, Home, Archive } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ const searchItems = [
   { path: "/le-nostre-attivita", label: "Le Nostre Attività", icon: FolderOpen, description: "Esplora i progetti e le iniziative" },
   { path: "/presenta-progetto", label: "In evidenza", icon: DollarSign, description: "Scopri le iniziative in evidenza e presenta il tuo progetto" },
   { path: "/blog", label: "Blog", icon: FileText, description: "Leggi le ultime notizie e articoli" },
+  { path: "/archivio-documenti", label: "Archivio Documenti", icon: Archive, description: "Consulta e scarica i documenti ufficiali" },
 ];
 
 export const SearchDialog = ({ trigger }: { trigger: React.ReactNode }) => {
