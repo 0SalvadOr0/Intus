@@ -229,22 +229,22 @@ const Home = () => {
       {/* Partners Strip */}
       <PartnersStrip />
 
-      {/* In Evidenza */}
+      {/* Progetti e Iniziative */}
       <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-muted/20 via-background to-muted/30">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                In Evidenza
+                Progetti e Iniziative
               </span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Scopri le nostre iniziative più importanti e resta aggiornato sulle ultime novità
+              Scopri le nostre attività più importanti e resta aggiornato sui progetti in corso
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Call di Idee Giovani */}
+            {/* Presenta il tuo progetto */}
             <Card className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 border-0 bg-gradient-to-br from-primary/5 via-background to-primary/10 animate-slide-in-left">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <CardContent className="relative p-8">
@@ -258,7 +258,7 @@ const Home = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-3">
                       <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">
-                        Call di Idee Giovani
+                        Presenta il tuo Progetto
                       </h3>
                       <div className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
                         ATTIVO
