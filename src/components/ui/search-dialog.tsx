@@ -11,7 +11,7 @@ const searchItems = [
   { path: "/", label: "Home", icon: Home, description: "Torna alla pagina principale" },
   { path: "/chi-siamo", label: "Chi Siamo", icon: Users, description: "Scopri la nostra missione e il nostro team" },
   { path: "/le-nostre-attivita", label: "Le Nostre Attività", icon: FolderOpen, description: "Esplora i progetti e le iniziative" },
-  { path: "/presenta-progetto", label: "Presenta Progetto", icon: DollarSign, description: "Sottoponi il tuo progetto per un finanziamento" },
+  { path: "/presenta-progetto", label: "In evidenza", icon: DollarSign, description: "Scopri le iniziative in evidenza e presenta il tuo progetto" },
   { path: "/blog", label: "Blog", icon: FileText, description: "Leggi le ultime notizie e articoli" },
 ];
 
