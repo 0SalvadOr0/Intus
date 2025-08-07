@@ -3,17 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Search, 
-  FileText, 
-  Download, 
-  Calendar, 
-  Eye, 
+import {
+  Search,
+  FileText,
+  Download,
+  Calendar,
+  Eye,
   Filter,
   FolderOpen,
   File,
-  FileImage,
-  FilePdf
+  FileImage
 } from "lucide-react";
 
 interface Document {
@@ -98,7 +97,7 @@ const ArchivioDocumenti = () => {
   const getFileIcon = (type: string) => {
     switch (type.toLowerCase()) {
       case 'pdf':
-        return <FilePdf className="w-5 h-5 text-red-500" />;
+        return <FileText className="w-5 h-5 text-red-500" />;
       case 'doc':
       case 'docx':
         return <FileText className="w-5 h-5 text-blue-500" />;
