@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabaseClient";
 import { Upload, File, X, FileText, FileImage } from "lucide-react";
 
 interface FileUploaderProps {
@@ -98,21 +97,9 @@ const FileUploader = ({
       return;
     }
 
-    console.log('Starting upload process...');
+    console.log('Starting local upload process...');
     setIsUploading(true);
     setUploadProgress(0);
-
-    // Check Supabase client
-    if (!supabase) {
-      console.error('Supabase client not available');
-      toast({
-        title: "Errore di configurazione",
-        description: "Client Supabase non disponibile.",
-        variant: "destructive"
-      });
-      setIsUploading(false);
-      return;
-    }
 
     try {
       // Generate unique filename
@@ -120,7 +107,7 @@ const FileUploader = ({
       const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const fileName = `${timestamp}_${sanitizedName}`;
 
-      console.log('Attempting to upload file:', {
+      console.log('Attempting to upload file locally:', {
         originalName: file.name,
         sanitizedName,
         fileName,
@@ -128,77 +115,54 @@ const FileUploader = ({
         fileType: file.type
       });
 
-      // Use the blog-images bucket (which is known to work) for file uploads
-      const bucketUsed = 'blog-images';
-      const { data, error } = await supabase.storage
-        .from(bucketUsed)
-        .upload(`allegati/${fileName}`, file, {
-          cacheControl: '3600',
-          upsert: false,
-          contentType: file.type,
-          onUploadProgress: (progress) => {
-            if (progress.total && progress.total > 0) {
-              const percent = (progress.loaded / progress.total) * 100;
-              setUploadProgress(percent);
-            }
-          }
-        });
+      // Create FormData for local upload
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('fileName', fileName);
 
-      console.log(`Upload result using ${bucketUsed} bucket:`, { data, error });
+      // Simulate progress for visual feedback
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 100);
+
+      // Upload to local server
+      const response = await fetch('/api/upload-allegato', {
+        method: 'POST',
+        body: formData
+      });
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`Upload failed: ${response.status} - ${errorData}`);
+      }
+
+      const result = await response.json();
+      console.log('Upload result:', result);
 
       console.log('Upload result:', { data, error });
 
-      if (error) {
-        console.error('Errore upload file:', JSON.stringify(error, null, 2));
-        console.error('Error details:', {
-          message: error.message,
-          error: error.error,
-          statusCode: error.statusCode,
-          details: error
-        });
-
-        let errorMessage = "Si è verificato un errore durante il caricamento del file.";
-
-        if (error.message) {
-          errorMessage = error.message;
-        } else if (error.error) {
-          errorMessage = error.error;
-        } else if (typeof error === 'string') {
-          errorMessage = error;
-        }
-
-        toast({
-          title: "Errore nel caricamento",
-          description: errorMessage,
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Get public URL from the bucket that was successfully used
-      const { data: urlData } = supabase.storage
-        .from(bucketUsed)
-        .getPublicUrl(`allegati/${fileName}`);
-
-      console.log('Generated URL:', urlData);
-
-      if (urlData?.publicUrl) {
-        onFileUpload(urlData.publicUrl, file.name);
+      if (result.success) {
+        const fileUrl = result.fileUrl || `/files/allegati/${fileName}`;
+        onFileUpload(fileUrl, file.name);
         toast({
           title: "File caricato!",
-          description: `${file.name} è stato caricato con successo (${bucketUsed}).`
+          description: `${file.name} è stato caricato con successo localmente.`
         });
       } else {
-        console.error('Failed to generate public URL:', urlData);
-        toast({
-          title: "Errore URL",
-          description: "File caricato ma impossibile generare l'URL pubblico.",
-          variant: "destructive"
-        });
+        throw new Error(result.error || 'Upload failed');
       }
 
     } catch (error) {
-      console.error('Errore generico upload:', error);
+      console.error('Errore upload locale:', error);
       console.error('Catch error details:', {
         message: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
