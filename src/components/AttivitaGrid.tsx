@@ -41,20 +41,23 @@ const AttivitaGrid = () => {
   ];
 
   return (
-    <div 
-      className={`flex flex-wrap justify-center relative w-full transition-all duration-1000 ${
+    <div
+      className={`flex flex-wrap justify-center relative w-full py-12 transition-all duration-1000 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
-      style={{ backgroundColor: 'rgb(241, 235, 225)' }}
+      style={{
+        backgroundColor: 'rgb(241, 235, 225)',
+        minHeight: '400px'
+      }}
     >
       {/* Background absolute div */}
-      <div className="absolute inset-0 h-full w-full"></div>
+      <div className="absolute inset-0 h-full w-full" style={{ zIndex: 0 }}></div>
       
       {activities.map((activity, index) => (
         <div
           key={index}
           className={`
-            box-border float-left relative text-center w-1/3 
+            box-border relative text-center w-full sm:w-1/2 lg:w-1/3
             ${activity.animationClass}
           `}
           style={{
@@ -62,39 +65,35 @@ const AttivitaGrid = () => {
             animationDuration: '1s',
             animationFillMode: 'both',
             backgroundRepeat: 'no-repeat',
-            transform: activity.animationClass.includes('right') 
-              ? 'matrix(1, 0, 0, 1, 200, 0)' 
-              : 'matrix(1, 0, 0, 1, -200, 0)'
+            zIndex: 10,
+            minHeight: '80px'
           }}
         >
-          <div className="box-border mb-10 mx-3 relative text-center">
+          <div className="box-border mb-8 mx-3 relative text-center">
             <a
               href={activity.href}
               className="
-                inline-block relative text-center w-full cursor-pointer
-                bg-orange-500 text-white px-5 py-3 
-                rounded-full border-none text-base
-                transition-all duration-200 hover:bg-orange-600
-                hover:scale-105 transform
+                inline-block relative text-center w-full max-w-xs cursor-pointer
+                text-white border-none text-base
+                transition-all duration-200 hover:scale-105 transform
+                shadow-lg hover:shadow-xl
               "
               style={{
                 backgroundColor: 'rgb(255, 117, 14)',
                 borderRadius: '28px',
                 fontSize: '16.5px',
-                paddingBottom: '11px',
-                paddingLeft: '20px',
-                paddingRight: '20px',
-                paddingTop: '11px',
+                padding: '12px 24px',
                 verticalAlign: 'middle',
                 transitionDuration: '0.2s',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                display: 'block',
+                margin: '0 auto'
               }}
             >
-              <span 
-                className="inline text-center text-white cursor-pointer"
+              <span
+                className="inline text-center text-white cursor-pointer font-medium"
                 style={{
                   fontSize: '16.5px',
-                  marginLeft: '10px',
                   color: 'rgb(255, 255, 255)'
                 }}
               >
