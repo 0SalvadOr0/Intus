@@ -109,7 +109,7 @@ app.post('/api/upload-allegato', upload.single('file'), (req, res) => {
       success: true,
       fileName: req.file.filename,
       originalName: req.file.originalname,
-      fileUrl: `/prv_files/allegati/${req.file.filename}`,
+      fileUrl: `/files/allegati/${req.file.filename}`,
       fileSize: req.file.size,
       mimeType: req.file.mimetype
     });
