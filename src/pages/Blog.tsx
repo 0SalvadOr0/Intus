@@ -149,27 +149,61 @@ const Blog = () => {
     }
   };
 
-  // 🗂️ Enhanced data fetching with content field
+  // 🗂️ Enhanced data fetching with robust error handling
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("blog_posts")
-        .select("id, titolo, contenuto, excerpt, autore, created_at, categoria, immagini, copertina_url, youtube_url") // 📝 Include contenuto
-        .eq("pubblicato", true)
-        .order("created_at", { ascending: false });
-      
-      if (!error && data) {
-        setBlogPosts(data as BlogPost[]);
-      } else if (error) {
-        toast({
-          title: "Errore nel caricamento ❌",
-          description: "Impossibile caricare gli articoli del blog.",
-          variant: "destructive"
-        });
+      try {
+        const { data, error } = await supabase
+          .from("blog_posts")
+          .select("id, titolo, contenuto, excerpt, autore, created_at, categoria, immagini, copertina_url, youtube_url")
+          .eq("pubblicato", true)
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          throw error;
+        }
+
+        // Validate and set data
+        if (data && Array.isArray(data)) {
+          setBlogPosts(data as BlogPost[]);
+        } else {
+          setBlogPosts([]);
+          toast({
+            title: "Nessun articolo trovato",
+            description: "Non sono ancora stati pubblicati articoli nel blog.",
+            variant: "default"
+          });
+        }
+      } catch (error: any) {
+        console.error('Error fetching blog posts:', error);
+        setBlogPosts([]);
+
+        // Handle specific error cases
+        if (error?.code === 'PGRST116' || error?.code === '42P01') {
+          toast({
+            title: "Blog non configurato",
+            description: "Il sistema del blog non è ancora stato configurato.",
+            variant: "destructive"
+          });
+        } else if (!navigator.onLine) {
+          toast({
+            title: "Connessione assente",
+            description: "Verifica la tua connessione internet per caricare gli articoli.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Errore nel caricamento",
+            description: "Impossibile caricare gli articoli del blog. Riprova più tardi.",
+            variant: "destructive"
+          });
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
+
     fetchPosts();
   }, []);
 
