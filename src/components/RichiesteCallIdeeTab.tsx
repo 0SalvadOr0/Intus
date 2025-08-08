@@ -96,6 +96,7 @@ interface Richiesta {
   altro?: string;
   partecipanti: Partecipante[];
   figure_supporto?: FiguraSupporto[];
+  allegati?: Array<{ name: string; url: string }>;
   spese_attrezzature: Array<{
     descrizione: string;
     quantita: number;
