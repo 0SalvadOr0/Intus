@@ -1288,7 +1288,7 @@ const ChiSiamo = () => {
                   <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
                   <div className="relative p-3 sm:p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-heart/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
                     <img 
-                      src="/files/logos/cuore_rosso.png" 
+                      src="/files/logos/logo_cuore.png" 
                       alt="INTUS Corleone Logo" 
                       className="w-12 h-8 sm:w-16 sm:h-10 object-contain" 
                     />
