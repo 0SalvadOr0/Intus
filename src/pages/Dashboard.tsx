@@ -167,12 +167,30 @@ const Dashboard = () => {
   };
 
   const fetchCallIdeeRequests = async () => {
-    const { data, error } = await supabase
-      .from("call_idee_giovani")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (!error && data) {
-      setCallIdeeRequests(data);
+    try {
+      const { data, error } = await supabase
+        .from("call_idee_giovani")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      setCallIdeeRequests(data || []);
+    } catch (error: any) {
+      console.error('Error fetching call idee requests:', error);
+      setCallIdeeRequests([]);
+
+      if (error?.code === 'PGRST116' || error?.code === '42P01') {
+        console.warn('⚠️ Tabella call_idee_giovani non configurata');
+      } else {
+        toast({
+          title: "Errore caricamento richieste",
+          description: "Impossibile caricare le richieste Call Idee",
+          variant: "destructive"
+        });
+      }
     }
   };
 
