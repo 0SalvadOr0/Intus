@@ -247,31 +247,6 @@ app.get('/api/all-documents', (req, res) => {
       });
     }
 
-    // 📎 Read allegati directory contents
-    if (fs.existsSync(allegatiDir)) {
-      const allegatiFiles = fs.readdirSync(allegatiDir);
-
-      allegatiFiles.forEach(file => {
-        const filePath = path.join(allegatiDir, file);
-        const stats = fs.statSync(filePath);
-        const ext = path.extname(file).toLowerCase();
-
-        allDocuments.push({
-          id: `allegati_${file}`,
-          name: file,
-          originalName: file,
-          description: 'Allegato documento',
-          category: 'Allegati',
-          url: `/files/allegati/${file}`, // 🎯 Updated for Vite compatibility
-          size: `${(stats.size / 1024 / 1024).toFixed(2)} MB`,
-          mimeType: ext === '.pdf' ? 'application/pdf' : 'application/octet-stream',
-          uploadDate: stats.birthtime.toISOString(),
-          type: ext.replace('.', '').toUpperCase(),
-          source: 'allegati'
-        });
-      });
-    }
-
     // 📅 Sort by upload date (newest first)
     allDocuments.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
 
