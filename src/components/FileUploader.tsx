@@ -132,7 +132,7 @@ const FileUploader = ({
       }, 100);
 
       // Upload to backend server
-      const response = await fetch('http://localhost:3001/api/upload-allegato', {
+      const response = await fetch('http://217.160.124.10:3001/api/upload-allegato', {
         method: 'POST',
         body: formData
       });

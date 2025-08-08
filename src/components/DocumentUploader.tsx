@@ -134,10 +134,11 @@ const DocumentUploader = ({
       }, 100);
 
       // Upload to backend server (archivio directory)
-      const response = await fetch('http://localhost:3001/api/upload-documento', {
+      const response = await fetch('http://217.160.124.10:3001/api/upload-documento', {
         method: 'POST',
         body: formData
       });
+
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Errore di rete' }));

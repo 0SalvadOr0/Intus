@@ -196,7 +196,7 @@ const Dashboard = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/all-documents');
+      const response = await fetch('http://217.160.124.10:3001/api/all-documents');
       if (response.ok) {
         const result = await response.json();
         if (result.success && result.documents) {
@@ -1261,7 +1261,7 @@ const Dashboard = () => {
                         formData.append('description', newDocument.description);
                         formData.append('category', newDocument.category);
 
-                        const response = await fetch('http://localhost:3001/api/upload-documento', {
+                        const response = await fetch('http://217.160.124.10:3001/api/upload-documento', {
                           method: 'POST',
                           body: formData
                         });
@@ -1358,7 +1358,7 @@ const Dashboard = () => {
                             onClick={async () => {
                               if (window.confirm('Sei sicuro di voler eliminare questo documento?')) {
                                 try {
-                                  const response = await fetch(`http://localhost:3001/api/documents/${doc.id}`, {
+                                  const response = await fetch(`http://217.160.124.10:3001/api/documents/${doc.id}`, {
                                     method: 'DELETE'
                                   });
                                   if (response.ok) {

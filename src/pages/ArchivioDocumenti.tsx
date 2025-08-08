@@ -38,7 +38,7 @@ const ArchivioDocumenti = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/all-documents');
+      const response = await fetch('http://217.160.124.10:3001/api/all-documents');
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: Server non disponibile`);
