@@ -27,7 +27,7 @@ app.use(express.static('public'));
 app.use('/files', express.static('files'));
 
 // 📁 Directory Structure Management
-const allegatiDir = path.join(__dirname, 'files', 'allegati');
+const allegatiDir = path.join(__dirname, 'prv_files', 'allegati');
 const archivioDir = path.join(__dirname, 'files', 'archivio');
 
 // ✅ Ensure Required Directories Exist
@@ -109,7 +109,7 @@ app.post('/api/upload-allegato', upload.single('file'), (req, res) => {
       success: true,
       fileName: req.file.filename,
       originalName: req.file.originalname,
-      fileUrl: `/files/allegati/${req.file.filename}`,
+      fileUrl: `/prv_files/allegati/${req.file.filename}`,
       fileSize: req.file.size,
       mimeType: req.file.mimetype
     });

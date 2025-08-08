@@ -153,7 +153,7 @@ const FileUploader = ({
         onFileUpload(result.fileUrl, result.originalName || file.name);
         toast({
           title: "Allegato caricato!",
-          description: `${result.originalName || file.name} salvato in files/allegati/ (Call Idee)`
+          description: `${result.originalName || file.name} salvato in prv_files/allegati/ (Call Idee)`
         });
       } else {
         throw new Error(result.error || 'Upload failed');
@@ -217,7 +217,7 @@ const FileUploader = ({
               File caricati: {uploadedFiles.length}/{maxFiles}
             </p>
             <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-              📁 I file verranno salvati in: files/allegati/
+              📁 I file verranno salvati in: prv_files/allegati/
             </p>
           </div>
           

@@ -38,7 +38,7 @@ try {
     }
     
     // Create allegati directory if it doesn't exist
-    $uploadDir = '../files/allegati/';
+    $uploadDir = '/prv_files/allegati/';
     if (!is_dir($uploadDir)) {
         if (!mkdir($uploadDir, 0755, true)) {
             throw new Exception('Failed to create upload directory');
@@ -63,7 +63,7 @@ try {
     echo json_encode([
         'success' => true,
         'fileName' => $fileName,
-        'fileUrl' => '/files/allegati/' . $fileName,
+        'fileUrl' => '/prv_files/allegati/' . $fileName,
         'fileSize' => $file['size']
     ]);
     
