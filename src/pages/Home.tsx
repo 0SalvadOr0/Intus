@@ -197,9 +197,21 @@ const Home = () => {
                       {/* Animated ring */}
                       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary via-accent to-heart opacity-20 group-hover:opacity-40 group-hover:scale-110 transition-all duration-500 animate-spin-slow"></div>
 
-                      {/* Icon container */}
-                      <div className="relative p-4 md:p-5 rounded-full bg-gradient-to-br from-primary via-accent to-heart group-hover:animate-float shadow-2xl group-hover:shadow-primary/25">
-                        <principle.icon className="w-8 h-8 md:w-10 md:h-10 text-white group-hover:scale-110 transition-transform duration-300" />
+                      {/* Icon/Image container */}
+                      <div className="relative p-4 md:p-5 rounded-full bg-gradient-to-br from-primary via-accent to-heart group-hover:animate-float shadow-2xl group-hover:shadow-primary/25 overflow-hidden">
+                        {principle.image ? (
+                          <img
+                            src={principle.image}
+                            alt={principle.title}
+                            className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-full group-hover:scale-110 transition-transform duration-300"
+                            onError={(e) => {
+                              console.warn(`Failed to load image: ${principle.image}`);
+                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                        ) : null}
+                        <principle.icon className={`w-8 h-8 md:w-10 md:h-10 text-white group-hover:scale-110 transition-transform duration-300 ${principle.image ? 'hidden' : ''}`} />
                       </div>
 
                       {/* Sparkle effects */}
