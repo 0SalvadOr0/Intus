@@ -57,7 +57,7 @@ const Home = () => {
       icon: Users,
       title: "Cittadinanza Attiva",
       description: "Promuoviamo la partecipazione democratica e l'impegno civico dei cittadini per costruire una società più giusta e inclusiva.",
-      image: "/public/files/logos/cittadinanza_attiva.jpg"
+      image: "/files/logos/cittadinanza_attiva.jpg"
     },
     {
       icon: MapPin,
@@ -111,7 +111,7 @@ const Home = () => {
                     <AnimatedIntusLogo className="w-64 h-auto md:w-80 lg:w-96 animate-fade-in-up" />
                   ) : (
                     <img
-                      src="/public/files/logos/logo_cuore.png"
+                      src="/files/logos/logo_cuore.png"
                       alt="Intus Corleone APS - Perdersi è scoprire"
                       className="w-64 h-auto md:w-80 lg:w-96 animate-pulse-heart"
                       style={{animationDuration: '2.5s'}}

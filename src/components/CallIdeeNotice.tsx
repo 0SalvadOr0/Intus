@@ -42,7 +42,7 @@ const CallIdeeNotice = () => {
 
             <div className="bg-white dark:bg-card rounded-lg p-4 border border-amber-200 dark:border-amber-800 flex items-center gap-2">
               <a
-                  href="/public/files/avvisi/avviso_partecipazione.docx"
+                  href="/files/avvisi/avviso_partecipazione.docx"
                   download
                   target="_blank"
                   rel="noopener noreferrer"
