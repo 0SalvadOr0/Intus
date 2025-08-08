@@ -97,15 +97,44 @@ const Dashboard = () => {
 
   const fetchBlogPosts = async () => {
     setBlogLoading(true);
-    const { data, error } = await supabase
-      .from("blog_posts")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (!error && data) {
-      setBlogPosts(data);
-      updateStats(data);
+    try {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data && Array.isArray(data)) {
+        setBlogPosts(data);
+        updateStats(data);
+      } else {
+        setBlogPosts([]);
+        updateStats([]);
+      }
+    } catch (error: any) {
+      console.error('Error fetching blog posts:', error);
+      setBlogPosts([]);
+      updateStats([]);
+
+      if (error?.code === 'PGRST116' || error?.code === '42P01') {
+        toast({
+          title: "Tabella blog non configurata",
+          description: "Utilizzare lo script SQL per configurare il database.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Errore caricamento articoli",
+          description: error.message || "Errore sconosciuto",
+          variant: "destructive"
+        });
+      }
+    } finally {
+      setBlogLoading(false);
     }
-    setBlogLoading(false);
   };
 
   const fetchProjects = async () => {
