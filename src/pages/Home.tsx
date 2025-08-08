@@ -56,7 +56,8 @@ const Home = () => {
     {
       icon: Users,
       title: "Cittadinanza Attiva",
-      description: "Promuoviamo la partecipazione democratica e l'impegno civico dei cittadini per costruire una società più giusta e inclusiva."
+      description: "Promuoviamo la partecipazione democratica e l'impegno civico dei cittadini per costruire una società più giusta e inclusiva.",
+      image: "/files/logos/cittadinanza_attiva.jpg"
     },
     {
       icon: MapPin,
