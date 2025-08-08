@@ -218,37 +218,47 @@ const Dashboard = () => {
     try {
       setAnalyticsData(prev => ({ ...prev, isLoading: true }));
 
-      // Fetch total views
-      const totalViews = await getTotalViews();
+      // Fetch analytics data with fallbacks
+      const [totalViews, generalStats, popularPages, visitorStats] = await Promise.allSettled([
+        getTotalViews(),
+        getGeneralStats(),
+        getPopularPages(10),
+        getVisitorStats(30)
+      ]);
 
-      // Fetch general stats
-      const generalStats = await getGeneralStats();
-
-      // Fetch popular pages
-      const popularPages = await getPopularPages(10);
-
-      // Fetch visitor stats for last 30 days
-      const visitorStats = await getVisitorStats(30);
-
-      // Update stats state
+      // Update stats state with fallback values
       setStats(prev => ({
         ...prev,
-        totalViews: totalViews || prev.totalViews,
-        totalViewsToday: generalStats?.total_views_today || 0,
-        uniqueVisitorsToday: generalStats?.unique_visitors_today || 0,
-        viewsLastHour: generalStats?.views_last_hour || 0
+        totalViews: (totalViews.status === 'fulfilled' ? totalViews.value : null) || prev.totalViews,
+        totalViewsToday: (generalStats.status === 'fulfilled' ? generalStats.value?.total_views_today : null) || 0,
+        uniqueVisitorsToday: (generalStats.status === 'fulfilled' ? generalStats.value?.unique_visitors_today : null) || 0,
+        viewsLastHour: (generalStats.status === 'fulfilled' ? generalStats.value?.views_last_hour : null) || 0
       }));
 
-      // Update analytics data
+      // Update analytics data with fallbacks
       setAnalyticsData({
-        popularPages: popularPages || [],
-        visitorStats: visitorStats || [],
+        popularPages: (popularPages.status === 'fulfilled' ? popularPages.value : null) || [],
+        visitorStats: (visitorStats.status === 'fulfilled' ? visitorStats.value : null) || [],
         isLoading: false
       });
 
     } catch (error) {
       console.error('Errore nel caricamento analytics:', error);
-      setAnalyticsData(prev => ({ ...prev, isLoading: false }));
+      setAnalyticsData(prev => ({
+        ...prev,
+        isLoading: false,
+        popularPages: [],
+        visitorStats: []
+      }));
+
+      // Only show error toast if analytics is critical for the user
+      if (window.location.hash === '#analytics') {
+        toast({
+          title: "Analytics non disponibili",
+          description: "Le statistiche potrebbero non essere configurate o temporaneamente non disponibili.",
+          variant: "default"
+        });
+      }
     }
   };
 
