@@ -178,8 +178,8 @@ const PrivacyPolicy = () => {
                 Gli Utenti potranno esercitare tali diritti ai sensi del Nuovo Regolamento UE e disposizioni 
                 nazionali rivolgendosi INTUS CORLEONE APS, Titolare del trattamento, presso il quale è tenuto 
                 l'elenco dei Responsabili ed incaricati del trattamento, scrivendo a 
-                <a href="mailto:amministratore@intus.it" className="text-primary hover:underline ml-1">
-                  amministratore@intus.it
+                <a href="mailto:direttore@intuscorleone.it" className="text-primary hover:underline ml-1">
+                  direttore@intuscorleone.it
                 </a>
               </p>
             </div>

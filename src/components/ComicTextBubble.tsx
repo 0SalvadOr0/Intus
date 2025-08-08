@@ -48,8 +48,9 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
             textShadow: '2px 2px 0px rgba(0,0,0,0.1)',
             animationDelay: '0.2s'
           }}>
-            Fondata nel 1997 durante la "Primavera Corleonese", promuove la legalità, i diritti umani e la cittadinanza attiva.
-          </div>
+            Dal 1997 coltiviamo semi di cambiamento nel territorio corleonese, costruendo una cultura della legalità, della pace e della cittadinanza attiva.  
+Crediamo nell’educazione, nella memoria e nella partecipazione come strumenti per trasformare il presente.  
+Con progetti dedicati ai giovani e al territorio, lavoriamo in rete per generare nuove visioni, valorizzare storie e custodire impegno civile.            </div>
           
           <div className={`text-xl md:text-2xl lg:text-3xl leading-relaxed font-bold transform transition-all duration-700 ${
             isVisible ? 'translate-y-0' : 'translate-y-4'
@@ -58,7 +59,7 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
             textShadow: '2px 2px 0px rgba(0,0,0,0.1)',
             animationDelay: '0.4s'
           }}>
-            L'associazione forma educatori e sostiene progetti giovanili, sociali ed ecologici a livello locale ed europeo. È attiva nel turismo responsabile e nella valorizzazione della memoria antimafia attraverso l'arte.
+            INTUS è uno spazio in cui le idee diventano azioni, e le radici si intrecciano al futuro.
           </div>
         </div>
 

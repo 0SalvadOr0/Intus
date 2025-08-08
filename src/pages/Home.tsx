@@ -118,7 +118,7 @@ const Home = () => {
                   )}
 
                 {/* Testo in basso a destra del logo */}
-                <div className="absolute bottom-0 right-0 text-right">
+                <div className="pl-15 ml-15 -mr-15 sm:pl-20 sm:ml-20 sm:-mr-20">
                   <p className="text-lg md:text-xl lg:text-2xl font-bold text-muted-foreground">
                     Intus Corleone APS
                   </p>
@@ -232,47 +232,50 @@ const Home = () => {
       <PartnersStrip />
 
       {/* Progetti e Iniziative */}
-      <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-muted/20 via-background to-muted/30">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-20 px-4 bg-gradient-to-br from-muted/20 via-background to-muted/30">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12 animate-fade-in-up">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12 animate-fade-in-up">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
               <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                 Progetti e Iniziative
               </span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
               Scopri le nostre attività più importanti e resta aggiornato sui progetti in corso
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Presenta il tuo progetto */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+            {/* 📱 Presenta il tuo progetto - Mobile Optimized */}
             <Card className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 border-0 bg-gradient-to-br from-primary/5 via-background to-primary/10 animate-slide-in-left">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardContent className="relative p-8">
-                <div className="flex items-start space-x-6">
-                  <div className="relative">
+              <CardContent className="relative p-4 sm:p-6 md:p-8">
+                <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6">
+                  <div className="relative mx-auto sm:mx-0 flex-shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-2xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative bg-gradient-to-br from-primary to-accent p-4 rounded-2xl shadow-lg">
-                      <Zap className="w-8 h-8 text-white group-hover:animate-pulse" />
+                    <div className="relative bg-gradient-to-br from-primary to-accent p-3 sm:p-4 rounded-2xl shadow-lg">
+                      <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-white group-hover:animate-pulse" />
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-3">
-                      <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
+                      <h3 className="text-xl sm:text-2xl font-bold group-hover:text-primary transition-colors">
                         Presenta il tuo Progetto
                       </h3>
-                      <div className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
+                      <div className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-semibold animate-pulse mx-auto sm:mx-0 w-fit">
                         ATTIVO
                       </div>
                     </div>
-                    <p className="text-muted-foreground mb-6 leading-relaxed text-base">
+                    <p className="text-muted-foreground mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                       Microprogetti per le comunità locali. Presenta la tua idea innovativa per trasformare il territorio.
-                      <span className="text-primary font-semibold">Scadenza: 31 dicembre 2025</span>
+                      <br className="hidden sm:block" />
+                      <span className="text-primary font-semibold block sm:inline mt-1 sm:mt-0">
+                        Scadenza: 31 dicembre 2025
+                      </span>
                     </p>
                     <Link
                       to="/presenta-progetto"
-                      className="inline-flex items-center bg-gradient-to-r from-primary to-accent text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
+                      className="inline-flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-primary to-accent text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 text-sm sm:text-base"
                     >
                       Partecipa ora
                       <span className="ml-2 group-hover:translate-x-2 transition-transform duration-300">→</span>
@@ -282,33 +285,33 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            {/* Ultime Notizie Blog */}
+            {/* 📰 Ultime Notizie Blog - Mobile Optimized */}
             <Card className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 border-0 bg-gradient-to-br from-accent/5 via-background to-accent/10 animate-slide-in-right">
               <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardContent className="relative p-8">
-                <div className="flex items-start space-x-6">
-                  <div className="relative">
+              <CardContent className="relative p-4 sm:p-6 md:p-8">
+                <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6">
+                  <div className="relative mx-auto sm:mx-0 flex-shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-br from-accent to-primary rounded-2xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative bg-gradient-to-br from-accent to-primary p-4 rounded-2xl shadow-lg">
-                      <Users className="w-8 h-8 text-white group-hover:animate-pulse" />
+                    <div className="relative bg-gradient-to-br from-accent to-primary p-3 sm:p-4 rounded-2xl shadow-lg">
+                      <Users className="w-6 h-6 sm:w-8 sm:h-8 text-white group-hover:animate-pulse" />
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-3">
-                      <h3 className="text-2xl font-bold group-hover:text-accent transition-colors">
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
+                      <h3 className="text-xl sm:text-2xl font-bold group-hover:text-accent transition-colors">
                         Ultime Notizie
                       </h3>
-                      <div className="bg-accent/20 text-accent px-3 py-1 rounded-full text-xs font-semibold">
+                      <div className="bg-accent/20 text-accent px-3 py-1 rounded-full text-xs font-semibold mx-auto sm:mx-0 w-fit">
                         AGGIORNATO
                       </div>
                     </div>
-                    <p className="text-muted-foreground mb-6 leading-relaxed text-base">
+                    <p className="text-muted-foreground mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                       Rimani sempre aggiornato sulle nostre attività, eventi e iniziative per la comunità locale.
                       Scopri come stiamo costruendo il futuro insieme.
                     </p>
                     <Link
                       to="/blog"
-                      className="inline-flex items-center bg-gradient-to-r from-accent to-primary text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
+                      className="inline-flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-accent to-primary text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 text-sm sm:text-base"
                     >
                       Leggi il blog
                       <span className="ml-2 group-hover:translate-x-2 transition-transform duration-300">→</span>
@@ -318,49 +321,51 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            {/* Siti Consigliati */}
-            <div className="space-y-8 animate-fade-in-up">
-                <h3 className="text-2xl font-bold mb-6 text-center">
-                  <span className="bg-gradient-to-r from-heart via-primary to-heart bg-clip-text text-transparent">
-                    Siti Consigliati
-                  </span>
-                </h3>
-                {sitiConsigliati.map((sito, index) => (
-                  <Card
-                    key={index}
-                    className="group flex items-center gap-6 p-6 bg-gradient-to-r from-background via-muted/20 to-background shadow-md hover:shadow-xl transition-all rounded-xl border border-muted/20 hover:border-heart/30"
-                  >
-                    <div className="w-16 h-16 flex-shrink-0 relative">
-                      <img
-                        src={sito.logo}
-                        alt={`${sito.titolo} logo`}
-                        className="w-full h-full object-contain rounded-lg"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                          e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                        }}
-                      />
-                      <Heart className="w-6 h-6 text-heart hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                    </div>
-                    <div className="flex-1 flex items-center justify-between">
-                      <h4 className="text-lg font-semibold group-hover:text-heart transition-colors">{sito.titolo}</h4>
-                      <a
-                        href={sito.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-4 py-2 bg-heart/10 hover:bg-heart/20 text-heart hover:text-heart/90 rounded-lg font-medium transition-all duration-300 group-hover:scale-105"
-                      >
-                        Visita sito
-                        <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
-                      </a>
-                    </div>
-                  </Card>
-                ))}
+            {/* 🌐 Siti Consigliati - Mobile Optimized */}
+            <div className="space-y-4 sm:space-y-6 md:space-y-8 animate-fade-in-up">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">
+                <span className="bg-gradient-to-r from-heart via-primary to-heart bg-clip-text text-transparent">
+                  Siti Consigliati
+                </span>
+              </h3>
+              {sitiConsigliati.map((sito, index) => (
+                <Card
+                  key={index}
+                  className="group flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-4 sm:p-6 bg-gradient-to-r from-background via-muted/20 to-background shadow-md hover:shadow-xl transition-all rounded-xl border border-muted/20 hover:border-heart/30"
+                >
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 relative">
+                    <img
+                      src={sito.logo}
+                      alt={`${sito.titolo} logo`}
+                      className="w-full h-full object-contain rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                    <Heart className="w-4 h-4 sm:w-6 sm:h-6 text-heart hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                  </div>
+                  <div className="flex-1 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 text-center sm:text-left">
+                    <h4 className="text-base sm:text-lg font-semibold group-hover:text-heart transition-colors">
+                      {sito.titolo}
+                    </h4>
+                    <a
+                      href={sito.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full sm:w-auto px-3 sm:px-4 py-2 bg-heart/10 hover:bg-heart/20 text-heart hover:text-heart/90 rounded-lg font-medium transition-all duration-300 group-hover:scale-105 text-sm sm:text-base"
+                    >
+                      Visita sito
+                      <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
+                    </a>
+                  </div>
+                </Card>
+              ))}
             </div>
           </div>
         </div>
       </section>
-
+      
       {/* CTA Section */}
       <section className="py-16 md:py-20 px-4 bg-gradient-to-r from-primary/10 to-accent/10">
         <div className="container mx-auto text-center">

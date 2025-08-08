@@ -1284,7 +1284,7 @@ const CallIdeeGiovani = () => {
             I tuoi dati verranno trattati nel rispetto della privacy e utilizzati solo per valutare il progetto.
           </p>
           <p className="text-sm text-muted-foreground">
-            Scadenza presentazione candidature: <span className="font-semibold text-primary">31 dicembre 2025</span>
+            Scadenza presentazione candidature: <span className="font-semibold text-primary">12 Settembre 2025</span>
           </p>
         </div>
       </div>

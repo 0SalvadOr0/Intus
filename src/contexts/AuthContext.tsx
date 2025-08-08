@@ -20,7 +20,7 @@ export const useAuth = () => {
   return context;
 };
 
-const ADMIN_EMAILS = ['admin@intus.it', 'amministratore@intus.it'];
+const ADMIN_EMAILS = import.meta.env.VITE_ADMIN_MAIL;
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);

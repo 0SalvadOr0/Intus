@@ -18,9 +18,9 @@ const Contatti = () => {
   const { toast } = useToast();
 
   // 🔧 EmailJS Configuration
-  const EMAILJS_SERVICE_ID = 'service_6qcmccw';
-  const EMAILJS_TEMPLATE_ID = 'template_e4rlw3n';
-  const EMAILJS_PUBLIC_KEY = '5meFHp3dVPzQY6bYS';
+  const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+  const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+  const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -40,7 +40,7 @@ const Contatti = () => {
         from_name: formData.nome,
         from_email: formData.email,
         message: formData.messaggio,
-        to_email: 'grizzaffigiovy219@gmail.com',
+        to_email: 'direttore@intuscorleone.it',
         reply_to: formData.email
       };
 
@@ -108,10 +108,10 @@ const Contatti = () => {
                 <div>
                   <p className="font-semibold">📧 Email</p>
                   <a 
-                    href="mailto:amministratore@intus.it" 
+                    href="mailto:direttore@intuscorleone.it" 
                     className="text-primary hover:underline"
                   >
-                    amministratore@intus.it
+                    direttore@intuscorleone.it
                   </a>
                 </div>
               </div>

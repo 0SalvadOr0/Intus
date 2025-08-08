@@ -1030,97 +1030,128 @@ const ChiSiamo = () => {
           </div>
 
           {/* Partners */}
-          <div className="mb-16">
-            <div className="text-center mb-10">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Globe className="w-6 h-6 text-primary" />
-                <h3 className="text-2xl md:text-3xl font-bold text-primary">
+          <div className="mb-12 sm:mb-16">
+            <div className="text-center mb-6 sm:mb-8 md:mb-10 px-4">
+              <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
+                <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">
                   Partner Strategici
                 </h3>
-                <Globe className="w-6 h-6 text-primary" />
+                <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
-              <p className="text-muted-foreground">Collaborazioni consolidate per il turismo responsabile e l'educazione ambientale</p>
+              <p className="text-sm sm:text-base text-muted-foreground max-w-3xl mx-auto">
+                Collaborazioni consolidate per il turismo responsabile e l'educazione ambientale
+              </p>
             </div>
-            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto px-4">
+              {/* 🏛️ Addiopizzo Travel - Mobile Optimized */}
               <a
                 href="https://www.addiopizzotravel.it/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-primary/20 px-8 py-6 hover:scale-105 transition-all duration-500 border border-primary/20 hover:border-primary/40 overflow-hidden animate-slide-in-left"
+                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-primary/20 p-4 sm:px-6 sm:py-5 md:px-8 md:py-6 hover:scale-105 transition-all duration-500 border border-primary/20 hover:border-primary/40 overflow-hidden animate-slide-in-left"
               >
-                {/* Animated background */}
+                {/* 🎨 Animated background effects */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-
-                {/* Glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
 
-                <div className="relative z-10 flex items-center gap-6">
-                  <div className="relative">
+                <div className="relative z-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                  {/* 🖼️ Logo Container - Mobile Centered */}
+                  <div className="relative flex-shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-primary/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                      <img src="https://www.addiopizzotravel.it/img/assets/logo-ciano.png" alt="Addiopizzo Travel Logo" className="w-16 h-10 object-contain" />
+                    <div className="relative p-3 sm:p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-primary/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
+                      <img 
+                        src="https://www.addiopizzotravel.it/img/assets/logo-ciano.png" 
+                        alt="Addiopizzo Travel Logo" 
+                        className="w-12 h-8 sm:w-16 sm:h-10 object-contain" 
+                      />
                     </div>
-                    {/* Sparkle effects */}
-                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
-                    <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-accent/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <h4 className="font-bold text-xl text-primary group-hover:text-primary/80 transition-colors">Addiopizzo Travel</h4>
-                      <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-primary/30 transition-colors">PARTNER</span>
-                    </div>
-                    <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-base leading-relaxed">Turismo responsabile e percorsi di legalità nel territorio siciliano</p>
-                    <div className="text-sm text-muted-foreground/80 group-hover:text-primary/70 transition-colors font-medium">www.addiopizzotravel.it</div>
+                    {/* ✨ Sparkle effects */}
+                    <div className="absolute -top-2 -right-2 w-3 h-3 sm:w-4 sm:h-4 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
+                    <div className="absolute -bottom-1 -left-1 w-2 h-2 sm:w-3 sm:h-3 bg-accent/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
                   </div>
 
-                  {/* Hover arrow */}
-                  <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
-                    <ExternalLink className="w-5 h-5 text-primary" />
+                  {/* 📝 Content Container - Mobile Centered */}
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      <h4 className="font-bold text-lg sm:text-xl text-primary group-hover:text-primary/80 transition-colors">
+                        Addiopizzo Travel
+                      </h4>
+                      <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-primary/30 transition-colors mx-auto sm:mx-0 w-fit">
+                        PARTNER
+                      </span>
+                    </div>
+                    <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-sm sm:text-base leading-relaxed">
+                      Turismo responsabile e percorsi di legalità nel territorio siciliano
+                    </p>
+                    <div className="text-xs sm:text-sm text-muted-foreground/80 group-hover:text-primary/70 transition-colors font-medium">
+                      www.addiopizzotravel.it
+                    </div>
+                  </div>
+
+                  {/* 🔗 Hover arrow - Hidden on mobile, visible on hover */}
+                  <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 absolute top-4 right-4 sm:relative sm:top-auto sm:right-auto">
+                    <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                 </div>
 
-                {/* Bottom accent line */}
+                {/* 📏 Bottom accent line */}
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-primary to-accent group-hover:w-4/5 transition-all duration-500 rounded-full"></div>
               </a>
 
+              {/* 🌿 Palma Nana - Mobile Optimized */}
               <a
                 href="https://www.educazioneambientale.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-accent/20 px-8 py-6 hover:scale-105 transition-all duration-500 border border-accent/20 hover:border-accent/40 overflow-hidden animate-slide-in-right"
+                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-accent/20 p-4 sm:px-6 sm:py-5 md:px-8 md:py-6 hover:scale-105 transition-all duration-500 border border-accent/20 hover:border-accent/40 overflow-hidden animate-slide-in-right"
               >
-                {/* Animated background */}
+                {/* 🎨 Animated background effects */}
                 <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-
-                {/* Glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
 
-                <div className="relative z-10 flex items-center gap-6">
-                  <div className="relative">
+                <div className="relative z-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                  {/* 🖼️ Logo Container - Mobile Centered */}
+                  <div className="relative flex-shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-br from-accent to-accent/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-accent/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                      <img src="https://www.educazioneambientale.com/img/logo_2x.png" alt="Palma Nana Logo" className="w-16 h-10 object-contain" />
+                    <div className="relative p-3 sm:p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-accent/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
+                      <img 
+                        src="https://www.educazioneambientale.com/img/logo_2x.png" 
+                        alt="Palma Nana Logo" 
+                        className="w-12 h-8 sm:w-16 sm:h-10 object-contain" 
+                      />
                     </div>
-                    {/* Sparkle effects */}
-                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
-                    <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-heart/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <h4 className="font-bold text-xl text-accent group-hover:text-accent/80 transition-colors">Palma Nana</h4>
-                      <span className="bg-accent/20 text-accent px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-accent/30 transition-colors">PARTNER</span>
-                    </div>
-                    <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-base leading-relaxed">Educazione ambientale e sostenibilità per le nuove generazioni</p>
-                    <div className="text-sm text-muted-foreground/80 group-hover:text-accent/70 transition-colors font-medium">www.educazioneambientale.com</div>
+                    {/* ✨ Sparkle effects */}
+                    <div className="absolute -top-2 -right-2 w-3 h-3 sm:w-4 sm:h-4 bg-accent/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
+                    <div className="absolute -bottom-1 -left-1 w-2 h-2 sm:w-3 sm:h-3 bg-heart/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
                   </div>
 
-                  {/* Hover arrow */}
-                  <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
-                    <ExternalLink className="w-5 h-5 text-accent" />
+                  {/* 📝 Content Container - Mobile Centered */}
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      <h4 className="font-bold text-lg sm:text-xl text-accent group-hover:text-accent/80 transition-colors">
+                        Palma Nana
+                      </h4>
+                      <span className="bg-accent/20 text-accent px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-accent/30 transition-colors mx-auto sm:mx-0 w-fit">
+                        PARTNER
+                      </span>
+                    </div>
+                    <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-sm sm:text-base leading-relaxed">
+                      Educazione ambientale e sostenibilità per le nuove generazioni
+                    </p>
+                    <div className="text-xs sm:text-sm text-muted-foreground/80 group-hover:text-accent/70 transition-colors font-medium">
+                      www.educazioneambientale.com
+                    </div>
+                  </div>
+
+                  {/* 🔗 Hover arrow - Hidden on mobile, visible on hover */}
+                  <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 absolute top-4 right-4 sm:relative sm:top-auto sm:right-auto">
+                    <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
                   </div>
                 </div>
 
-                {/* Bottom accent line */}
+                {/* 📏 Bottom accent line */}
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-accent to-heart group-hover:w-4/5 transition-all duration-500 rounded-full"></div>
               </a>
             </div>
@@ -1226,96 +1257,121 @@ const ChiSiamo = () => {
 
           {/* Social Media */}
           <div>
-            <div className="text-center mb-10">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Heart className="w-6 h-6 text-heart animate-pulse-heart" />
-                <h3 className="text-2xl md:text-3xl font-bold text-heart">
-                  Seguici sui Social
-                </h3>
-                <Heart className="w-6 h-6 text-heart animate-pulse-heart" style={{animationDelay: '0.5s'}} />
-              </div>
-              <p className="text-muted-foreground">Resta connesso con le nostre attività e iniziative</p>
+          {/* 📱 Main Social Section - INTUS Corleone */}
+          <div className="text-center mb-8 sm:mb-10 px-4">
+            <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
+              <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-heart animate-pulse-heart" />
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-heart">
+                Seguici sui Social
+              </h3>
+              <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-heart animate-pulse-heart" style={{animationDelay: '0.5s'}} />
             </div>
-            <div className="flex justify-center">
-              <a
-                href="https://www.facebook.com/share/1GKyTE79ML/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-heart/20 px-8 py-6 hover:scale-105 transition-all duration-500 border border-heart/20 hover:border-heart/40 overflow-hidden animate-bounce-in max-w-md"
-              >
-                {/* Animated background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-heart/5 via-transparent to-heart/10 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+              Resta connesso con le nostre attività e iniziative
+            </p>
+          </div>
 
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-heart/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+          <div className="flex justify-center px-4">
+            <a
+              href="https://www.facebook.com/share/1GKyTE79ML/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-heart/20 p-4 sm:px-6 sm:py-5 md:px-8 md:py-6 hover:scale-105 transition-all duration-500 border border-heart/20 hover:border-heart/40 overflow-hidden animate-bounce-in w-full max-w-md"
+            >
+              {/* 🎨 Animated background effects */}
+              <div className="absolute inset-0 bg-gradient-to-br from-heart/5 via-transparent to-heart/10 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-heart/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
 
-                <div className="relative z-10 flex items-center gap-6">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <div className="relative p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-heart/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                      <img src="../files/logos/cuore_rosso.png" alt="INTUS Corleone Logo" className="w-16 h-10 object-contain" />
-                    </div>
-                    {/* Sparkle effects */}
-                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
-                    <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
+              <div className="relative z-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                {/* 🖼️ Logo Container - Mobile Centered */}
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative p-3 sm:p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-heart/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
+                    <img 
+                      src="../files/logos/cuore_rosso.png" 
+                      alt="INTUS Corleone Logo" 
+                      className="w-12 h-8 sm:w-16 sm:h-10 object-contain" 
+                    />
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <h4 className="font-bold text-xl text-heart group-hover:text-heart/80 transition-colors">INTUS Corleone</h4>
-                      <span className="bg-heart/20 text-heart px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-heart/30 transition-colors">SOCIAL</span>
-                    </div>
-                    <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-base leading-relaxed">La nostra pagina Facebook ufficiale</p>
-                    <div className="text-sm text-muted-foreground/80 group-hover:text-heart/70 transition-colors font-medium">Seguici per restare aggiornato</div>
-                  </div>
+                  {/* ✨ Sparkle effects */}
+                  <div className="absolute -top-2 -right-2 w-3 h-3 sm:w-4 sm:h-4 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
+                  <div className="absolute -bottom-1 -left-1 w-2 h-2 sm:w-3 sm:h-3 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
+                </div>
 
-                  {/* Hover arrow */}
-                  <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
-                    <ExternalLink className="w-5 h-5 text-heart" />
+                {/* 📝 Content Container - Mobile Centered */}
+                <div className="flex-1 text-center sm:text-left">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <h4 className="font-bold text-lg sm:text-xl text-heart group-hover:text-heart/80 transition-colors">
+                      INTUS Corleone
+                    </h4>
+                    <span className="bg-heart/20 text-heart px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-heart/30 transition-colors mx-auto sm:mx-0 w-fit">
+                      SOCIAL
+                    </span>
+                  </div>
+                  <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-sm sm:text-base leading-relaxed">
+                    La nostra pagina Facebook ufficiale
+                  </p>
+                  <div className="text-xs sm:text-sm text-muted-foreground/80 group-hover:text-heart/70 transition-colors font-medium">
+                    Seguici per restare aggiornato
                   </div>
                 </div>
 
-                {/* Bottom accent line */}
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-heart to-primary group-hover:w-4/5 transition-all duration-500 rounded-full"></div>
-              </a>
-            </div>
+                {/* 🔗 Hover arrow - Positioned for mobile */}
+                <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 absolute top-4 right-4 sm:relative sm:top-auto sm:right-auto">
+                  <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-heart" />
+                </div>
+              </div>
+
+              {/* 📏 Bottom accent line */}
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-heart to-primary group-hover:w-4/5 transition-all duration-500 rounded-full"></div>
+            </a>
           </div>
 
-          {/* Additional Links for Laboratorio della Legalità */}
-          <div className="mt-12 text-center">
-            <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-heart/5 rounded-2xl p-8 max-w-2xl mx-auto border border-border/50">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Shield className="w-5 h-5 text-primary" />
-                <p className="text-lg font-semibold text-foreground">
+          {/* 🏛️ Laboratorio della Legalità Section - Mobile Optimized */}
+          <div className="mt-8 sm:mt-12 text-center px-4">
+            <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-heart/5 rounded-2xl p-4 sm:p-6 md:p-8 max-w-2xl mx-auto border border-border/50">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-4 sm:mb-6">
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
+                <p className="text-base sm:text-lg font-semibold text-foreground text-center sm:text-left leading-snug">
                   Seguici anche sui canali del Laboratorio della Legalità:
                 </p>
-                <Shield className="w-5 h-5 text-primary" />
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0 hidden sm:block" />
               </div>
-              <div className="flex justify-center gap-6">
+              
+              <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+                {/* 📘 Facebook Link - Mobile Optimized */}
                 <a
                   href="https://www.facebook.com/share/19VVSZAEWC/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-3 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 border border-primary/20 hover:border-primary/40"
+                  className="group inline-flex items-center justify-center gap-3 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 border border-primary/20 hover:border-primary/40 w-full sm:w-auto"
                 >
-                  <svg className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
-                  <span className="font-medium text-primary group-hover:text-primary/80 transition-colors">Facebook</span>
+                  <span className="font-medium text-primary group-hover:text-primary/80 transition-colors text-sm sm:text-base">
+                    Facebook
+                  </span>
                 </a>
+                
+                {/* 📸 Instagram Link - Mobile Optimized */}
                 <a
                   href="https://www.instagram.com/laboratorio_della_legalita?igsh=MTVhYmRndjllbXp3Mg=="
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-3 bg-gradient-to-r from-accent/10 to-accent/5 hover:from-accent/20 hover:to-accent/10 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 border border-accent/20 hover:border-accent/40"
+                  className="group inline-flex items-center justify-center gap-3 bg-gradient-to-r from-accent/10 to-accent/5 hover:from-accent/20 hover:to-accent/10 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 border border-accent/20 hover:border-accent/40 w-full sm:w-auto"
                 >
-                  <svg className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-accent group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                   </svg>
-                  <span className="font-medium text-accent group-hover:text-accent/80 transition-colors">Instagram</span>
+                  <span className="font-medium text-accent group-hover:text-accent/80 transition-colors text-sm sm:text-base">
+                    Instagram
+                  </span>
                 </a>
               </div>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
