@@ -37,7 +37,7 @@ const Navigation = () => {
           <Link to="/" className="flex items-center space-x-3 group">
             <div className="flex flex-col">
               <img
-                src="../files/logos/cuore_rosso.png"
+                src="/public/files/logos/cuore_rosso.png"
                 alt="Intus Corleone APS Logo"
                 className="h-10 w-auto object-contain"
               />

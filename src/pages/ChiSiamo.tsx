@@ -1236,7 +1236,7 @@ const ChiSiamo = () => {
                   <div className="relative mb-4">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
                     <div className="relative p-3 rounded-xl bg-white/90 backdrop-blur-sm border-2 border-primary/20 group-hover:scale-110 transition-all duration-300 shadow-lg text-center">
-                      <img src="../files/logos/lab_legalità.jpg" alt="Laboratorio della Legalità Logo" className="w-12 h-8 mx-auto object-contain" />
+                      <img src="/public/files/logos/lab_legalità.jpg" alt="Laboratorio della Legalità Logo" className="w-12 h-8 mx-auto object-contain" />
                     </div>
                   </div>
                   <div className="text-center">
@@ -1288,7 +1288,7 @@ const ChiSiamo = () => {
                   <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
                   <div className="relative p-3 sm:p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-heart/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
                     <img 
-                      src="../files/logos/cuore_rosso.png" 
+                      src="/public/files/logos/cuore_rosso.png" 
                       alt="INTUS Corleone Logo" 
                       className="w-12 h-8 sm:w-16 sm:h-10 object-contain" 
                     />
