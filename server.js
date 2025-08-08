@@ -24,13 +24,17 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/files', express.static('files'));
 
-// 📁 Directory Structure Management
-const allegatiDir = path.join(__dirname, 'prv_files', 'allegati');
-const archivioDir = path.join(__dirname, 'files', 'archivio');
+// 📁 Updated Directory Structure for Vite Compatibility
+const publicDir = path.join(__dirname, 'public');
+const allegatiDir = path.join(publicDir, 'files', 'allegati');
+const archivioDir = path.join(publicDir, 'files', 'archivio');
 
 // ✅ Ensure Required Directories Exist
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir, { recursive: true });
+  console.log(`📂 Created directory: ${publicDir}`);
+}
 if (!fs.existsSync(allegatiDir)) {
   fs.mkdirSync(allegatiDir, { recursive: true });
   console.log(`📂 Created directory: ${allegatiDir}`);
@@ -104,12 +108,12 @@ app.post('/api/upload-allegato', upload.single('file'), (req, res) => {
       mimetype: req.file.mimetype
     });
 
-    // ✅ Success response structure
+    // ✅ Success response structure - Updated URL for Vite
     res.json({
       success: true,
       fileName: req.file.filename,
       originalName: req.file.originalname,
-      fileUrl: `/files/allegati/${req.file.filename}`,
+      fileUrl: `/files/allegati/${req.file.filename}`, // 🎯 Vite-compatible URL
       fileSize: req.file.size,
       mimeType: req.file.mimetype
     });
@@ -149,7 +153,7 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
       category
     });
 
-    // ✅ Success response with metadata
+    // ✅ Success response with metadata - Updated URL for Vite
     res.json({
       success: true,
       fileName: req.file.filename,
@@ -157,7 +161,7 @@ app.post('/api/upload-documento', upload.single('file'), (req, res) => {
       name: name || req.file.originalname,
       description: description || '',
       category: category || 'Documenti Ufficiali',
-      fileUrl: `/public/files/archivio/${req.file.filename}`,
+      fileUrl: `/files/archivio/${req.file.filename}`, // 🎯 Vite-compatible URL
       fileSize: req.file.size,
       mimeType: req.file.mimetype,
       uploadDate: new Date().toISOString()
@@ -191,7 +195,7 @@ app.get('/api/documents', (req, res) => {
         originalName: file,
         description: 'Documento dell\'archivio',
         category: 'Documenti Ufficiali',
-        fileUrl: `/public/files/archivio/${file}`,
+        fileUrl: `/files/archivio/${file}`, // 🎯 Updated for Vite compatibility
         fileSize: `${(stats.size / 1024 / 1024).toFixed(2)} MB`,
         mimeType: ext === '.pdf' ? 'application/pdf' : 'application/octet-stream',
         uploadDate: stats.birthtime.toISOString(),
@@ -233,12 +237,37 @@ app.get('/api/all-documents', (req, res) => {
           originalName: file,
           description: 'Documento ufficiale dell\'archivio',
           category: 'Documenti Ufficiali',
-          url: `/public/files/archivio/${file}`,
+          url: `/files/archivio/${file}`, // 🎯 Updated for Vite compatibility
           size: `${(stats.size / 1024 / 1024).toFixed(2)} MB`,
           mimeType: ext === '.pdf' ? 'application/pdf' : 'application/octet-stream',
           uploadDate: stats.birthtime.toISOString(),
           type: ext.replace('.', '').toUpperCase(),
           source: 'archivio'
+        });
+      });
+    }
+
+    // 📎 Read allegati directory contents
+    if (fs.existsSync(allegatiDir)) {
+      const allegatiFiles = fs.readdirSync(allegatiDir);
+
+      allegatiFiles.forEach(file => {
+        const filePath = path.join(allegatiDir, file);
+        const stats = fs.statSync(filePath);
+        const ext = path.extname(file).toLowerCase();
+
+        allDocuments.push({
+          id: `allegati_${file}`,
+          name: file,
+          originalName: file,
+          description: 'Allegato documento',
+          category: 'Allegati',
+          url: `/files/allegati/${file}`, // 🎯 Updated for Vite compatibility
+          size: `${(stats.size / 1024 / 1024).toFixed(2)} MB`,
+          mimeType: ext === '.pdf' ? 'application/pdf' : 'application/octet-stream',
+          uploadDate: stats.birthtime.toISOString(),
+          type: ext.replace('.', '').toUpperCase(),
+          source: 'allegati'
         });
       });
     }
@@ -259,11 +288,23 @@ app.get('/api/all-documents', (req, res) => {
   }
 });
 
-// 🗑️ Document Deletion Endpoint
-app.delete('/api/documents/:filename', (req, res) => {
+// 🗑️ Document Deletion Endpoint - Enhanced for both directories
+app.delete('/api/documents/:source/:filename', (req, res) => {
   try {
-    const { filename } = req.params;
-    const filePath = path.join(archivioDir, filename);
+    const { source, filename } = req.params;
+    let filePath;
+
+    // 🎯 Determine source directory
+    if (source === 'archivio') {
+      filePath = path.join(archivioDir, filename);
+    } else if (source === 'allegati') {
+      filePath = path.join(allegatiDir, filename);
+    } else {
+      return res.status(400).json({
+        success: false,
+        error: 'Sorgente documento non valida'
+      });
+    }
 
     // 🔍 File existence validation
     if (!fs.existsSync(filePath)) {
@@ -275,7 +316,7 @@ app.delete('/api/documents/:filename', (req, res) => {
 
     // 🗑️ Delete file from filesystem
     fs.unlinkSync(filePath);
-    console.log(`🗑️ Document deleted: ${filename}`);
+    console.log(`🗑️ Document deleted: ${source}/${filename}`);
 
     // ✅ Deletion success response
     res.json({
@@ -330,6 +371,7 @@ app.get('/api/health', (req, res) => {
     },
     client: networkInfo,
     directories: {
+      public: fs.existsSync(publicDir),
       allegati: fs.existsSync(allegatiDir),
       archivio: fs.existsSync(archivioDir)
     }
@@ -339,7 +381,8 @@ app.get('/api/health', (req, res) => {
 // 🚀 Enhanced Server Startup with Network Details
 app.listen(PORT, HOST, () => {
   console.log(`🚀 Server running on ${HOST}:${PORT}`);
-  console.log(`📁 Allegati directory: ${allegatiDir}`);
+  console.log(`📁 Public directory: ${publicDir}`);
+  console.log(`📎 Allegati directory: ${allegatiDir}`);
   console.log(`📚 Archivio directory: ${archivioDir}`);
   console.log(`🌐 Health check: http://${HOST === '0.0.0.0' ? 'YOUR_SERVER_IP' : HOST}:${PORT}/api/health`);
   console.log(`🔗 External access: http://YOUR_SERVER_IP:${PORT}`);
