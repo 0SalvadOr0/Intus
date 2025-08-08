@@ -13,9 +13,15 @@ const __dirname = dirname(__filename);
 // 🚀 Express Application Setup
 const app = express();
 const PORT = process.env.PORT || 3001;
+const HOST = process.env.HOST || '0.0.0.0'; // 🌐 Bind to all interfaces
 
-// 🛠️ Middleware Configuration
-app.use(cors());
+// 🛠️ Enhanced CORS Configuration for External Access
+app.use(cors({
+  origin: '*', // Allow all origins for development
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/files', express.static('files'));
@@ -237,32 +243,6 @@ app.get('/api/all-documents', (req, res) => {
       });
     }
 
-    // 📎 Read allegati directory contents
-    /*if (fs.existsSync(allegatiDir)) {
-      const allegatiFiles = fs.readdirSync(allegatiDir);
-
-      allegatiFiles.forEach(file => {
-        const filePath = path.join(allegatiDir, file);
-        const stats = fs.statSync(filePath);
-        const ext = path.extname(file).toLowerCase();
-
-        allDocuments.push({
-          id: `allegati_${file}`,
-          name: file,
-          originalName: file,
-          description: 'Allegato da Call Idee Giovani',
-          category: 'Allegati Call Idee',
-          url: `/files/allegati/${file}`,
-          size: `${(stats.size / 1024 / 1024).toFixed(2)} MB`,
-          mimeType: ext === '.pdf' ? 'application/pdf' : 'application/octet-stream',
-          uploadDate: stats.birthtime.toISOString(),
-          type: ext.replace('.', '').toUpperCase(),
-          source: 'allegati'
-        });
-      });
-    }
-    */
-
     // 📅 Sort by upload date (newest first)
     allDocuments.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
 
@@ -331,11 +311,24 @@ app.use((error, req, res, next) => {
   });
 });
 
-// 🔍 Health Check Endpoint
+// 🔍 Enhanced Health Check Endpoint with Network Info
 app.get('/api/health', (req, res) => {
+  const networkInfo = {
+    host: req.get('host'),
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    origin: req.get('origin')
+  };
+
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
+    server: {
+      host: HOST,
+      port: PORT,
+      environment: process.env.NODE_ENV || 'development'
+    },
+    client: networkInfo,
     directories: {
       allegati: fs.existsSync(allegatiDir),
       archivio: fs.existsSync(archivioDir)
@@ -343,12 +336,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// 🚀 Server Startup
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+// 🚀 Enhanced Server Startup with Network Details
+app.listen(PORT, HOST, () => {
+  console.log(`🚀 Server running on ${HOST}:${PORT}`);
   console.log(`📁 Allegati directory: ${allegatiDir}`);
   console.log(`📚 Archivio directory: ${archivioDir}`);
-  console.log(`🌐 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🌐 Health check: http://${HOST === '0.0.0.0' ? 'YOUR_SERVER_IP' : HOST}:${PORT}/api/health`);
+  console.log(`🔗 External access: http://YOUR_SERVER_IP:${PORT}`);
+  console.log(`📊 CORS enabled for all origins`);
 });
 
 // 📦 ES6 Module Export
