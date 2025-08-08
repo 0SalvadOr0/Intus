@@ -21,7 +21,7 @@ const API_KEY = process.env.API_KEY || 'intus-api-key-2025';
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(',') || [
   'http://localhost:3000',
   'http://localhost:5173',
-  'https://your-domain.com'
+  'https://intuscorleone.it',
 ];
 
 // 🛡️ Security Middleware
