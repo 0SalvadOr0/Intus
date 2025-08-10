@@ -67,23 +67,27 @@ const generalLimiter = rateLimit({
 
 // 🌐 Enhanced CORS Configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:3000', 'http://localhost:5173']; // Add your frontend URLs
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174'];
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.includes(origin)) {
+    // Check if origin is in allowed list or matches IP pattern
+    if (allowedOrigins.includes(origin) || 
+        origin.startsWith('http://217.160.124.10') || 
+        origin.startsWith('http://localhost')) {
       callback(null, true);
     } else {
       callback(new Error('Non autorizzato da CORS policy'));
     }
   },
-  methods: ['GET', 'POST', 'DELETE'],
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'], // Add OPTIONS for preflight
   allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
 }));
 
 app.use(generalLimiter);
