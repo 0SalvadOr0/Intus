@@ -54,19 +54,16 @@ const Home = () => {
 
   const principles = [
     {
-      icon: Users,
       title: "Cittadinanza Attiva",
       description: "Promuoviamo la partecipazione democratica e l'impegno civico dei cittadini per costruire una società più giusta e inclusiva.",
       image: "/files/logos/cittadinanza_attiva.jpg"
     },
     {
-      icon: MapPin,
       title: "Promozione del Territorio", 
       description: "Valorizziamo le risorse locali, la cultura e le tradizioni per sviluppare il potenziale del nostro territorio.",
       image: "/files/logos/promozione_territorio.png"
     },
     {
-      icon: Zap,
       title: "Politiche Giovanili",
       description: "Creiamo opportunità e spazi per i giovani, supportando la loro crescita e partecipazione attiva nella comunità.",
       image: "/files/logos/politiche_giovanili.jpg"
@@ -197,15 +194,15 @@ const Home = () => {
                   <div className="mb-6 md:mb-8 flex justify-center">
                     <div className="relative">
                       {/* Animated ring */}
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary via-accent to-heart opacity-20 group-hover:opacity-40 group-hover:scale-110 transition-all duration-500 animate-spin-slow"></div>
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary via-accent to-heart opacity-20 group-hover:opacity-40 group-hover:scale-110"></div>
 
                       {/* Icon/Image container */}
-                      <div className="relative p-4 md:p-5 rounded-full bg-gradient-to-br from-primary via-accent to-heart group-hover:animate-float shadow-2xl group-hover:shadow-primary/25 overflow-hidden">
+                      <div className="relative p-4 md:p-5 rounded-lg bg-gradient-to-br from-primary via-accent to-heart group-hover:animate-float shadow-2xl group-hover:shadow-primary/25 overflow-hidden">
                         {principle.image ? (
                           <img
                             src={principle.image}
                             alt={principle.title}
-                            className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-full group-hover:scale-110 transition-transform duration-300"
+                            className="w-full h-auto object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                             onError={(e) => {
                               console.warn(`Failed to load image: ${principle.image}`);
                               e.currentTarget.style.display = 'none';
@@ -213,8 +210,8 @@ const Home = () => {
                             }}
                           />
                         ) : null}
-                        <principle.icon className={`w-8 h-8 md:w-10 md:h-10 text-white group-hover:scale-110 transition-transform duration-300 ${principle.image ? 'hidden' : ''}`} />
                       </div>
+
 
                       {/* Sparkle effects */}
                       <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
