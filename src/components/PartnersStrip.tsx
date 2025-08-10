@@ -92,6 +92,83 @@ const PartnersStrip = () => {
     if (partner.name.includes('Laboratorio')) {
       return <Shield className="w-5 h-5" />;
     }
+import { ExternalLink, Facebook, Instagram, Shield, Sparkles, Users, Globe } from "lucide-react";
+
+interface Partner {
+  name: string;
+  url: string;
+  logo?: string;
+  description?: string;
+  type: 'partner' | 'network' | 'social';
+}
+
+const PartnersStrip = () => {
+  const partners: Partner[] = [
+    {
+      name: "Addiopizzo Travel",
+      url: "https://www.addiopizzotravel.it/",
+      logo: "https://www.addiopizzotravel.it/img/assets/logo-ciano.png",
+      type: "partner",
+      description: "Turismo responsabile e legalità"
+    },
+    {
+      name: "Palma Nana",
+      url: "https://www.educazioneambientale.com/",
+      logo: "https://www.educazioneambientale.com/img/logo_2x.png",
+      type: "partner",
+      description: "Educazione ambientale"
+    },
+    {
+      name: "Rete Iter",
+      url: "https://reteiter.it/",
+      logo: "https://reteiter.it/wp-content/uploads/2023/07/logo_ITER-copia-copia.png",
+      type: "network",
+      description: "Rete nazionale politiche giovanili"
+    },
+    {
+      name: "Rete Si può fare",
+      url: "https://www.sipuofare.net/",
+      logo: "https://www.sipuofare.net/wp-content/uploads/2024/10/loghi-si-puo-fare-09.png",
+      type: "network",
+      description: "Rete per il cambiamento sociale"
+    },
+    {
+      name: "Laboratorio della Legalità",
+      url: "https://www.facebook.com/share/19VVSZAEWC/",
+      logo: "https://scontent.fplm1-1.fna.fbcdn.net/v/t39.30808-6/460946625_932081162266844_6442029316538644710_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=4F8eRw7vCWsQ7kNvgG8pbyX&_nc_zt=23&_nc_ht=scontent.fplm1-1.fna&_nc_gid=AJFJayJ9nP8fROIFSoqlGrq&oh=00_AYDRWJMfBqS-iIfCDlVepEOAUuOWZLpGhTAUFDrjfTGGEA&oe=678D05EE",
+      type: "network",
+      description: "Museo della legalità"
+    },
+    {
+      name: "INTUS Corleone",
+      url: "https://www.facebook.com/share/1GKyTE79ML/",
+      logo: "/files/logos/cuore_rosso.png",
+      type: "social",
+      description: "La nostra pagina Facebook"
+    }
+  ];
+
+  const duplicatedPartners = [...partners, ...partners];
+
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'partner': return 'Partner';
+      case 'network': return 'Rete';
+      case 'social': return 'Social';
+      default: return '';
+    }
+  };
+
+  const getIcon = (partner: Partner) => {
+    if (partner.url.includes('facebook.com')) {
+      return <Facebook className="w-5 h-5" />;
+    }
+    if (partner.url.includes('instagram.com')) {
+      return <Instagram className="w-5 h-5" />;
+    }
+    if (partner.name.includes('Laboratorio')) {
+      return <Shield className="w-5 h-5" />;
+    }
     if (partner.type === 'network') {
       return <Users className="w-5 h-5" />;
     }
@@ -114,6 +191,11 @@ const PartnersStrip = () => {
           animation-iteration-count: infinite;
           animation-duration: 20s;
           will-change: transform;
+        }
+        @media (max-width: 768px) {
+          .animate-slide-infinite {
+            animation-duration: 8s;
+          }
         }
       `}</style>
 
