@@ -102,12 +102,9 @@ class SecureAPIClient {
   // 🔒 Authentication Headers
   private _getAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'x-api-key': this.config.apiKey || '' // Lowercase header name
     };
-    
-    if (this.config.apiKey) {
-      headers['X-API-Key'] = this.config.apiKey;
-    }
     
     return headers;
   }

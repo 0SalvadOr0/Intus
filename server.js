@@ -109,7 +109,9 @@ const archivioDir = path.join(publicDir, 'files', 'archivio');
 
 // 🔐 Authentication Middleware
 const authenticateAPI = (req, res, next) => {
-  const apiKey = req.headers['x-api-key'] || req.headers['authorization']?.replace('Bearer ', '');
+  const apiKey = req.headers['x-api-key'] || 
+                req.headers['X-API-Key'] || // Add this line
+                req.headers['authorization']?.replace('Bearer ', '');
   
   if (!apiKey || apiKey !== UPLOAD_API_KEY) {
     return res.status(401).json({
