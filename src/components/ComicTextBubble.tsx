@@ -44,7 +44,7 @@ const ComicTextBubble = ({ className = "" }: ComicTextBubbleProps) => {
           <div className={`text-xl md:text-2xl lg:text-3xl leading-relaxed font-bold transform transition-all duration-700 ${
             isVisible ? 'translate-y-0' : 'translate-y-4'
           }`} style={{
-            fontFamily: 'Ink Free',
+            fontFamily: 'Life Savers',
             textShadow: '2px 2px 0px rgba(0,0,0,0.1)',
             animationDelay: '0.2s'
           }}>
@@ -55,7 +55,7 @@ Con progetti dedicati ai giovani e al territorio, lavoriamo in rete per generare
           <div className={`text-xl md:text-2xl lg:text-3xl leading-relaxed font-bold transform transition-all duration-700 ${
             isVisible ? 'translate-y-0' : 'translate-y-4'
           }`} style={{
-            fontFamily: 'Ink Free',
+            fontFamily: 'Life Savers',
             textShadow: '2px 2px 0px rgba(0,0,0,0.1)',
             animationDelay: '0.4s'
           }}>
