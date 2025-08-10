@@ -50,27 +50,122 @@ const generalLimiter = rateLimit({
   message: { success: false, error: 'Troppe richieste. Riprova più tardi.' }
 });
 
-// 🌐 Enhanced CORS Configuration
+// 🌐 HTTP-Only Enhanced CORS Configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
-  : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174'];
+  : [
+      'http://localhost:3000',
+      'http://localhost:5173', 
+      'http://localhost:5174',
+      'http://intuscorleone.it',
+      'http://www.intuscorleone.it',
+      'http://217.160.124.10'
+    ];
 
+// 🔍 Simplified Origin Validation (HTTP-Only)
+const validateOrigin = (origin, callback) => {
+  console.log(`🔍 CORS Check - Origin: ${origin || 'undefined'}`);
+  
+  // Allow requests with no origin (mobile apps, server-to-server, etc.)
+  if (!origin) {
+    console.log('✅ No origin - allowing request');
+    return callback(null, true);
+  }
+
+  // Check exact matches from allowed origins
+  if (allowedOrigins.includes(origin)) {
+    console.log(`✅ Origin approved: ${origin}`);
+    return callback(null, true);
+  }
+
+  // Allow localhost variations for development
+  if (origin.startsWith('http://localhost') || 
+      origin.startsWith('http://127.0.0.1')) {
+    console.log(`✅ Localhost approved: ${origin}`);
+    return callback(null, true);
+  }
+
+  // Allow your server IP
+  if (origin.startsWith('http://217.160.124.10')) {
+    console.log(`✅ Server IP approved: ${origin}`);
+    return callback(null, true);
+  }
+
+  // Allow your domain variations (HTTP only)
+  if (origin === 'http://intuscorleone.it' || 
+      origin === 'http://www.intuscorleone.it') {
+    console.log(`✅ Domain approved: ${origin}`);
+    return callback(null, true);
+  }
+
+  // Reject everything else
+  console.log(`🚫 CORS REJECTED: ${origin}`);
+  console.log(`📋 Allowed origins: ${allowedOrigins.join(', ')}`);
+  callback(new Error(`CORS: Origin ${origin} non autorizzato`));
+};
+
+// 🛡️ CORS Middleware Configuration
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin) || 
-        origin.startsWith('http://217.160.124.10') || 
-        origin.startsWith('http://localhost')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Non autorizzato da CORS policy'));
-    }
-  },
-  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: validateOrigin,
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Cache-Control'
+  ],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  preflightContinue: false
 }));
+
+// 🔧 Explicit OPTIONS Handler
+app.options('*', (req, res) => {
+  const origin = req.headers.origin;
+  console.log(`✈️ OPTIONS preflight from: ${origin || 'no-origin'}`);
+  
+  res.header('Access-Control-Allow-Origin', origin);
+  res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,PUT,PATCH,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With,Accept,Origin,Cache-Control');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400'); // 24 hours
+  
+  res.status(200).send();
+});
+
+// 🔍 Simple Debug Middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const method = req.method;
+  const url = req.url;
+  const userAgent = req.headers['user-agent'];
+  
+  // Log ogni richiesta con origin
+  if (origin) {
+    console.log(`\n🌐 === CORS REQUEST DEBUG ===`);
+    console.log(`📍 Origin: ${origin}`);
+    console.log(`🔧 Method: ${method}`);
+    console.log(`📂 URL: ${url}`);
+    console.log(`💻 User-Agent: ${userAgent?.substring(0, 50)}...`);
+    
+    // Check se l'origin è in lista
+    const isAllowed = allowedOrigins.includes(origin);
+    console.log(`${isAllowed ? '✅' : '❌'} Origin Status: ${isAllowed ? 'ALLOWED' : 'BLOCKED'}`);
+    console.log(`🗂️ Allowed Origins: ${allowedOrigins.join(', ')}`);
+    console.log(`================================\n`);
+  }
+  
+  // Log specifico per preflight
+  if (method === 'OPTIONS') {
+    console.log(`✈️ PREFLIGHT REQUEST DETECTED`);
+    console.log(`📋 Requested Headers: ${req.headers['access-control-request-headers'] || 'none'}`);
+    console.log(`🔧 Requested Method: ${req.headers['access-control-request-method'] || 'none'}`);
+  }
+  
+  next();
+});
 
 app.use(generalLimiter);
 app.use(express.json({ limit: '1mb' }));
@@ -227,7 +322,31 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// 🚀 Start
+// 🚨 CORS Error Handler
+app.use((err, req, res, next) => {
+  if (err.message && err.message.toLowerCase().includes('cors')) {
+    console.log(`\n🚫 === CORS ERROR ===`);
+    console.log(`❌ Error: ${err.message}`);
+    console.log(`📍 Origin: ${req.headers.origin || 'undefined'}`);
+    console.log(`🔧 Method: ${req.method}`);
+    console.log(`📂 URL: ${req.url}`);
+    console.log(`==================\n`);
+    
+    return res.status(403).json({
+      success: false,
+      error: 'CORS policy violation',
+      origin: req.headers.origin,
+      message: 'Origin non autorizzato per questa risorsa'
+    });
+  }
+  next(err);
+});
+
+// 🚀 Start Server
 app.listen(PORT, HOST, () => {
   console.log(`🚀 Server running on ${HOST}:${PORT}`);
+  console.log(`🌐 CORS allowed origins: ${allowedOrigins.join(', ')}`);
+  console.log(`📁 Public directory: ${publicDir}`);
+  console.log(`📎 Allegati directory: ${allegatiDir}`);
+  console.log(`📚 Archivio directory: ${archivioDir}`);
 });
