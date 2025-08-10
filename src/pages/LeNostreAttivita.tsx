@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { CalendarDays, MapPin, Users, ExternalLink, Play, Eye } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
-import { TestoAnimato} from "../components/Motion";
+import TestoAnimato from "../components/Motion";
 import { supabase } from "@/lib/supabaseClient";
 
 interface Project {
