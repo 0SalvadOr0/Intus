@@ -182,7 +182,7 @@ const Home = () => {
       {principles.map((principle, index) => (
         <Card
           key={index}
-          className="group relative overflow-hidden hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:scale-[1.02] border-0 bg-gradient-to-br from-card via-background to-muted/30 animate-fade-in-up cursor-pointer rounded-md sm:rounded-lg"
+          className="group relative overflow-hidden hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:scale-[1.02] border-0 bg-gradient-to-br from-card via-background to-muted/30 animate-fade-in-up cursor-pointer rounded-[2px] md:rounded-md sm:rounded-lg"
           style={{ animationDelay: `${0.8 + index * 0.2}s` }}
         >
           {/* Animated background gradient */}
