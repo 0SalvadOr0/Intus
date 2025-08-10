@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { CalendarDays, MapPin, Users, ExternalLink, Play, Eye } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
-
+import { TestoAnimato} from "../components/Motion";
 import { supabase } from "@/lib/supabaseClient";
 
 interface Project {
@@ -133,9 +133,7 @@ const LeNostreAttivita = () => {
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 animate-fade-in-up">
             Le Nostre <span className="bg-gradient-to-r from-primary via-accent to-heart bg-clip-text text-transparent animate-gradient-shift bg-300%">Attività</span>
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed animate-slide-in-up" style={{animationDelay: '0.3s'}}>
-            Scopri i progetti che abbiamo realizzato per la comunità. Ogni iniziativa nasce dall'ascolto delle esigenze del territorio e dalla partecipazione attiva dei cittadini.
-          </p>
+          <TestoAnimato></TestoAnimato>
 
           {/* Floating accent elements */}
           <div className="mt-8 flex justify-center items-center gap-6 animate-fade-in-up" style={{animationDelay: '0.5s'}}>
