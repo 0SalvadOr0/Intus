@@ -54,14 +54,32 @@ const PartnersStrip = () => {
     }
   ];
 
+  // Duplicate items for continuous scroll
   const duplicatedPartners = [...partners, ...partners];
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'partner':
+        return 'text-primary';
+      case 'network':
+        return 'text-accent';
+      case 'social':
+        return 'text-heart';
+      default:
+        return 'text-muted-foreground';
+    }
+  };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'partner': return 'Partner';
-      case 'network': return 'Rete';
-      case 'social': return 'Social';
-      default: return '';
+      case 'partner':
+        return 'Partner';
+      case 'network':
+        return 'Rete';
+      case 'social':
+        return 'Social';
+      default:
+        return '';
     }
   };
 
@@ -86,21 +104,22 @@ const PartnersStrip = () => {
 
   return (
     <>
-      <style>{`
-        @keyframes slide-infinite {
+      {/* 📱 Mobile-specific CSS for faster scroll */}
+      <style jsx>{`
+        @keyframes slide-infinite-mobile {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
-        .animate-slide-infinite {
-          animation-name: slide-infinite;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
-          animation-duration: 20s;
-          will-change: transform;
-        }
+
         @media (max-width: 768px) {
-          .animate-slide-infinite {
-            animation-duration: 8s;
+          .animate-slide-infinite-mobile {
+            animation: slide-infinite-mobile 20s linear infinite;
+          }
+        }
+
+        @media (min-width: 769px) {
+          .animate-slide-infinite-mobile {
+            animation: slide-infinite-mobile 50s linear infinite;
           }
         }
       `}</style>
@@ -132,10 +151,12 @@ const PartnersStrip = () => {
         </div>
         
         <div className="relative">
+          {/* Enhanced gradient overlays for smooth fade effect */}
           <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
           
-          <div className="flex animate-slide-infinite">
+          {/* 🚀 Enhanced scrolling container with mobile-responsive speed */}
+          <div className="flex animate-slide-infinite-mobile">
             {duplicatedPartners.map((partner, index) => (
               <div
                 key={`${partner.name}-${index}`}
@@ -147,8 +168,10 @@ const PartnersStrip = () => {
                   rel="noopener noreferrer"
                   className="group relative flex items-center gap-4 bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl px-6 py-4 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 border border-border/30 hover:border-primary/50 min-w-[320px] hover:scale-105 overflow-hidden"
                 >
+                  {/* Animated background gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-heart/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-2xl"></div>
 
+                  {/* Glowing border effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
 
                   <div className={`relative z-10 p-3 rounded-xl bg-white/90 backdrop-blur-sm border-2 ${partner.type === 'partner' ? 'border-primary/20' : partner.type === 'network' ? 'border-accent/20' : 'border-heart/20'} group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
@@ -158,6 +181,7 @@ const PartnersStrip = () => {
                         alt={`${partner.name} logo`}
                         className="w-8 h-8 object-contain"
                         onError={(e) => {
+                          // Fallback to icon if image fails to load
                           e.currentTarget.style.display = 'none';
                           e.currentTarget.nextElementSibling?.classList.remove('hidden');
                         }}
@@ -167,6 +191,7 @@ const PartnersStrip = () => {
                       {getIcon(partner)}
                     </div>
 
+                    {/* Sparkle effects */}
                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
                   </div>
 
@@ -185,11 +210,13 @@ const PartnersStrip = () => {
                       </p>
                     )}
 
+                    {/* Hover arrow */}
                     <div className="absolute -right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
                       <ExternalLink className="w-4 h-4 text-primary" />
                     </div>
                   </div>
 
+                  {/* Bottom accent line */}
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-primary via-accent to-heart group-hover:w-5/6 transition-all duration-500 rounded-full"></div>
                 </a>
               </div>
