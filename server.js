@@ -121,47 +121,18 @@ app.use(cors({
   preflightContinue: false
 }));
 
-// 🔧 Explicit OPTIONS Handler
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  console.log(`✈️ OPTIONS preflight from: ${origin || 'no-origin'}`);
-  
-  res.header('Access-Control-Allow-Origin', origin);
-  res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,PUT,PATCH,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With,Accept,Origin,Cache-Control');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Max-Age', '86400'); // 24 hours
-  
-  res.status(200).send();
-});
-
-// 🔍 Simple Debug Middleware
+// 🔍 Debug Middleware
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   const method = req.method;
   const url = req.url;
-  const userAgent = req.headers['user-agent'];
   
-  // Log ogni richiesta con origin
   if (origin) {
-    console.log(`\n🌐 === CORS REQUEST DEBUG ===`);
-    console.log(`📍 Origin: ${origin}`);
-    console.log(`🔧 Method: ${method}`);
-    console.log(`📂 URL: ${url}`);
-    console.log(`💻 User-Agent: ${userAgent?.substring(0, 50)}...`);
-    
-    // Check se l'origin è in lista
-    const isAllowed = allowedOrigins.includes(origin);
-    console.log(`${isAllowed ? '✅' : '❌'} Origin Status: ${isAllowed ? 'ALLOWED' : 'BLOCKED'}`);
-    console.log(`🗂️ Allowed Origins: ${allowedOrigins.join(', ')}`);
-    console.log(`================================\n`);
+    console.log(`🌐 Request: ${method} ${url} from ${origin}`);
   }
   
-  // Log specifico per preflight
   if (method === 'OPTIONS') {
-    console.log(`✈️ PREFLIGHT REQUEST DETECTED`);
-    console.log(`📋 Requested Headers: ${req.headers['access-control-request-headers'] || 'none'}`);
-    console.log(`🔧 Requested Method: ${req.headers['access-control-request-method'] || 'none'}`);
+    console.log(`✈️ Preflight from: ${origin || 'no-origin'}`);
   }
   
   next();
@@ -183,7 +154,7 @@ const archivioDir = path.join(publicDir, 'files', 'archivio');
   }
 });
 
-// 🧪 Enhanced File Type Validation
+// 🧪 File Type Validation
 const validateFileType = (file) => {
   const allowedMimeTypes = [
     'application/pdf',
@@ -233,9 +204,34 @@ const sanitizeInput = (input) => {
               .substring(0, 500);
 };
 
+// 🔍 Health Check - FIXED ROUTE
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    security: { 
+      helmet: 'enabled', 
+      cors: 'configured', 
+      rateLimit: 'active', 
+      authentication: 'none' 
+    },
+    server: { 
+      environment: process.env.NODE_ENV || 'development',
+      allowedOrigins: allowedOrigins.length 
+    }
+  });
+});
+
 // 📤 Upload Allegato
 app.post('/api/upload-allegato', uploadLimiter, upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ success: false, error: 'Nessun file caricato' });
+  console.log(`📎 Upload allegato request from: ${req.headers.origin}`);
+  
+  if (!req.file) {
+    return res.status(400).json({ success: false, error: 'Nessun file caricato' });
+  }
+  
+  console.log(`✅ File uploaded: ${req.file.filename}`);
+  
   res.json({
     success: true,
     fileName: req.file.filename,
@@ -248,10 +244,18 @@ app.post('/api/upload-allegato', uploadLimiter, upload.single('file'), (req, res
 
 // 📚 Upload Documento
 app.post('/api/upload-documento', uploadLimiter, upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ success: false, error: 'Nessun file caricato' });
+  console.log(`📚 Upload documento request from: ${req.headers.origin}`);
+  
+  if (!req.file) {
+    return res.status(400).json({ success: false, error: 'Nessun file caricato' });
+  }
+  
   const name = sanitizeInput(req.body.name);
   const description = sanitizeInput(req.body.description);
   const category = sanitizeInput(req.body.category);
+  
+  console.log(`✅ Document uploaded: ${req.file.filename}`);
+  
   res.json({
     success: true,
     fileName: req.file.filename,
@@ -268,6 +272,8 @@ app.post('/api/upload-documento', uploadLimiter, upload.single('file'), (req, re
 
 // 📋 Lista Documenti
 app.get('/api/documents', (req, res) => {
+  console.log(`📋 Documents list request from: ${req.headers.origin}`);
+  
   try {
     const files = fs.readdirSync(archivioDir);
     const documents = files.map(file => {
@@ -288,65 +294,106 @@ app.get('/api/documents', (req, res) => {
         source: 'archivio'
       };
     });
+    
+    console.log(`✅ Returning ${documents.length} documents`);
     res.json({ success: true, documents });
   } catch (error) {
+    console.error(`❌ Error retrieving documents: ${error.message}`);
     res.status(500).json({ success: false, error: 'Errore nel recupero dei documenti' });
   }
 });
 
-// 🗑️ Eliminazione Documento
+// 🗑️ Delete Document - FIXED ROUTE PARAMETERS
 app.delete('/api/documents/:source/:filename', (req, res) => {
+  const { source, filename } = req.params;
+  console.log(`🗑️ Delete request: ${source}/${filename} from: ${req.headers.origin}`);
+  
   try {
-    const { source, filename } = req.params;
     const sanitizedSource = source.replace(/[^a-zA-Z]/g, '');
     const sanitizedFilename = path.basename(filename);
+    
     let filePath;
-    if (sanitizedSource === 'archivio') filePath = path.join(archivioDir, sanitizedFilename);
-    else if (sanitizedSource === 'allegati') filePath = path.join(allegatiDir, sanitizedFilename);
-    else return res.status(400).json({ success: false, error: 'Sorgente documento non valida' });
-    if (!fs.existsSync(filePath)) return res.status(404).json({ success: false, error: 'Documento non trovato' });
+    if (sanitizedSource === 'archivio') {
+      filePath = path.join(archivioDir, sanitizedFilename);
+    } else if (sanitizedSource === 'allegati') {
+      filePath = path.join(allegatiDir, sanitizedFilename);
+    } else {
+      return res.status(400).json({ success: false, error: 'Sorgente documento non valida' });
+    }
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ success: false, error: 'Documento non trovato' });
+    }
+    
     fs.unlinkSync(filePath);
+    console.log(`✅ File deleted: ${sanitizedFilename}`);
     res.json({ success: true, message: 'Documento eliminato con successo' });
   } catch (error) {
+    console.error(`❌ Error deleting file: ${error.message}`);
     res.status(500).json({ success: false, error: 'Errore durante l\'eliminazione del documento' });
   }
 });
 
-// 🔍 Health Check
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    security: { helmet: 'enabled', cors: 'configured', rateLimit: 'active', authentication: 'none' },
-    server: { environment: process.env.NODE_ENV || 'development' }
-  });
-});
-
-// 🚨 CORS Error Handler
+// 🚨 Global Error Handler
 app.use((err, req, res, next) => {
+  console.error(`🚨 Server Error: ${err.message}`);
+  console.error(`📍 Stack: ${err.stack}`);
+  
   if (err.message && err.message.toLowerCase().includes('cors')) {
-    console.log(`\n🚫 === CORS ERROR ===`);
-    console.log(`❌ Error: ${err.message}`);
-    console.log(`📍 Origin: ${req.headers.origin || 'undefined'}`);
-    console.log(`🔧 Method: ${req.method}`);
-    console.log(`📂 URL: ${req.url}`);
-    console.log(`==================\n`);
-    
     return res.status(403).json({
       success: false,
       error: 'CORS policy violation',
-      origin: req.headers.origin,
       message: 'Origin non autorizzato per questa risorsa'
     });
   }
-  next(err);
+  
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({
+      success: false,
+      error: 'File troppo grande',
+      message: 'Dimensione massima: 5MB'
+    });
+  }
+  
+  if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+    return res.status(400).json({
+      success: false,
+      error: 'Tipo di file non supportato'
+    });
+  }
+  
+  res.status(500).json({
+    success: false,
+    error: 'Errore interno del server'
+  });
 });
 
-// 🚀 Start Server
-app.listen(PORT, HOST, () => {
+// 🚀 Server Startup
+const server = app.listen(PORT, HOST, () => {
+  console.log(`\n🎯 === INTUS BACKEND SERVER ===`);
   console.log(`🚀 Server running on ${HOST}:${PORT}`);
-  console.log(`🌐 CORS allowed origins: ${allowedOrigins.join(', ')}`);
+  console.log(`🌐 CORS allowed origins: ${allowedOrigins.length} configured`);
   console.log(`📁 Public directory: ${publicDir}`);
   console.log(`📎 Allegati directory: ${allegatiDir}`);
   console.log(`📚 Archivio directory: ${archivioDir}`);
+  console.log(`🔑 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`⏰ Started at: ${new Date().toISOString()}`);
+  console.log(`================================\n`);
+});
+
+// 🛡️ Graceful Shutdown
+process.on('SIGTERM', () => {
+  console.log('🛑 SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('🛑 SIGINT received, shutting down gracefully');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
 });
