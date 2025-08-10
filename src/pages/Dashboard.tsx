@@ -38,6 +38,8 @@ import ProjectRanking from "@/components/ProjectRanking";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect } from "react";
+import apiClient from '../utils/client';
+import type { APIDocument } from '../utils/client';
 
 interface DraftPost {
   id: number;
@@ -196,20 +198,11 @@ const Dashboard = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch('http://217.160.124.10:3001/api/all-documents');
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.documents) {
-          setDocuments(result.documents);
-        } else {
-          setDocuments([]);
-        }
-      } else {
-        console.warn('Backend server not available, using empty document list');
-        setDocuments([]);
-      }
+      const documents = await apiClient.getAllDocuments();
+      setDocuments(documents);
+      console.log(`📊 Loaded ${documents.length} documents`);
     } catch (error) {
-      console.warn('Backend server not available:', error instanceof Error ? error.message : 'Unknown error');
+      console.warn('📡 Backend unavailable:', error instanceof Error ? error.message : 'Unknown error');
       setDocuments([]);
     }
   };
@@ -482,6 +475,81 @@ const Dashboard = () => {
     }
   };
 
+  const handleUpload = async () => {
+    if (!newDocument.name || !newDocument.category || !newDocument.file) {
+      toast({
+        title: "❌ Errore",
+        description: "Compila tutti i campi obbligatori",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const result = await apiClient.uploadDocument(newDocument.file, {
+        name: newDocument.name,
+        description: newDocument.description,
+        category: newDocument.category
+      });
+
+      if (result.success) {
+        toast({
+          title: "🎉 Documento caricato!",
+          description: `${newDocument.name} caricato con successo.`
+        });
+        setNewDocument({ name: "", description: "", category: "", file: null });
+        fetchDocuments();
+      }
+    } catch (error) {
+      // 🛡️ Enhanced error handling with specific messages
+      if (error instanceof Error) {
+        if (error.message.includes('Limite upload raggiunto')) {
+          toast({
+            title: "🚦 Limite Raggiunto",
+            description: error.message,
+            variant: "destructive"
+          });
+        } else if (error.message.includes('File troppo grande')) {
+          toast({
+            title: "📁 File Troppo Grande",
+            description: error.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "📡 Server Non Disponibile",
+            description: "Avvia il server con 'node server.js'",
+            variant: "destructive"
+          });
+        }
+      }
+    }
+  };
+
+  const handleDelete2 = async (doc: APIDocument) => {
+    const confirmMessage = `Eliminare "${doc.name || doc.originalName}"?`;
+    
+    if (!window.confirm(confirmMessage)) return;
+
+    try {
+      const result = await apiClient.deleteDocument(
+        doc.category || 'archivio',
+        doc.originalName || doc.name || doc.id
+      );
+
+      if (result.success) {
+        toast({ title: "🗑️ Documento eliminato" });
+        fetchDocuments();
+      }
+    } catch (error) {
+      toast({
+        title: "❌ Errore Eliminazione",
+        description: error instanceof Error ? error.message : "Errore sconosciuto",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleProjectImageUpload = (url: string) => {
     if (isEditingProject) {
       setEditingProject((prev: any) => ({
@@ -699,10 +767,16 @@ const Dashboard = () => {
         luoghi: [],
         partner: [],
         youtube_url: "",
+        youtube_urls: [],
         immagini: [],
         data_inizio: "",
-        status: "planned"
-      });
+        status: "planned",
+        ruolo_intus: "",
+        partecipanti_diretti: "",
+        partecipanti_indiretti: "",
+        ente_finanziatore: ""
+    });
+
 
       fetchProjects();
     } catch (error) {
@@ -1252,50 +1326,13 @@ const Dashboard = () => {
                   </label>
                 </div>
                 <Button
-                  onClick={async () => {
-                    if (newDocument.name && newDocument.category && newDocument.file) {
-                      try {
-                        const formData = new FormData();
-                        formData.append('file', newDocument.file);
-                        formData.append('name', newDocument.name);
-                        formData.append('description', newDocument.description);
-                        formData.append('category', newDocument.category);
-
-                        const response = await fetch('http://217.160.124.10:3001/api/upload-documento', {
-                          method: 'POST',
-                          body: formData
-                        });
-
-                        if (response.ok) {
-                          toast({
-                            title: "Documento caricato!",
-                            description: `${newDocument.name} è stato caricato con successo.`
-                          });
-                          setNewDocument({ name: "", description: "", category: "", file: null });
-                          fetchDocuments();
-                        } else {
-                          throw new Error('Upload failed');
-                        }
-                      } catch (error) {
-                        toast({
-                          title: "Server non disponibile",
-                          description: "Il server backend non è attivo. Avvia il server con 'node server.js' per utilizzare questa funzionalità.",
-                          variant: "destructive"
-                        });
-                      }
-                    } else {
-                      toast({
-                        title: "Errore",
-                        description: "Compila tutti i campi obbligatori",
-                        variant: "destructive"
-                      });
-                    }
-                  }}
-                  className="w-full"
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  Carica Documento
-                </Button>
+                onClick={handleUpload}
+                disabled={!newDocument.name || !newDocument.category || !newDocument.file}
+                className="w-full"
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Carica Documento
+              </Button>
               </CardContent>
             </Card>
 
@@ -1351,34 +1388,14 @@ const Dashboard = () => {
                           >
                             <Download className="w-4 h-4" />
                           </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-destructive hover:text-destructive"
-                            onClick={async () => {
-                              if (window.confirm('Sei sicuro di voler eliminare questo documento?')) {
-                                try {
-                                  const response = await fetch(`http://217.160.124.10:3001/api/documents/${doc.id}`, {
-                                    method: 'DELETE'
-                                  });
-                                  if (response.ok) {
-                                    toast({ title: "Documento eliminato" });
-                                    fetchDocuments();
-                                  } else {
-                                    throw new Error('Delete failed');
-                                  }
-                                } catch (error) {
-                                  toast({
-                                    title: "Server non disponibile",
-                                    description: "Il server backend non è attivo. Avvia il server con 'node server.js'.",
-                                    variant: "destructive"
-                                  });
-                                }
-                              }
-                            }}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => handleDelete(doc)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                         </div>
                       </div>
                     ))}
@@ -1424,7 +1441,9 @@ const Dashboard = () => {
             {/* Storage Stats and Evaluation Stats */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Storage Statistics */}
-              <StorageStats className="animate-fade-in-up" style={{animationDelay: '0.7s'}} />
+              <div className="animate-fade-in-up" style={{animationDelay: '0.7s'}}>
+                <StorageStats />
+              </div>
 
               {/* Evaluation Statistics */}
               <div className="animate-fade-in-up" style={{animationDelay: '0.75s'}}>
@@ -1470,7 +1489,6 @@ const Dashboard = () => {
                   </div>
                 </CardContent>
               </Card>
-
               {/* Recent Documents */}
               <Card className="border-0 bg-card/80 backdrop-blur-sm animate-fade-in-up" style={{animationDelay: '0.9s'}}>
                 <CardHeader>

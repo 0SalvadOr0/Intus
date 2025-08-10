@@ -12,8 +12,11 @@ import {
   Filter,
   FolderOpen,
   File,
-  FileImage
+  FileImage,
+  AlertTriangle,
+  RefreshCw
 } from "lucide-react";
+import apiClient, { uploadHelpers } from "../utils/client";
 
 interface Document {
   id: string;
@@ -33,85 +36,156 @@ const ArchivioDocumenti = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchDocuments = async () => {
-    setLoading(true);
+  // 🔄 Secure Document Fetching with Enhanced Error Handling
+  const fetchDocuments = async (showLoadingState = true) => {
+    if (showLoadingState) {
+      setLoading(true);
+    }
     setError(null);
 
     try {
-      const response = await fetch('http://217.160.124.10:3001/api/all-documents');
+      console.log('📋 Fetching documents via secure API client...');
+      
+      // 🌐 Use secure API client instead of direct fetch
+      const fetchedDocuments = await apiClient.getAllDocuments();
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Server non disponibile`);
-      }
+      // 🔄 Transform documents to match interface
+      const transformedDocs: Document[] = fetchedDocuments.map((doc: any) => ({
+        id: doc.id || doc._id || `doc-${Date.now()}-${Math.random()}`,
+        name: doc.originalName || doc.name || 'Documento senza nome',
+        description: doc.description || 'Documento caricato dall\'associazione',
+        category: doc.category || 'Generale',
+        uploadDate: doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString('it-IT') : 'Data non disponibile',
+        size: doc.size || uploadHelpers.formatFileSize(0),
+        type: doc.type || doc.mimeType?.split('/')[1] || 'unknown',
+        url: doc.url || doc.downloadUrl || '#'
+      }));
 
-      const result = await response.json();
+      setDocuments(transformedDocs);
+      console.log(`✅ Successfully loaded ${transformedDocs.length} documents`);
 
-      if (result.success && result.documents) {
-        // Transform server response to match our Document interface
-        const transformedDocs = result.documents.map((doc: any) => ({
-          id: doc.id,
-          name: doc.originalName || doc.name,
-          description: doc.description || 'Documento caricato',
-          category: doc.category || 'Generale',
-          uploadDate: new Date(doc.uploadDate).toLocaleDateString('it-IT'),
-          size: doc.size,
-          type: doc.type,
-          url: doc.url
-        }));
-
-        setDocuments(transformedDocs);
-      } else {
-        throw new Error('Formato risposta non valido');
-      }
     } catch (error) {
-      console.error('Error fetching documents:', error);
-      setError(error instanceof Error ? error.message : 'Errore nel caricamento documenti');
-      setDocuments([]); // Set empty array on error
+      console.error('❌ Document fetch error:', error);
+      
+      // 🎯 Enhanced Error Handling with User-Friendly Messages
+      let errorMessage = 'Errore nel caricamento dei documenti';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('HTTP 401') || error.message.includes('unauthorized')) {
+          errorMessage = '🔐 Accesso non autorizzato - Verifica le credenziali';
+        } else if (error.message.includes('HTTP 403') || error.message.includes('forbidden')) {
+          errorMessage = '🚫 Accesso negato - Permessi insufficienti';
+        } else if (error.message.includes('HTTP 404')) {
+          errorMessage = '📄 Endpoint non trovato - Servizio non disponibile';
+        } else if (error.message.includes('HTTP 500')) {
+          errorMessage = '🔧 Errore interno del server - Riprova più tardi';
+        } else if (error.message.includes('Timeout') || error.message.includes('timeout')) {
+          errorMessage = '⏱️ Richiesta troppo lenta - Controlla la connessione';
+        } else if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
+          errorMessage = '🌐 Errore di connessione - Verifica la rete';
+        } else {
+          errorMessage = `❌ ${error.message}`;
+        }
+      }
+      
+      setError(errorMessage);
+      setDocuments([]); // 🧹 Clear documents on error
     } finally {
-      setLoading(false);
+      if (showLoadingState) {
+        setLoading(false);
+      }
     }
   };
 
+  // 🔄 Retry Logic for Failed Requests
+  const retryFetch = async () => {
+    console.log('🔄 Retrying document fetch...');
+    await fetchDocuments(true);
+  };
+
+  // 🚀 Initialize Component
   useEffect(() => {
     fetchDocuments();
   }, []);
 
+  // 📊 Dynamic Categories Generation
   const categories = ["all", ...Array.from(new Set(documents.map(doc => doc.category)))];
 
+  // 🔍 Advanced Filtering Logic
   const filteredDocuments = documents.filter(doc => {
     const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.description?.toLowerCase().includes(searchTerm.toLowerCase());
+                         doc.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         doc.category.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || doc.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
+  // 🎨 Enhanced File Icon Logic
   const getFileIcon = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'pdf':
-        return <FileText className="w-5 h-5 text-red-500" />;
-      case 'doc':
-      case 'docx':
-        return <FileText className="w-5 h-5 text-blue-500" />;
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-        return <FileImage className="w-5 h-5 text-green-500" />;
-      default:
-        return <File className="w-5 h-5 text-gray-500" />;
+    const iconMap: Record<string, JSX.Element> = {
+      'pdf': <FileText className="w-5 h-5 text-red-500" />,
+      'doc': <FileText className="w-5 h-5 text-blue-500" />,
+      'docx': <FileText className="w-5 h-5 text-blue-500" />,
+      'jpg': <FileImage className="w-5 h-5 text-green-500" />,
+      'jpeg': <FileImage className="w-5 h-5 text-green-500" />,
+      'png': <FileImage className="w-5 h-5 text-green-500" />,
+      'gif': <FileImage className="w-5 h-5 text-purple-500" />,
+      'svg': <FileImage className="w-5 h-5 text-indigo-500" />
+    };
+    
+    return iconMap[type.toLowerCase()] || <File className="w-5 h-5 text-gray-500" />;
+  };
+
+  // 📅 Enhanced Date Formatting
+  const formatDate = (dateString: string) => {
+    try {
+      return uploadHelpers.formatDate(dateString);
+    } catch {
+      return dateString; // Fallback to original string
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('it-IT', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+  // 🔒 Secure Download Handler
+  const handleSecureDownload = async (doc: Document) => {
+    try {
+      console.log(`📥 Initiating secure download: ${doc.name}`);
+      
+      // 🌐 Use the secure URL from API client
+      const response = await fetch(doc.url, {
+        method: 'GET',
+        headers: {
+          'Accept': '*/*'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Download failed: HTTP ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = doc.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // 🧹 Cleanup
+      URL.revokeObjectURL(downloadUrl);
+      console.log(`✅ Download completed: ${doc.name}`);
+
+    } catch (error) {
+      console.error('❌ Download failed:', error);
+      // 🚨 Show user-friendly error
+      alert(`❌ Errore durante il download: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background pt-24">
-      {/* Header */}
+      {/* 📋 Enhanced Header Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12 animate-fade-in-up">
@@ -123,25 +197,25 @@ const ArchivioDocumenti = () => {
               <FolderOpen className="w-12 h-12 text-accent animate-float" style={{animationDelay: '0.5s'}} />
             </div>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Consulta e scarica i documenti ufficiali dell'associazione, statuti, bilanci, regolamenti e protocolli
+              Consulta e scarica i documenti ufficiali dell'associazione tramite sistema di accesso sicuro
             </p>
           </div>
 
-          {/* Search and Filters */}
+          {/* 🔍 Enhanced Search and Filters */}
           <div className="mb-8 space-y-4">
             <div className="flex flex-col md:flex-row gap-4">
-              {/* Search Bar */}
+              {/* 🔍 Advanced Search Bar */}
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input
-                  placeholder="Cerca documenti per nome o descrizione..."
+                  placeholder="Cerca per nome, descrizione o categoria..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 pr-4 py-3 text-lg"
                 />
               </div>
 
-              {/* Category Filter */}
+              {/* 📂 Category Filter */}
               <div className="flex items-center gap-2">
                 <Filter className="w-5 h-5 text-muted-foreground" />
                 <select
@@ -155,18 +229,36 @@ const ArchivioDocumenti = () => {
                   ))}
                 </select>
               </div>
+
+              {/* 🔄 Refresh Button */}
+              <Button
+                onClick={() => retryFetch()}
+                variant="outline"
+                className="px-4 py-3"
+                disabled={loading}
+              >
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              </Button>
             </div>
 
-            {/* Results count */}
-            <div className="text-sm text-muted-foreground">
-              {filteredDocuments.length} documento{filteredDocuments.length !== 1 ? 'i' : ''} trovato{filteredDocuments.length !== 1 ? 'i' : ''}
-              {searchTerm && ` per "${searchTerm}"`}
-              {selectedCategory !== "all" && ` in "${selectedCategory}"`}
+            {/* 📊 Results Statistics */}
+            <div className="flex justify-between items-center text-sm text-muted-foreground">
+              <span>
+                {filteredDocuments.length} documento{filteredDocuments.length !== 1 ? 'i' : ''} trovato{filteredDocuments.length !== 1 ? 'i' : ''}
+                {searchTerm && ` per "${searchTerm}"`}
+                {selectedCategory !== "all" && ` in "${selectedCategory}"`}
+              </span>
+              {documents.length > 0 && (
+                <span className="text-xs">
+                  ✅ Ultimo aggiornamento: {new Date().toLocaleTimeString('it-IT')}
+                </span>
+              )}
             </div>
           </div>
 
-          {/* Documents Grid */}
+          {/* 📄 Documents Display Logic */}
           {loading ? (
+            // 🔄 Loading State
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1,2,3,4,5,6].map(i => (
                 <Card key={i} className="animate-pulse">
@@ -184,13 +276,22 @@ const ArchivioDocumenti = () => {
               ))}
             </div>
           ) : error ? (
+            // ❌ Error State with Retry Option
             <div className="text-center py-16">
               <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 max-w-lg mx-auto">
-                <h3 className="text-xl font-semibold mb-3 text-destructive">⚠️ Errore</h3>
-                <p className="text-muted-foreground">{error}</p>
+                <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-3 text-destructive">Errore di Caricamento</h3>
+                <p className="text-muted-foreground mb-4">{error}</p>
+                <div className="flex gap-2 justify-center">
+                  <Button onClick={retryFetch} variant="outline" size="sm">
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Riprova
+                  </Button>
+                </div>
               </div>
             </div>
           ) : (
+            // 📋 Documents Grid
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredDocuments.map((doc, index) => (
@@ -212,7 +313,7 @@ const ArchivioDocumenti = () => {
                                 {doc.category}
                               </Badge>
                               <Badge variant="secondary" className="text-xs">
-                                {doc.type}
+                                {doc.type.toUpperCase()}
                               </Badge>
                             </div>
                           </div>
@@ -238,11 +339,12 @@ const ArchivioDocumenti = () => {
                         </div>
                       </div>
 
+                      {/* 🔒 Secure Action Buttons */}
                       <div className="flex gap-2 pt-2">
                         <Button
                           size="sm"
                           className="flex-1"
-                          onClick={() => window.open(doc.url, '_blank')}
+                          onClick={() => window.open(doc.url, '_blank', 'noopener,noreferrer')}
                         >
                           <Eye className="w-4 h-4 mr-2" />
                           Visualizza
@@ -250,12 +352,7 @@ const ArchivioDocumenti = () => {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => {
-                            const link = document.createElement('a');
-                            link.href = doc.url;
-                            link.download = doc.name;
-                            link.click();
-                          }}
+                          onClick={() => handleSecureDownload(doc)}
                         >
                           <Download className="w-4 h-4" />
                         </Button>
@@ -265,6 +362,7 @@ const ArchivioDocumenti = () => {
                 ))}
               </div>
 
+              {/* 📭 Empty State */}
               {filteredDocuments.length === 0 && (
                 <div className="text-center py-16 animate-fade-in-up">
                   <FolderOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -288,14 +386,14 @@ const ArchivioDocumenti = () => {
         </div>
       </section>
 
-      {/* Info Section */}
+      {/* 📞 Enhanced Info Section */}
       <section className="py-16 px-4 bg-gradient-to-r from-primary/10 to-accent/10">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-3xl font-bold mb-6 animate-fade-in-up">
             Hai bisogno di un documento specifico?
           </h2>
           <p className="text-lg text-muted-foreground mb-8 animate-fade-in-up" style={{animationDelay: '0.1s'}}>
-            Se non trovi il documento che stai cercando, contattaci e saremo felici di aiutarti.
+            Sistema sicuro di gestione documenti. Per assistenza o documenti non presenti, contattaci.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{animationDelay: '0.2s'}}>
             <Button asChild size="lg" className="shadow-lg">
