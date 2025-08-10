@@ -297,7 +297,7 @@ const MappaProgettiHome = () => {
             <MapPin className="w-10 h-10 text-accent animate-bounce" />
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            28 anni di impegno raccontati attraverso una mappa interattiva. 
+            Il nostro impegno raccontato attraverso una mappa interattiva. 
             Ogni punto rappresenta una storia di trasformazione sociale e territoriale.
           </p>
         </div>
