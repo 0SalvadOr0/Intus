@@ -311,12 +311,14 @@ class SecureAPIClient {
   // 📋 Get All Documents Method (Archivio + Allegati)
   async getAllDocuments(): Promise<APIDocument[]> {
     try {
-      const result = await this._secureRequest<APIDocument[]>('/api/all-documents');
+      // Chiama l'endpoint corretto che esiste nel backend
+      const result = await this._secureRequest<APIDocument[]>('/api/documents');
       return result.documents || [];
 
     } catch (error) {
-      console.error('❌ Failed to fetch all documents:', error instanceof Error ? error.message : error);
-      throw error;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('❌ Failed to fetch all documents:', errorMessage);
+      throw new Error(`Errore nel recupero dei documenti: ${errorMessage}`);
     }
   }
 
