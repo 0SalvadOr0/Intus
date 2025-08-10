@@ -172,23 +172,24 @@ const Home = () => {
       </section>
 
       {/* Principles Section */}
+{/* Principles Section */}
 <section className="px-2 sm:px-4">
   <div className="container mx-auto">
     <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in-up">
       I Nostri <span className="text-primary">Pilastri</span>
     </h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-12 max-w-7xl mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 max-w-7xl mx-auto">
       {principles.map((principle, index) => (
         <Card
           key={index}
-          className="group relative overflow-hidden hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:scale-[1.02] border-0 bg-gradient-to-br from-card via-background to-muted/30 animate-fade-in-up cursor-pointer max-w-xs sm:max-w-sm mx-auto"
+          className="group relative overflow-hidden hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:scale-[1.02] border-0 bg-gradient-to-br from-card via-background to-muted/30 animate-fade-in-up cursor-pointer rounded-md sm:rounded-lg"
           style={{ animationDelay: `${0.8 + index * 0.2}s` }}
         >
           {/* Animated background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-heart/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-heart/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-md sm:rounded-lg"></div>
 
           {/* Glowing border effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-lg opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-md sm:rounded-lg opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
 
           <CardContent className="relative p-4 sm:p-6 md:p-10 text-center">
             <div className="mb-4 sm:mb-6 md:mb-8 flex justify-center">
@@ -197,12 +198,12 @@ const Home = () => {
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary via-accent to-heart opacity-20 group-hover:opacity-40 group-hover:scale-110"></div>
 
                 {/* Icon/Image container */}
-                <div className="relative p-2 sm:p-4 md:p-5 rounded-lg bg-gradient-to-br from-primary via-accent to-heart group-hover:animate-float shadow-2xl group-hover:shadow-primary/25 overflow-hidden">
+                <div className="relative p-4 md:p-5 rounded-lg bg-gradient-to-br from-primary via-accent to-heart group-hover:animate-float shadow-2xl group-hover:shadow-primary/25 overflow-hidden">
                   {principle.image ? (
                     <img
                       src={principle.image}
                       alt={principle.title}
-                      className="w-16 sm:w-20 md:w-full h-auto object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-auto object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         console.warn(`Failed to load image: ${principle.image}`);
                         e.currentTarget.style.display = 'none';
@@ -213,8 +214,8 @@ const Home = () => {
                 </div>
 
                 {/* Sparkle effects */}
-                <div className="absolute -top-2 -right-2 w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
-                <div className="absolute -bottom-1 -left-1 w-2 h-2 sm:w-3 sm:h-3 bg-accent rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-accent rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
               </div>
             </div>
 
@@ -234,8 +235,6 @@ const Home = () => {
     </div>
   </div>
 </section>
-
-
       {/* Mappa Progetti Integrata */}
       <MappaProgettiHome />
 
