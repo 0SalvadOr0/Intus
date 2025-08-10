@@ -62,12 +62,14 @@ const Home = () => {
     {
       icon: MapPin,
       title: "Promozione del Territorio", 
-      description: "Valorizziamo le risorse locali, la cultura e le tradizioni per sviluppare il potenziale del nostro territorio."
+      description: "Valorizziamo le risorse locali, la cultura e le tradizioni per sviluppare il potenziale del nostro territorio.",
+      image: "/files/logos/promozione_territorio.png"
     },
     {
       icon: Zap,
       title: "Politiche Giovanili",
-      description: "Creiamo opportunità e spazi per i giovani, supportando la loro crescita e partecipazione attiva nella comunità."
+      description: "Creiamo opportunità e spazi per i giovani, supportando la loro crescita e partecipazione attiva nella comunità.",
+      image: "/files/logos/politiche_giovanili.jpg"
     }
   ];
 

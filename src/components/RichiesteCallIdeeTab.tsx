@@ -744,7 +744,7 @@ const RichiesteCallIdeeTab = () => {
                                       <div className="text-muted-foreground">Nato il: {new Date(f.dataNascita).toLocaleDateString('it-IT')}</div>
                                     )}
                                     {f.codiceFiscale && (
-                                      <div className="text-muted-foreground font-mono">CF: {f.codiceFiscale}</div>
+                                      <div className="text-muted-foreground font-mono">Ruolo: {f.codiceFiscale}</div>
                                     )}
                                   </div>
                                 ))}

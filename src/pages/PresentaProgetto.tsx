@@ -855,9 +855,9 @@ const CallIdeeGiovani = () => {
                           name={`figureSupporto.${index}.codiceFiscale`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Codice Fiscale</FormLabel>
+                              <FormLabel>Ruolo</FormLabel>
                               <FormControl>
-                                <Input placeholder="RSSMRA80A01H501Z" {...field} />
+                                <Input placeholder="Ruolo" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
