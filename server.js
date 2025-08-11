@@ -57,8 +57,8 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       'http://localhost:3000',
       'http://localhost:5173', 
       'http://localhost:5174',
-      'http://intuscorleone.it',
-      'http://www.intuscorleone.it',
+      'https://intuscorleone.it',
+      'https://www.intuscorleone.it',
       'http://217.160.124.10'
     ];
 
@@ -92,8 +92,8 @@ const validateOrigin = (origin, callback) => {
   }
 
   // Allow your domain variations (HTTP only)
-  if (origin === 'http://intuscorleone.it' || 
-      origin === 'http://www.intuscorleone.it') {
+  if (origin === 'https://intuscorleone.it' || 
+      origin === 'https://www.intuscorleone.it') {
     console.log(`✅ Domain approved: ${origin}`);
     return callback(null, true);
   }
