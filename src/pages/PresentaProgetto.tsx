@@ -237,12 +237,6 @@ const CallIdeeGiovani = () => {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
             Microprogetti per il territorio - Presenta la tua idea innovativa per la comunità locale
           </p>
-          <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4 max-w-2xl mx-auto">
-            <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300">
-              <AlertCircle className="w-5 h-5" />
-              <p className="font-semibold">Scadenza attività: 31 dicembre 2025</p>
-            </div>
-          </div>
         </div>
 
         <CallIdeeNotice />
