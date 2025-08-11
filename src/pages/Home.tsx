@@ -188,8 +188,9 @@ const Home = () => {
           {/* Animated background gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-heart/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-md sm:rounded-lg"></div>
 
-          {/* Glowing border effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-heart/10 rounded-md sm:rounded-lg opacity-0 group-hover:opacity-100 blur-[1px] border border-primary/30 transition-all duration-500"></div>
+          {/* Glowing border effect */} 
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-md sm:rounded-lg opacity-0 group-hover:opacity-100 blur-[1px] transition-all duration-500"></div>
+ 
 
           <CardContent className="relative p-4 sm:p-6 md:p-10 text-center">
             <div className="mb-4 sm:mb-6 md:mb-8 flex justify-center">
