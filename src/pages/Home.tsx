@@ -61,7 +61,7 @@ const Home = () => {
     {
       title: "Promozione del Territorio", 
       description: "Valorizziamo le risorse locali, la cultura e le tradizioni per sviluppare il potenziale del nostro territorio.",
-      image: "/files/logos/promozione_territorio.png"
+      image: "/files/logos/promozione_territorio.jpg"
     },
     {
       title: "Politiche Giovanili",
