@@ -137,9 +137,18 @@ const FileUploader = ({
       
       console.log('✅ Allegato upload successful:', result);
 
+     
       if (result.success) {
+        // ✅ Safe property access with fallbacks
+        const fileUrl = (result as any).fileUrl || (result as any).url || '';
+        const fileName = (result as any).originalName || (result as any).fileName || file.name;
+        
+        if (!fileUrl) {
+          throw new Error('Upload succeeded but no file URL returned');
+        }
+        
         // 🎯 Callback with file URL and name
-        onFileUpload(result.fileUrl, result.originalName || file.name);
+        onFileUpload(fileUrl, fileName);
         
         // 📊 Update rate limit status
         updateRateLimitStatus();
@@ -147,15 +156,15 @@ const FileUploader = ({
         // 🎉 Success Toast
         toast({
           title: "📎 Allegato caricato!",
-          description: `${result.originalName || file.name} salvato in allegati/`,
+          description: `${fileName} salvato in allegati/`,
         });
 
         console.log('🎯 Allegato upload callback executed:', {
-          fileUrl: result.fileUrl,
-          fileName: result.originalName || file.name
+          fileUrl: fileUrl,
+          fileName: fileName
         });
       } else {
-        throw new Error(result.error || 'Upload failed without specific error');
+        throw new Error((result as any).error || 'Upload failed without specific error');
       }
 
     } catch (uploadError) {

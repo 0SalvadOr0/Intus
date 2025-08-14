@@ -944,7 +944,10 @@ const CallIdeeGiovani = () => {
                       const filtered = currentAllegati.filter(file => file.url !== url);
                       form.setValue("allegati", filtered);
                     }}
-                    uploadedFiles={form.watch("allegati") || []}
+                    uploadedFiles={(form.watch("allegati") || []).map(file => ({
+                                    url: file.url || '',
+                                    name: file.name || ''
+                                  }))}
                     maxFiles={3}
                     acceptedTypes={['.pdf', '.doc', '.docx']}
                     maxFileSize={10}

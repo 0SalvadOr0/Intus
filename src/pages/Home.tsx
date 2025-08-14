@@ -172,70 +172,70 @@ const Home = () => {
       </section>
 
       {/* Principles Section */}
-{/* Principles Section */}
-<section className="px-2 sm:px-4">
-  <div className="container mx-auto">
-    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in-up">
-      I Nostri <span className="text-primary">Pilastri</span>
-    </h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 max-w-7xl mx-auto">
-      {principles.map((principle, index) => (
-        <Card
-          key={index}
-          className="group relative overflow-hidden hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:scale-[1.02] border-0 bg-gradient-to-br from-card via-background to-muted/30 animate-fade-in-up cursor-pointer rounded-[2px] md:rounded-md sm:rounded-lg"
-          style={{ animationDelay: `${0.8 + index * 0.2}s` }}
-        >
-          {/* Animated background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-heart/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-md sm:rounded-lg"></div>
+      <section className="px-2 sm:px-4">
+        <div className="container mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in-up">
+            I Nostri <span className="text-primary">Pilastri</span>
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 max-w-7xl mx-auto">
+            {principles.map((principle, index) => (
+              <Card
+                key={index}
+                className="group relative overflow-hidden hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:scale-[1.02] border-0 bg-gradient-to-br from-card via-background to-muted/30 animate-fade-in-up cursor-pointer rounded-[2px] md:rounded-md sm:rounded-lg"
+                style={{ animationDelay: `${0.8 + index * 0.2}s` }}
+              >
+                {/* Animated background gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-heart/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-md sm:rounded-lg"></div>
 
-          {/* Glowing border effect */} 
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-md sm:rounded-lg opacity-0 group-hover:opacity-100 blur-[1px] transition-all duration-500"></div>
- 
+                {/* Glowing border effect */} 
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-heart/20 rounded-md sm:rounded-lg opacity-0 group-hover:opacity-100 blur-[1px] transition-all duration-500"></div>
+      
 
-          <CardContent className="relative p-4 sm:p-6 md:p-10 text-center">
-            <div className="mb-4 sm:mb-6 md:mb-8 flex justify-center">
-              <div className="relative">
-                {/* Animated ring */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary via-accent to-heart opacity-20 group-hover:opacity-40 group-hover:scale-110"></div>
+                <CardContent className="relative p-2 sm:p-3 md:p-4 text-center">
+                  <div className="mb-4 sm:mb-6 md:mb-8 flex justify-center">
+                    <div className="relative">
+                      {/* Animated ring */}
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary via-accent to-heart opacity-20 group-hover:opacity-40 group-hover:scale-110"></div>
 
-                {/* Icon/Image container */}
-                <div className="relative p-4 md:p-5 rounded-lg bg-gradient-to-br from-primary via-accent to-heart group-hover:animate-float shadow-2xl group-hover:shadow-primary/25 overflow-hidden">
-                  {principle.image ? (
-                    <img
-                      src={principle.image}
-                      alt={principle.title}
-                      className="w-full h-auto object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        console.warn(`Failed to load image: ${principle.image}`);
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                      }}
-                    />
-                  ) : null}
-                </div>
+                      {/* Icon/Image container */}
+                      <div className="relative p-2 md:p-3 rounded-md bg-gradient-to-br from-primary via-accent to-heart group-hover:animate-float shadow-lg group-hover:shadow-primary/25 overflow-hidden">
+                        {principle.image ? (
+                          <img
+                            src={principle.image}
+                            alt={principle.title}
+                            className="w-full h-auto object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              console.warn(`Failed to load image: ${principle.image}`);
+                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                        ) : null}
+                      </div>
 
-                {/* Sparkle effects */}
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
-                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-accent rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
-              </div>
-            </div>
+                      {/* Sparkle effects */}
+                      <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
+                      <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-accent rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
+                    </div>
+                  </div>
 
-            <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-4 md:mb-6 group-hover:text-primary transition-all duration-300 group-hover:scale-105">
-              {principle.title}
-            </h3>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-4 md:mb-6 group-hover:text-primary transition-all duration-300 group-hover:scale-105">
+                    {principle.title}
+                  </h3>
 
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
-              {principle.description}
-            </p>
+                  <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                    {principle.description}
+                  </p>
 
-            {/* Bottom accent line */}
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-[1px] bg-gradient-to-r from-primary to-accent group-hover:w-1/2 transition-all duration-500 rounded-full"></div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  </div>
-</section>
+                  {/* Bottom accent line */}
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-[1px] bg-gradient-to-r from-primary to-accent group-hover:w-1/2 transition-all duration-500 rounded-full"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Mappa Progetti Integrata */}
       <MappaProgettiHome />
 
