@@ -1271,59 +1271,96 @@ const ChiSiamo = () => {
             </p>
           </div>
 
-          <div className="flex justify-center px-4">
+          <div className="grid gap-6 px-4 md:grid-cols-2">
+            {/* Facebook Card - Stile "Classic Social" */}
             <a
               href="https://www.facebook.com/share/1GKyTE79ML/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative bg-gradient-to-br from-card/90 via-background/80 to-card/90 backdrop-blur-md rounded-2xl shadow-2xl hover:shadow-heart/20 p-4 sm:px-6 sm:py-5 md:px-8 md:py-6 hover:scale-105 transition-all duration-500 border border-heart/20 hover:border-heart/40 overflow-hidden animate-bounce-in w-full max-w-md"
+              className="group relative bg-gradient-to-br from-blue-500/10 via-background/80 to-blue-600/10 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-blue-500/20 p-5 hover:scale-[1.02] transition-all duration-300 border border-blue-400/20 hover:border-blue-400/40 overflow-hidden w-full"
             >
-              {/* 🎨 Animated background effects */}
-              <div className="absolute inset-0 bg-gradient-to-br from-heart/5 via-transparent to-heart/10 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-heart/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
-
-              <div className="relative z-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                {/* 🖼️ Logo Container - Mobile Centered */}
+              {/* Effetto onda blu */}
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-400/10 rounded-full group-hover:scale-150 group-hover:opacity-40 transition-all duration-700"></div>
+              
+              <div className="relative z-10 flex items-center gap-5">
+                {/* Logo con effetto Facebook */}
                 <div className="relative flex-shrink-0">
-                  <div className="absolute inset-0 bg-gradient-to-br from-heart to-heart/60 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative p-3 sm:p-4 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-heart/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl">
-                    <img 
-                      src="/files/logos/logo_cuore.png" 
-                      alt="INTUS Corleone Logo" 
-                      className="w-12 h-8 sm:w-16 sm:h-10 object-contain" 
-                    />
+                  <div className="absolute inset-0 bg-blue-500/20 rounded-xl blur-md opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                  <div className="relative p-3 rounded-xl bg-white/95 backdrop-blur-sm border-2 border-blue-400/30 group-hover:rotate-2 transition-all duration-300 shadow-lg flex items-center justify-center">
+                    <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
                   </div>
-                  {/* ✨ Sparkle effects */}
-                  <div className="absolute -top-2 -right-2 w-3 h-3 sm:w-4 sm:h-4 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
-                  <div className="absolute -bottom-1 -left-1 w-2 h-2 sm:w-3 sm:h-3 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
                 </div>
 
-                {/* 📝 Content Container - Mobile Centered */}
-                <div className="flex-1 text-center sm:text-left">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <h4 className="font-bold text-lg sm:text-xl text-heart group-hover:text-heart/80 transition-colors">
-                      INTUS Corleone
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h4 className="font-bold text-lg text-blue-600 group-hover:text-blue-500 transition-colors">
+                      Facebook
                     </h4>
-                    <span className="bg-heart/20 text-heart px-3 py-1 rounded-full text-xs font-semibold group-hover:bg-heart/30 transition-colors mx-auto sm:mx-0 w-fit">
+                    <span className="bg-blue-500/15 text-blue-600 px-2.5 py-1 rounded-full text-xs font-semibold group-hover:bg-blue-500/25 transition-colors">
                       SOCIAL
                     </span>
                   </div>
-                  <p className="text-muted-foreground group-hover:text-foreground transition-colors mb-2 text-sm sm:text-base leading-relaxed">
-                    La nostra pagina Facebook ufficiale
+                  <p className="text-muted-foreground group-hover:text-foreground transition-colors text-sm leading-relaxed">
+                    Connettiti con noi su Facebook per news e community
                   </p>
-                  <div className="text-xs sm:text-sm text-muted-foreground/80 group-hover:text-heart/70 transition-colors font-medium">
-                    Seguici per restare aggiornato
+                </div>
+                
+                <svg className="w-5 h-5 text-blue-600 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+              </div>
+              
+              {/* Barra di progresso */}
+              <div className="absolute bottom-0 left-0 h-1 bg-blue-500/30 group-hover:w-full transition-all duration-1000 ease-out origin-left w-0"></div>
+            </a>
+
+            {/* Instagram Card - Stile "Modern Gradient" */}
+            <a
+              href="https://www.instagram.com/intus_corleone/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative bg-gradient-to-br from-purple-500/10 via-background/80 to-pink-500/10 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-pink-500/20 p-5 hover:scale-[1.02] transition-all duration-300 border border-transparent hover:border-pink-400/30 overflow-hidden w-full"
+            >
+              {/* Effetto gradient animato */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full filter blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-500/20 rounded-full filter blur-3xl animate-pulse delay-300"></div>
+              </div>
+              
+              <div className="relative z-10 flex items-center gap-5">
+                {/* Logo con effetto Instagram */}
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-xl blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                  <div className="relative p-3 rounded-xl bg-white/95 backdrop-blur-sm border-2 border-pink-400/30 group-hover:-rotate-3 transition-all duration-300 shadow-lg flex items-center justify-center">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-accent group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" fill="red"/>
+                    </svg>
                   </div>
                 </div>
 
-                {/* 🔗 Hover arrow - Positioned for mobile */}
-                <div className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 absolute top-4 right-4 sm:relative sm:top-auto sm:right-auto">
-                  <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-heart" />
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h4 className="font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 group-hover:from-purple-500 group-hover:to-pink-500 transition-colors">
+                      Instagram
+                    </h4>
+                    <span className="bg-gradient-to-r from-purple-500/15 to-pink-500/15 text-purple-600 px-2.5 py-1 rounded-full text-xs font-semibold group-hover:from-purple-500/25 group-hover:to-pink-500/25 transition-colors">
+                      SOCIAL
+                    </span>
+                  </div>
+                  <p className="text-muted-foreground group-hover:text-foreground transition-colors text-sm leading-relaxed">
+                    Segui le nostre storie e foto esclusive
+                  </p>
                 </div>
+                
+                <svg className="w-5 h-5 text-pink-600 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
               </div>
-
-              {/* 📏 Bottom accent line */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-heart to-primary group-hover:w-4/5 transition-all duration-500 rounded-full"></div>
+              
+              {/* Effetto bordo gradient */}
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 group-hover:w-full transition-all duration-500 rounded-full"></div>
             </a>
           </div>
 
