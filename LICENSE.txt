@@ -1,0 +1,11 @@
+Copyright (c) 2025 INTUS CORLEONE APS
+
+All rights reserved.
+
+This software and its source code are the exclusive property of INTUS CORLEONE APS. Unauthorized copying, modification, distribution, or use of any part of this software is strictly prohibited.
+
+Permission to use, reproduce, or distribute this software must be granted in writing by INTUS CORLEONE APS.
+
+This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall INTUS CORLEONE APS be liable for any claim, damages, or other liability arising from the use of this software.
+
+For inquiries or licensing requests, please contact: direttore@intuscorleone.it
