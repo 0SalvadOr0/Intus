@@ -424,10 +424,6 @@ const ProjectViewer = () => {
                 {project.titolo}
               </h1>
 
-              <p className="text-xl md:text-2xl lg:text-3xl opacity-90 mb-8 max-w-4xl leading-relaxed animate-fade-in-up font-light" style={{animationDelay: '0.2s'}}>
-                {project.descrizione_breve}
-              </p>
-
               <div className="flex flex-wrap items-center gap-8 text-lg md:text-xl animate-slide-in-right" style={{animationDelay: '0.4s'}}>
                 {project.data_inizio && (
                   <div className="flex items-center bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
