@@ -359,6 +359,7 @@ const Dashboard = () => {
     youtube_url: "",
     youtube_urls: [] as string[],
     immagini: [] as string[],
+    immagine_copertina: "",
     data_inizio: "",
     status: "planned" as const,
     ruolo_intus: "",
@@ -725,9 +726,16 @@ const Dashboard = () => {
         luoghi: projectData.luoghi,
         partner: projectData.partner,
         youtube_url: projectData.youtube_url || null,
+        youtube_urls: projectData.youtube_urls || [],
         immagini: projectData.immagini,
+        immagine_copertina: projectData.immagine_copertina || null,
         data_inizio: projectData.data_inizio || null,
-        status: projectData.status
+        status: projectData.status,
+        ruolo_intus: projectData.ruolo_intus || null,
+        partecipanti_diretti: projectData.partecipanti_diretti || null,
+        partecipanti_indiretti: projectData.partecipanti_indiretti || null,
+        ente_finanziatore: projectData.ente_finanziatore || null,
+        linea_di_finanziamento: projectData.linea_di_finanziamento || null
       };
       if (projectData.prodotti && projectData.prodotti.length > 0) {
         projectPayload.prodotti = projectData.prodotti;
@@ -778,6 +786,7 @@ const Dashboard = () => {
         youtube_url: "",
         youtube_urls: [],
         immagini: [],
+        immagine_copertina: "",
         data_inizio: "",
         status: "planned",
         ruolo_intus: "",
@@ -1791,6 +1800,7 @@ const Dashboard = () => {
         youtube_url: "",
         youtube_urls: [],
         immagini: [],
+        immagine_copertina: "",
         data_inizio: "",
         status: "planned",
         ruolo_intus: "",

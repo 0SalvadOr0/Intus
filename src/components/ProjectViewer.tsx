@@ -538,6 +538,8 @@ const ProjectViewer = () => {
                 </div>
               )}
 
+
+
               {/* Partner */}
               {project.partner && project.partner.length > 0 && (
                 <div className="space-y-4">
@@ -547,15 +549,19 @@ const ProjectViewer = () => {
                       <div key={i} className="flex items-center">
                         {partner.link ? (
                           <a
-                            href={partner.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                              partner.capofila
-                                ? 'bg-primary text-primary-foreground hover:bg-primary/90 border-2 border-primary-glow'
-                                : 'bg-muted hover:bg-muted/80'
-                            }`}
-                          >
+                              href={
+                                partner.link.startsWith("http://") || partner.link.startsWith("https://")
+                                  ? partner.link
+                                  : `https://${partner.link}`
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                                partner.capofila
+                                  ? 'bg-primary text-primary-foreground hover:bg-primary/90 border-2 border-primary-glow'
+                                  : 'bg-muted hover:bg-muted/80'
+                              }`}
+                            >
                             {partner.capofila && <span className="mr-1 font-bold">★</span>}
                             {partner.nome}
                             <ExternalLink className="w-4 h-4" />
