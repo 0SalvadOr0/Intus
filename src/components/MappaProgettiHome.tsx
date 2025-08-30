@@ -209,10 +209,10 @@ const progetti: Progetto[] = [
     id: "13",
     nome: "GIOVANI PER LE COMUNITÀ LOCALI",
     anno: "2024-2025",
-    coordinate: [37.5079, 15.0830],
+    coordinate: [37.8167, 13.3000],
     località: "Sicilia",
     descrizione: "Microprogetti sviluppo comunità con contributi economici",
-    destinatari: "Giovani 16-30 anni",
+    destinatari: "Giovani 18-34 anni",
     ente: "Assessorato Famiglia Regione Sicilia",
     categoria: "giovani",
     stato: "in-corso"

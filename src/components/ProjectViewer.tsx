@@ -48,6 +48,8 @@ interface Project {
   partecipanti_diretti?: string;
   partecipanti_indiretti?: string;
   ente_finanziatore?: string;
+  linea_di_finanziamento?: string;
+  prodotti?: Array<{ titolo: string; immagine?: string; descrizione_breve?: string; link?: string }>;
 }
 
 const ProjectViewer = () => {
@@ -500,6 +502,46 @@ const ProjectViewer = () => {
                 </div>
               )}
 
+              {/* Prodotti realizzati */}
+              {project.prodotti && project.prodotti.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold">Prodotti realizzati</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {project.prodotti.map((prod, i) => (
+                      <div key={i} className="rounded-lg border bg-card p-4 space-y-3">
+                        {prod.immagine && (
+                          <div className="aspect-video rounded overflow-hidden bg-muted">
+                            <ImageWithFallback
+                              src={prod.immagine}
+                              alt={prod.titolo || `Prodotto ${i+1}`}
+                              className="w-full h-full object-cover"
+                              fallbackClassName="w-full h-full"
+                              showError={false}
+                            />
+                          </div>
+                        )}
+                        {prod.titolo && <h4 className="text-xl font-semibold">{prod.titolo}</h4>}
+                        {prod.descrizione_breve && (
+                          <p className="text-foreground/80">{prod.descrizione_breve}</p>
+                        )}
+                        {prod.link && (
+                          <div>
+                            <a
+                              href={prod.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 text-primary hover:underline"
+                            >
+                              <ExternalLink className="w-4 h-4" /> Visita il link
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Partner */}
               {project.partner && project.partner.length > 0 && (
                 <div className="space-y-4">
@@ -560,6 +602,17 @@ const ProjectViewer = () => {
                   </div>
                 </div>
               )}
+
+              {/* Linea di finanziamento */}
+              {project.linea_di_finanziamento && (
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold">Linea di finanziamento</h3>
+                  <div className="bg-accent/10 rounded-lg p-4 border border-accent/20">
+                    <p className="text-foreground font-semibold">{project.linea_di_finanziamento}</p>
+                  </div>
+                </div>
+              )}
+
             </div>
 
             {/* Sidebar */}

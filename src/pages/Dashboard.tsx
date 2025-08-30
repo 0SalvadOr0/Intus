@@ -6,6 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { exportBlogPostToDocx, exportProjectToDocx } from "@/lib/exportToDocx";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAnalyticsStats } from "@/hooks/use-analytics";
@@ -352,6 +355,7 @@ const Dashboard = () => {
     numero_partecipanti: 0,
     luoghi: [] as string[],
     partner: [] as Array<{nome: string, link?: string, capofila?: boolean}>,
+    prodotti: [] as Array<{ titolo: string; immagine?: string; descrizione_breve?: string; link?: string }>,
     youtube_url: "",
     youtube_urls: [] as string[],
     immagini: [] as string[],
@@ -360,7 +364,8 @@ const Dashboard = () => {
     ruolo_intus: "",
     partecipanti_diretti: "",
     partecipanti_indiretti: "",
-    ente_finanziatore: ""
+    ente_finanziatore: "",
+    linea_di_finanziamento: ""
   });
 
   const [editingProject, setEditingProject] = useState<any>(null);
@@ -711,7 +716,7 @@ const Dashboard = () => {
     }
 
     try {
-      const projectPayload = {
+      const projectPayload: any = {
         titolo: projectData.titolo,
         descrizione_breve: projectData.descrizione_breve,
         contenuto: projectData.contenuto,
@@ -724,6 +729,9 @@ const Dashboard = () => {
         data_inizio: projectData.data_inizio || null,
         status: projectData.status
       };
+      if (projectData.prodotti && projectData.prodotti.length > 0) {
+        projectPayload.prodotti = projectData.prodotti;
+      }
 
       let error;
 
@@ -766,6 +774,7 @@ const Dashboard = () => {
         numero_partecipanti: 0,
         luoghi: [],
         partner: [],
+        prodotti: [],
         youtube_url: "",
         youtube_urls: [],
         immagini: [],
@@ -774,7 +783,8 @@ const Dashboard = () => {
         ruolo_intus: "",
         partecipanti_diretti: "",
         partecipanti_indiretti: "",
-        ente_finanziatore: ""
+        ente_finanziatore: "",
+        linea_di_finanziamento: "",
     });
 
 
@@ -797,6 +807,81 @@ const Dashboard = () => {
       <span>{label}</span>
     </button>
   );
+
+  const ExportMenu = ({ type, item }: { type: 'post' | 'project', item: any }) => {
+    const [selected, setSelected] = useState<Record<string, boolean>>(
+      type === 'post'
+        ? { titolo: true, categoria: true, autore: true, created_at: true, excerpt: true, contenuto: true, youtube_url: true, copertina_url: false, immagini: false }
+        : { titolo: true, categoria: true, status: true, data_inizio: true, luoghi: true, numero_partecipanti: true, descrizione_breve: true, contenuto: true, ruolo_intus: false, partecipanti_diretti: false, partecipanti_indiretti: false, ente_finanziatore: false, linea_di_finanziamento: false, youtube_url: false, youtube_urls: false, partner: false, immagini: false, prodotti: true }
+    );
+
+    const fields = type === 'post'
+      ? [
+          { key: 'titolo', label: 'Titolo' },
+          { key: 'categoria', label: 'Categoria' },
+          { key: 'autore', label: 'Autore' },
+          { key: 'created_at', label: 'Creato il' },
+          { key: 'excerpt', label: 'Anteprima' },
+          { key: 'contenuto', label: 'Contenuto' },
+          { key: 'youtube_url', label: 'Link YouTube' },
+          { key: 'copertina_url', label: 'Copertina (URL)' },
+          { key: 'immagini', label: 'Immagini (URL)' },
+        ]
+      : [
+          { key: 'titolo', label: 'Titolo' },
+          { key: 'categoria', label: 'Categoria' },
+          { key: 'status', label: 'Stato' },
+          { key: 'data_inizio', label: 'Data inizio' },
+          { key: 'luoghi', label: 'Luoghi' },
+          { key: 'numero_partecipanti', label: 'Partecipanti' },
+          { key: 'descrizione_breve', label: 'Descrizione breve' },
+          { key: 'contenuto', label: 'Contenuto' },
+          { key: 'ruolo_intus', label: 'Ruolo di Intus' },
+          { key: 'partecipanti_diretti', label: 'Partecipanti diretti' },
+          { key: 'partecipanti_indiretti', label: 'Partecipanti indiretti' },
+          { key: 'ente_finanziatore', label: 'Ente finanziatore' },
+          { key: 'linea_di_finanziamento', label: 'Linea di finanziamento' },
+          { key: 'youtube_url', label: 'Link YouTube' },
+          { key: 'youtube_urls', label: 'Altri link YouTube' },
+          { key: 'partner', label: 'Partner' },
+          { key: 'immagini', label: 'Immagini (URL)' },
+          { key: 'prodotti', label: 'Prodotti realizzati' },
+        ];
+
+    const toggle = (k: string) => setSelected(prev => ({ ...prev, [k]: !prev[k] }));
+
+    const onExport = async () => {
+      const selectedKeys = Object.keys(selected).filter(k => selected[k]);
+      if (type === 'post') await exportBlogPostToDocx(item, selectedKeys);
+      else await exportProjectToDocx(item, selectedKeys);
+    };
+
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button size="sm" variant="outline" className="h-8 px-2">
+            <Download className="w-4 h-4 mr-1" /> Esporta
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-64">
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Seleziona campi</div>
+            <div className="space-y-2 max-h-64 overflow-auto pr-1">
+              {fields.map(f => (
+                <label key={f.key} className="flex items-center gap-2 text-sm">
+                  <Checkbox checked={!!selected[f.key]} onCheckedChange={() => toggle(f.key)} />
+                  <span>{f.label}</span>
+                </label>
+              ))}
+            </div>
+            <Button size="sm" className="w-full" onClick={onExport}>
+              <Download className="w-4 h-4 mr-2" /> Esporta DOCX
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background pt-24">
@@ -908,6 +993,7 @@ const Dashboard = () => {
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
+                          <ExportMenu type="post" item={post} />
                         </div>
                       </div>
                     ))}
@@ -971,6 +1057,7 @@ const Dashboard = () => {
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
+                        <ExportMenu type="post" item={post} />
                         <Button
                           size="sm"
                           variant="outline"
@@ -1051,6 +1138,7 @@ const Dashboard = () => {
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
+                          <ExportMenu type="project" item={project} />
                           <Button
                             size="sm"
                             variant="outline"
@@ -1131,6 +1219,7 @@ const Dashboard = () => {
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
+                          <ExportMenu type="project" item={project} />
                           <Button
                             size="sm"
                             variant="outline"
@@ -1383,6 +1472,8 @@ const Dashboard = () => {
                               const link = document.createElement('a');
                               link.href = doc.url;
                               link.download = doc.name;
+                              document.body.appendChild(link);
+                              link.remove();
                               link.click();
                             }}
                           >
@@ -1392,7 +1483,7 @@ const Dashboard = () => {
                           size="sm"
                           variant="outline"
                           className="text-destructive hover:text-destructive"
-                          onClick={() => handleDelete(doc)}
+                          onClick={() => handleDelete2(doc)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -1689,23 +1780,25 @@ const Dashboard = () => {
                       setIsEditingProject(false);
                       setEditingProject(null);
                       setNewProject({
-                        titolo: "",
-                        descrizione_breve: "",
-                        contenuto: "",
-                        categoria: "",
-                        numero_partecipanti: 0,
-                        luoghi: [],
-                        partner: [],
-                        youtube_url: "",
-                        youtube_urls: [],
-                        immagini: [],
-                        data_inizio: "",
-                        status: "planned",
-                        ruolo_intus: "",
-                        partecipanti_diretti: "",
-                        partecipanti_indiretti: "",
-                        ente_finanziatore: ""
-                      });
+        titolo: "",
+        descrizione_breve: "",
+        contenuto: "",
+        categoria: "",
+        numero_partecipanti: 0,
+        luoghi: [],
+        partner: [],
+        prodotti: [],
+        youtube_url: "",
+        youtube_urls: [],
+        immagini: [],
+        data_inizio: "",
+        status: "planned",
+        ruolo_intus: "",
+        partecipanti_diretti: "",
+        partecipanti_indiretti: "",
+        ente_finanziatore: "",
+        linea_di_finanziamento: "",
+    });
                     }}
                   >
                     ✕ Annulla
@@ -1831,7 +1924,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="project-intus-role">Ruolo di Intus</Label>
                   <Textarea
@@ -1849,6 +1942,15 @@ const Dashboard = () => {
                     placeholder="Nome dell'ente che finanzia il progetto"
                     value={getCurrentProject()?.ente_finanziatore || ""}
                     onChange={(e) => updateCurrentProject({ ente_finanziatore: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-3">
+                  <Label htmlFor="project-funding-entity">Linea di Finanziamento</Label>
+                  <Input
+                    id="project-funding-entity"
+                    placeholder="Descrizione linea di finanziamento"
+                    value={getCurrentProject()?.linea_di_finanziamento || ""}
+                    onChange={(e) => updateCurrentProject({ linea_di_finanziamento: e.target.value })}
                   />
                 </div>
               </div>
@@ -1987,6 +2089,104 @@ const Dashboard = () => {
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Aggiungi Partner
+                  </Button>
+                </div>
+              </div>
+
+              {/* Prodotti realizzati (opzionale) */}
+              <div className="space-y-4">
+                <Label>Prodotti realizzati</Label>
+                <div className="border rounded-lg p-4 space-y-4">
+                  {getCurrentProject()?.prodotti?.map((prodotto: any, index: number) => (
+                    <div key={index} className="space-y-3 p-3 bg-muted/50 rounded border">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label htmlFor={`prodotto-titolo-${index}`}>Titolo</Label>
+                          <Input
+                            id={`prodotto-titolo-${index}`}
+                            placeholder="Titolo del prodotto"
+                            value={prodotto.titolo || ""}
+                            onChange={(e) => {
+                              const nuovi = [...(getCurrentProject()?.prodotti || [])];
+                              nuovi[index] = { ...nuovi[index], titolo: e.target.value };
+                              updateCurrentProject({ prodotti: nuovi });
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`prodotto-link-${index}`}>Link (opzionale)</Label>
+                          <Input
+                            id={`prodotto-link-${index}`}
+                            placeholder="https://..."
+                            value={prodotto.link || ""}
+                            onChange={(e) => {
+                              const nuovi = [...(getCurrentProject()?.prodotti || [])];
+                              nuovi[index] = { ...nuovi[index], link: e.target.value };
+                              updateCurrentProject({ prodotti: nuovi });
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`prodotto-desc-${index}`}>Breve descrizione</Label>
+                        <Textarea
+                          id={`prodotto-desc-${index}`}
+                          placeholder="Descrizione breve del prodotto"
+                          value={prodotto.descrizione_breve || ""}
+                          onChange={(e) => {
+                            const nuovi = [...(getCurrentProject()?.prodotti || [])];
+                            nuovi[index] = { ...nuovi[index], descrizione_breve: e.target.value };
+                            updateCurrentProject({ prodotti: nuovi });
+                          }}
+                          className="min-h-[80px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Immagine</Label>
+                        <ProjectImageUploader
+                          onUpload={(url) => {
+                            const nuovi = [...(getCurrentProject()?.prodotti || [])];
+                            nuovi[index] = { ...nuovi[index], immagine: url };
+                            updateCurrentProject({ prodotti: nuovi });
+                          }}
+                          onRemove={(url) => {
+                            const nuovi = [...(getCurrentProject()?.prodotti || [])];
+                            if (nuovi[index]?.immagine === url) {
+                              const { immagine, ...rest } = nuovi[index];
+                              nuovi[index] = { ...rest } as any;
+                            }
+                            updateCurrentProject({ prodotti: nuovi });
+                          }}
+                          uploadedImages={(prodotto.immagine ? [prodotto.immagine] : [])}
+                          maxImages={1}
+                        />
+                      </div>
+                      <div className="flex justify-end">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const nuovi = (getCurrentProject()?.prodotti || []).filter((_: any, i: number) => i !== index);
+                            updateCurrentProject({ prodotti: nuovi });
+                          }}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          ✕ Rimuovi
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const nuovi = [...(getCurrentProject()?.prodotti || []), { titolo: "", immagine: "", descrizione_breve: "", link: "" }];
+                      updateCurrentProject({ prodotti: nuovi });
+                    }}
+                    className="w-full"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Aggiungi Prodotto
                   </Button>
                 </div>
               </div>
