@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import RichTextEditor from "@/components/RichTextEditor";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -1735,12 +1736,10 @@ const Dashboard = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contenuto">Contenuto *</Label>
-                <Textarea
-                  id="contenuto"
-                  placeholder="Scrivi qui il contenuto dell'articolo..."
+                <RichTextEditor
                   value={getCurrentPost()?.contenuto || ""}
-                  onChange={(e) => updateCurrentPost({ contenuto: e.target.value })}
-                  className="min-h-[200px]"
+                  onChange={(html) => updateCurrentPost({ contenuto: html })}
+                  placeholder="Scrivi qui il contenuto dell'articolo..."
                 />
               </div>
               <div className="space-y-2">
@@ -1978,12 +1977,10 @@ const Dashboard = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="project-content">Contenuto Dettagliato *</Label>
-                  <Textarea
-                    id="project-content"
-                    placeholder="Descrizione dettagliata del progetto, obiettivi, attività..."
+                  <RichTextEditor
                     value={getCurrentProject()?.contenuto || ""}
-                    onChange={(e) => updateCurrentProject({ contenuto: e.target.value })}
-                    className="min-h-[150px]"
+                    onChange={(html) => updateCurrentProject({ contenuto: html })}
+                    placeholder="Descrizione dettagliata del progetto, obiettivi, attività..."
                   />
                 </div>
               </div>

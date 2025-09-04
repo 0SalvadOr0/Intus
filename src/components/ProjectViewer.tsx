@@ -26,6 +26,7 @@ import {
   Copy
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 
 interface Project {
   id: number;
@@ -459,9 +460,9 @@ const ProjectViewer = () => {
             <div className="lg:col-span-2 space-y-8">
               <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-p:leading-relaxed">
                 <h2 className="text-2xl font-bold mb-4">Descrizione del Progetto</h2>
-                <div 
+                <div
                   dangerouslySetInnerHTML={{
-                    __html: `<p>${formatContent(project.contenuto)}</p>`
+                    __html: sanitizeHtml(project.contenuto)
                   }}
                   className="space-y-4"
                 />

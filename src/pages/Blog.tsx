@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -232,17 +233,8 @@ const Blog = () => {
     }
   };
 
-  // 📝 Format content for display (basic HTML rendering)
-  const formatContent = (content: string) => {
-    if (!content) return "";
-    
-    // Basic formatting: convert line breaks to paragraphs
-    return content
-      .split('\n\n')
-      .filter(paragraph => paragraph.trim())
-      .map(paragraph => paragraph.trim())
-      .join('</p><p>');
-  };
+  // 🛡️ Sanitize HTML content for safe rendering
+  const stripHtml = (html: string) => html.replace(/<[^>]+>/g, " ");
 
   // 🎯 Get current post for modal
   const currentPost = blogPosts.find(post => post.id === openPostId);
@@ -336,7 +328,7 @@ const Blog = () => {
                   <div className="absolute top-3 right-3">
                     <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-foreground shadow-lg border-0 group-hover:scale-105 transition-transform duration-300">
                       <Clock className="w-3 h-3 mr-1" />
-                      {calculateReadTime((post.contenuto || post.excerpt) || "")} min
+                      {calculateReadTime(((post.contenuto || post.excerpt) || "").replace(/<[^>]+>/g, " "))} min
                     </Badge>
                   </div>
                 </div>
@@ -469,7 +461,7 @@ const Blog = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4" />
-                    <span>{calculateReadTime((currentPost.contenuto || currentPost.excerpt) || "")} min di lettura</span>
+                    <span>{calculateReadTime(((currentPost.contenuto || currentPost.excerpt) || "").replace(/<[^>]+>/g, " "))} min di lettura</span>
                   </div>
                 </div>
               </div>
@@ -485,10 +477,10 @@ const Blog = () => {
 
                 {/* 📄 Main Content from Supabase */}
                 {currentPost.contenuto && (
-                  <div className="text-base leading-relaxed text-foreground/90 mb-8">
-                    <div 
+                  <div className="text-base leading-relaxed text-foreground/90 mb-8 prose max-w-none">
+                    <div
                       dangerouslySetInnerHTML={{
-                        __html: `<p>${formatContent(currentPost.contenuto)}</p>`
+                        __html: sanitizeHtml(currentPost.contenuto)
                       }}
                       className="space-y-4"
                     />
