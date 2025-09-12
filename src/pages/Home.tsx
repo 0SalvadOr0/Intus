@@ -91,6 +91,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+  <h1 className="sr-only">Intus Corleone APS - Associazione di Promozione Sociale a Corleone</h1>
       {/* Hero Section */}
       <section className="relative pt-32 md:pt-40 pb-20 md:pb-32 px-4 overflow-hidden">
         {/* Animated background elements */}
@@ -102,6 +103,7 @@ const Home = () => {
         </div>
 
         <div className="container mx-auto text-center relative">
+          {/* ...nessun H1 visibile, solo sr-only sopra... */}
           <div className="mb-12 md:mb-16">
             <div className="flex justify-center mb-8 md:mb-12">
               <div className="relative inline-block">

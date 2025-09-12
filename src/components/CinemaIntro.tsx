@@ -8,7 +8,7 @@ interface CinemaIntroProps {
 const AnimatedIntusLogo = ({ className }: { className?: string }) => (
   <div className={`${className} flex flex-col items-center justify-center`}>
     <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56">  
-      <img src="/files/logos/logo_cuore.png" alt="INTUS Logo" className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain animate-pulse-heart" />
+  <img src="/files/logos/logo_cuore.png" alt="Intus Corleone APS - Associazione di Promozione Sociale Logo" className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain animate-pulse-heart" />
     </div>
     <p className="text-white text-center mt-2 sm:mt-4 text-sm sm:text-base md:text-lg font-semibold tracking-wide">
       INTUS Corleone APS
