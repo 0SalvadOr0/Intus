@@ -262,9 +262,6 @@ const FileUploader = ({
             <p className="text-xs text-muted-foreground">
               File caricati: {uploadedFiles.length}/{maxFiles}
             </p>
-            <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-              📁 Destinazione: prv_files/allegati/ (autenticato)
-            </p>
           </div>
           
           {/* 📈 Progress Bar */}
