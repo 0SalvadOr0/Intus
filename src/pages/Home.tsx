@@ -283,7 +283,7 @@ const Home = () => {
                       Microprogetti per le comunità locali. Presenta la tua idea innovativa per trasformare il territorio.
                       <br className="hidden sm:block" />
                       <span className="text-primary font-semibold block sm:inline mt-1 sm:mt-0">
-                        Scadenza candidature: 12 Settembre 2025
+                        Scadenza candidature: 05 Ottobre 2025
                       </span>
                     </p>
                     <Link
