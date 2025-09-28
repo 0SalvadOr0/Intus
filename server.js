@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { createClient } from '@supabase/supabase-js';
 
 // 🔧 ES6 Module Configuration
 const __filename = fileURLToPath(import.meta.url);
@@ -17,6 +18,13 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || '0.0.0.0';
+
+// 🔑 Supabase (server-side) configuration
+const SUPABASE_URL = process.env.VITE_SUPABASEURL || process.env.SUPABASE_URL || '';
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASEANONKEY || process.env.SUPABASE_ANON_KEY || '';
+const supabaseServer = (SUPABASE_URL && SUPABASE_ANON_KEY)
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } })
+  : null;
 
 // 🛡️ Security Middleware Stack
 app.use(helmet({
@@ -142,6 +150,21 @@ app.use(generalLimiter);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static('public'));
 
+// 🧰 Utilities
+const escapeHtml = (str = '') => str
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
+const stripHtmlTags = (html = '') => html.replace(/<[^>]*>/g, ' ');
+
+const truncate = (text = '', max = 200) => {
+  if (text.length <= max) return text;
+  return text.slice(0, max - 1).trimEnd() + '…';
+};
+
 // 📁 Directory Structure Setup
 const publicDir = path.join(__dirname, 'public');
 const allegatiDir = path.join(publicDir, 'files', 'allegati');
@@ -151,6 +174,82 @@ const archivioDir = path.join(publicDir, 'files', 'archivio');
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
     console.log(`📂 Created directory: ${dir}`);
+  }
+});
+
+// 🔗 Social share OG for Blog Posts (server-rendered for crawlers)
+app.get('/share/blog/:id', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isFinite(id)) {
+      return res.status(400).send('Bad request');
+    }
+
+    if (!supabaseServer) {
+      return res.status(500).send('Configurazione Supabase mancante sul server');
+    }
+
+    const { data: post, error } = await supabaseServer
+      .from('blog_posts')
+      .select('id, titolo, excerpt, contenuto, autore, created_at, copertina_url, categoria')
+      .eq('id', id)
+      .eq('pubblicato', true)
+      .single();
+
+    if (error || !post) {
+      return res.status(404).send('Articolo non trovato');
+    }
+
+    const siteUrl = `${req.protocol}://${req.get('host')}`;
+    const targetUrl = `${siteUrl}/blog?post=${post.id}`;
+
+    const title = escapeHtml(post.titolo || 'Articolo');
+    const rawDesc = post.excerpt || stripHtmlTags(post.contenuto || '');
+    const description = escapeHtml(truncate(rawDesc, 200));
+    const image = (post.copertina_url && /^https?:\/\//i.test(post.copertina_url))
+      ? post.copertina_url
+      : `${siteUrl}/files/logos/logo_cuore.png`;
+
+    const published = post.created_at ? new Date(post.created_at).toISOString() : undefined;
+    const author = escapeHtml(post.autore || '');
+
+    // Minimal HTML with OG/Twitter meta for crawlers and meta refresh for users
+    const html = `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>${title}</title>
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="${targetUrl}">
+
+  <meta property="og:site_name" content="Intus Corleone APS" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:url" content="${targetUrl}" />
+  <meta property="og:image" content="${image}" />
+  ${published ? `<meta property="article:published_time" content="${published}" />` : ''}
+  ${author ? `<meta property="article:author" content="${author}" />` : ''}
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="${image}" />
+
+  <meta http-equiv="refresh" content="0;url=${targetUrl}">
+</head>
+<body>
+  <noscript>
+    <a href="${targetUrl}">Vai all'articolo</a>
+  </noscript>
+</body>
+</html>`;
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.status(200).send(html);
+  } catch (e) {
+    console.error('❌ Share route error:', e);
+    return res.status(500).send('Errore interno');
   }
 });
 

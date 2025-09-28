@@ -42,11 +42,12 @@ const Blog = () => {
 
   // 🔗 Share functionality implementation
   const handleShare = async (post: BlogPost) => {
-    const shareText = `${post.titolo}\n\n${post.excerpt}\n\n${window.location.href}?post=${post.id}`;
+    const shareUrl = `${window.location.origin}/share/blog/${post.id}`;
+    const shareText = `${post.titolo}\n\n${post.excerpt}\n\n${shareUrl}`;
     const shareData = {
       title: post.titolo,
       text: post.excerpt,
-      url: window.location.href + `?post=${post.id}`
+      url: shareUrl
     };
 
     // Check if APIs are actually usable (not just available)
