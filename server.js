@@ -8,7 +8,10 @@ import helmet from 'helmet';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 
 // 🔧 ES6 Module Configuration
 const __filename = fileURLToPath(import.meta.url);
@@ -20,8 +23,8 @@ const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || '0.0.0.0';
 
 // 🔑 Supabase (server-side) configuration
-const SUPABASE_URL = import.meta.env.VITE_SUPABASEURL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASEANONKEY; 
+const SUPABASE_URL = process.env.VITE_SUPABASEURL;
+const supabaseAnonKey = process.env.VITE_SUPABASEANONKEY; 
 const supabaseServer = createClient(SUPABASE_URL, supabaseAnonKey);
 
 // 🛡️ Security Middleware Stack
