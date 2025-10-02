@@ -6,9 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
-import { Calendar, User, Search, Filter, ArrowRight, X, Clock, Share2, Check, Copy } from "lucide-react";
+import { Calendar, User, Search, Filter, ArrowRight, X, Clock, Share2, Check, Copy, Facebook, Twitter, Linkedin, MessageCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { BlogCardSkeleton } from "@/components/ui/loading-skeleton";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
 interface BlogPost {
@@ -31,6 +32,7 @@ const Blog = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false); // 🎯 Share functionality state
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // 📊 Calculate reading time (based on 200 words per minute)
   const calculateReadTime = (text: string) => {
@@ -209,10 +211,22 @@ const Blog = () => {
     fetchPosts();
   }, []);
 
+  // 🔗 Open modal if URL contains ?post=ID
+  useEffect(() => {
+    const idParam = searchParams.get('post');
+    const postId = idParam ? Number(idParam) : NaN;
+    if (Number.isFinite(postId) && blogPosts.some(p => p.id === postId)) {
+      setOpenPostId(postId);
+    }
+  }, [blogPosts, searchParams]);
+
   // 🎨 Enhanced close modal functionality
   const handleCloseModal = () => {
     setOpenPostId(null);
-    setCopySuccess(false); // Reset share state
+    setCopySuccess(false);
+    const next = new URLSearchParams(searchParams);
+    next.delete('post');
+    setSearchParams(next, { replace: true });
   };
 
   const categories = ["all", "Cittadinanza Attiva", "Territorio", "Politiche Giovanili"];
@@ -300,7 +314,12 @@ const Blog = () => {
                 key={post.id}
                 className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:scale-[1.02] border-0 bg-card/90 backdrop-blur-sm animate-fade-in-up overflow-hidden cursor-pointer"
                 style={{animationDelay: `${0.3 + index * 0.1}s`}}
-                onClick={() => setOpenPostId(post.id)}
+                onClick={() => {
+                  setOpenPostId(post.id);
+                  const next = new URLSearchParams(searchParams);
+                  next.set('post', String(post.id));
+                  setSearchParams(next);
+                }}
               >
                 <div className="relative overflow-hidden">
                   {post.copertina_url ? (
@@ -371,6 +390,9 @@ const Blog = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenPostId(post.id);
+                        const next = new URLSearchParams(searchParams);
+                        next.set('post', String(post.id));
+                        setSearchParams(next);
                       }}
                     >
                       Leggi l'articolo completo
@@ -556,7 +578,7 @@ const Blog = () => {
                   <X className="w-4 h-4 mr-2" />
                   Chiudi articolo
                 </Button>
-                <Button 
+                <Button
                   className="flex-1 bg-primary hover:bg-primary/90 transition-all duration-200 hover:shadow-lg"
                   onClick={() => handleShare(currentPost)}
                   disabled={copySuccess}
@@ -572,6 +594,41 @@ const Blog = () => {
                       Condividi articolo
                     </>
                   )}
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${window.location.origin}/share/blog/${currentPost.id}`)}`, '_blank', 'noopener,noreferrer')}
+                >
+                  <Facebook className="w-4 h-4 mr-2" />
+                  Facebook
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(`${window.location.origin}/share/blog/${currentPost.id}`)}&text=${encodeURIComponent(currentPost.titolo)}`, '_blank', 'noopener,noreferrer')}
+                >
+                  <Twitter className="w-4 h-4 mr-2" />
+                  Twitter
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${window.location.origin}/share/blog/${currentPost.id}`)}`, '_blank', 'noopener,noreferrer')}
+                >
+                  <Linkedin className="w-4 h-4 mr-2" />
+                  LinkedIn
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`${currentPost.titolo} ${window.location.origin}/share/blog/${currentPost.id}`)}`, '_blank', 'noopener,noreferrer')}
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  WhatsApp
                 </Button>
               </div>
             </div>
