@@ -20,11 +20,9 @@ const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || '0.0.0.0';
 
 // 🔑 Supabase (server-side) configuration
-const SUPABASE_URL = process.env.VITE_SUPABASEURL || process.env.SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = process.env.VITE_SUPABASEANONKEY || process.env.SUPABASE_ANON_KEY || '';
-const supabaseServer = (SUPABASE_URL && SUPABASE_ANON_KEY)
-  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } })
-  : null;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASEURL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASEANONKEY; 
+const supabaseServer = createClient(SUPABASE_URL, supabaseAnonKey);
 
 // 🛡️ Security Middleware Stack
 app.use(helmet({
@@ -186,7 +184,43 @@ app.get('/share/blog/:id', async (req, res) => {
     }
 
     if (!supabaseServer) {
-      return res.status(500).send('Configurazione Supabase mancante sul server');
+      const siteUrl = `${req.protocol}://${req.get('host')}`;
+      const targetUrl = `${siteUrl}/blog?post=${id}`;
+      const title = 'Intus Corleone APS';
+      const description = 'Articolo del blog';
+      const image = `${siteUrl}/placeholder.svg`;
+
+      const html = `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>${title}</title>
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="${targetUrl}">
+
+  <meta property="og:site_name" content="Intus Corleone APS" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:url" content="${targetUrl}" />
+  <meta property="og:image" content="${image}" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="${image}" />
+
+  <meta http-equiv="refresh" content="0;url=${targetUrl}">
+</head>
+<body>
+  <noscript>
+    <a href="${targetUrl}">Vai all'articolo</a>
+  </noscript>
+</body>
+</html>`;
+
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.status(200).send(html);
     }
 
     const { data: post, error } = await supabaseServer
