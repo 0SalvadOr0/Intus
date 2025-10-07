@@ -39,6 +39,7 @@ import {
   Activity
 } from "lucide-react";
 import NewEvaluationDialog from "./NewEvaluationDialog";
+import { exportCallIdeeRequestToDocx } from "@/lib/exportToDocx";
 
 interface Coprogramma {
   attivita: string;
@@ -134,7 +135,6 @@ const RichiesteCallIdeeTab = () => {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-  const [exporting, setExporting] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Richiesta | null>(null);
   const [evaluationDialogOpen, setEvaluationDialogOpen] = useState(false);
   const [evaluationData, setEvaluationData] = useState({
@@ -199,104 +199,21 @@ const RichiesteCallIdeeTab = () => {
     setFilteredRichieste(filtered);
   }, [richieste, searchTerm, categoryFilter, statusFilter]);
 
-  // 📊 Export Functionality
-  const exportToCSV = async (singleRequest?: Richiesta) => {
-    setExporting(true);
+  // 📄 Export DOCX Functionality
+  const exportToDOCX = async (request: Richiesta) => {
     try {
-      const dataToExport = singleRequest ? [singleRequest] : filteredRichieste;
-      
-      // Prepare CSV data with ALL database fields including new ones
-      const csvData = dataToExport.map(r => ({
-        ID: r.id,
-        "Titolo Progetto": r.titolo_progetto,
-        "Descrizione Progetto": r.descrizione_progetto,
-        "Coprogramma": JSON.stringify(r.coprogramma || []),
-        "Data Inizio": r.data_inizio,
-        "Data Fine": r.data_fine,
-        "Autorizzazioni": r.autorizzazioni || '',
-        "Referente Nome": r.referente_nome,
-        "Referente Cognome": r.referente_cognome,
-        "Referente Email": r.referente_email,
-        "Referente Telefono": r.referente_telefono,
-        "Referente Data Nascita": r.referente_data_nascita,
-        "Referente Codice Fiscale": r.referente_codice_fiscale || '',
-        "Numero Partecipanti": r.numero_partecipanti,
-        "Descrizione Gruppo": r.descrizione_gruppo || '',
-        "Luogo Svolgimento": r.luogo_svolgimento,
-        "Categoria": r.categoria,
-        "Categoria Descrizione": r.categoria_descrizione || '',
-        "Tipo Evento": r.tipo_evento,
-        "Descrizione Evento": r.descrizione_evento || '',
-        "Altro": r.altro || '',
-        "Partecipanti JSON": JSON.stringify(r.partecipanti || []),
-        "Figure Supporto JSON": JSON.stringify(r.figure_supporto || []),
-        "Totale Spese Attrezzature": r.spese_attrezzature?.reduce((sum, s) => sum + (s.costo * s.quantita), 0) || 0,
-        "Totale Spese Servizi": r.spese_servizi?.reduce((sum, s) => sum + (s.costo * s.quantita), 0) || 0,
-        "SIAE": r.spese_generali?.siae || 0,
-        "Assicurazione": r.spese_generali?.assicurazione || 0,
-        "Rimborso Spese": r.spese_generali?.rimborsoSpese || 0,
-        "Totale Complessivo": calculateTotalCost(r),
-        "Punteggio Valutazione": r.valutazione?.punteggio_totale || r.valutazione?.punteggio || '',
-        "Stato Valutazione": r.valutazione?.stato || 'in_attesa',
-        "Note Valutatore": r.valutazione?.note_valutatore || '',
-        "Data Valutazione": r.valutazione?.data_valutazione || '',
-        "Valutatore": r.valutazione?.valutatore || '',
-        "Data Creazione": new Date(r.created_at).toLocaleDateString('it-IT'),
-        "Timestamp Creazione": r.created_at
-      }));
-
-      // Convert to CSV with proper formatting
-      const headers = Object.keys(csvData[0]);
-
-      // Escape CSV fields properly
-      const escapeCSVField = (field: any): string => {
-        if (field === null || field === undefined) return '';
-        const str = String(field);
-        // If field contains comma, newline, or quote, wrap in quotes and escape quotes
-        if (str.includes(',') || str.includes('\n') || str.includes('"') || str.includes('\r')) {
-          return `"${str.replace(/"/g, '""')}"`;
-        }
-        return str;
-      };
-
-      const csvContent = [
-        headers.map(escapeCSVField).join(','),
-        ...csvData.map(row => headers.map(header => escapeCSVField(row[header as keyof typeof row])).join(','))
-      ].join('\r\n');
-
-      // Add BOM for proper Excel compatibility
-      const BOM = '\uFEFF';
-      const finalContent = BOM + csvContent;
-
-      // Download file
-      const blob = new Blob([finalContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      
-      const fileName = singleRequest 
-        ? `richiesta_${singleRequest.titolo_progetto.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`
-        : `richieste_call_idee_${new Date().toISOString().split('T')[0]}.csv`;
-      
-      link.setAttribute('download', fileName);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
+      await exportCallIdeeRequestToDocx(request);
       toast({
         title: "Export completato!",
-        description: `File ${fileName} scaricato con successo.`
+        description: `File ${(request?.titolo_progetto || 'progetto').replace(/[^a-z0-9_-]+/gi, '-')}.docx scaricato con successo.`
       });
     } catch (error) {
-      console.error("Export error:", error);
+      console.error("Export DOCX error:", error);
       toast({
         title: "Errore nell'export",
         description: "Si è verificato un errore durante l'esportazione.",
         variant: "destructive"
       });
-    } finally {
-      setExporting(false);
     }
   };
 
@@ -457,21 +374,7 @@ const RichiesteCallIdeeTab = () => {
               </Badge>
             </CardTitle>
             
-            {/* 🎯 Action Buttons */}
-            <div className="flex gap-2">
-              <Button 
-                onClick={() => exportToCSV()}
-                disabled={exporting || filteredRichieste.length === 0}
-                className="bg-green-600 hover:bg-green-700 text-white shadow-md"
-              >
-                {exporting ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Download className="w-4 h-4 mr-2" />
-                )}
-                Esporta Tutto CSV
-              </Button>
-            </div>
+
           </div>
         </CardHeader>
         
@@ -855,7 +758,7 @@ const RichiesteCallIdeeTab = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => exportToCSV(r)}
+                          onClick={() => exportToDOCX(r)}
                           className="text-green-600 hover:text-green-700 h-8 px-3"
                         >
                           <Download className="w-4 h-4" />
