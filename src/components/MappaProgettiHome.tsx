@@ -254,8 +254,7 @@ const progetti: Progetto[] = [
     destinatari: "Comunità locale e appassionati di musica",
     ente: "Regione Siciliana e Presidenza Consiglio Ministri - Dip. Gioventù e Servizio Civile Universale - Fondo Politiche Giovanili 2023",
     categoria: "giovani",
-    stato: "in-corso",
-    immagini: ["/files/projectsImage/Musica in cinema.jpeg"]
+    stato: "in-corso" 
   },
   {
     id: "17",
@@ -319,7 +318,8 @@ const progetti: Progetto[] = [
     destinatari: "Giovani dei Monti Sicani",
     ente: "Regione Siciliana e Presidenza Consiglio Ministri - Dip. Gioventù e Servizio Civile Universale - Fondo Politiche Giovanili 2023",
     categoria: "giovani",
-    stato: "in-corso"
+    stato: "in-corso",
+    immagini: ["/files/projectsImage/Musica in cinema.jpeg"]
   },
   {
     id: "22",
