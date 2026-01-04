@@ -346,7 +346,8 @@ const Dashboard = () => {
     autore: "",
     immagini: [] as string[],
     copertina_url: "",
-    youtubeUrl: ""
+    youtubeUrl: "",
+    data_visualizzazione: ""
   });
   const [newProject, setNewProject] = useState({
     titolo: "",
@@ -662,7 +663,8 @@ const Dashboard = () => {
         categoria: postData.categoria,
         immagini: postData.immagini,
         copertina_url: postData.copertina_url,
-        youtube_url: postData.youtubeUrl
+        youtube_url: postData.youtubeUrl,
+        data_visualizzazione: postData.data_visualizzazione || null
       };
 
       let error;
@@ -698,7 +700,7 @@ const Dashboard = () => {
         setEditingPost(null);
       }
 
-      setNewPost({ titolo: "", contenuto: "", categoria: "", excerpt: "", autore: "", immagini: [], copertina_url: "", youtubeUrl: "" });
+      setNewPost({ titolo: "", contenuto: "", categoria: "", excerpt: "", autore: "", immagini: [], copertina_url: "", youtubeUrl: "", data_visualizzazione: "" });
       fetchBlogPosts();
     } catch (error) {
       toast({ title: "Errore", description: "Errore durante il salvataggio", variant: "destructive" });
@@ -1666,7 +1668,7 @@ const Dashboard = () => {
                     onClick={() => {
                       setIsEditingPost(false);
                       setEditingPost(null);
-                      setNewPost({ titolo: "", contenuto: "", categoria: "", excerpt: "", autore: "", immagini: [], copertina_url: "", youtubeUrl: "" });
+                      setNewPost({ titolo: "", contenuto: "", categoria: "", excerpt: "", autore: "", immagini: [], copertina_url: "", youtubeUrl: "", data_visualizzazione: "" });
                     }}
                   >
                     ✕ Annulla
@@ -1733,6 +1735,18 @@ const Dashboard = () => {
                   value={getCurrentPost()?.youtubeUrl || ""}
                   onChange={(e) => updateCurrentPost({ youtubeUrl: e.target.value })}
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="data_visualizzazione">Data di Visualizzazione (opzionale)</Label>
+                <Input
+                  id="data_visualizzazione"
+                  type="date"
+                  value={getCurrentPost()?.data_visualizzazione || ""}
+                  onChange={(e) => updateCurrentPost({ data_visualizzazione: e.target.value })}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Scegli la data in cui l'articolo deve essere visualizzato. Se non specificata, verrà utilizzata la data di creazione.
+                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contenuto">Contenuto *</Label>
