@@ -19,6 +19,7 @@ interface BlogPost {
   excerpt: string;
   autore: string;
   created_at: string;
+  data_visualizzazione?: string; // 📅 Optional display date
   categoria: string;
   immagini: string[];
   copertina_url: string;
@@ -160,7 +161,7 @@ const Blog = () => {
       try {
         const { data, error } = await supabase
           .from("blog_posts")
-          .select("id, titolo, contenuto, excerpt, autore, created_at, categoria, immagini, copertina_url, youtube_url")
+          .select("id, titolo, contenuto, excerpt, autore, created_at, data_visualizzazione, categoria, immagini, copertina_url, youtube_url")
           .eq("pubblicato", true)
           .order("created_at", { ascending: false });
 
@@ -373,7 +374,7 @@ const Blog = () => {
                       </div>
                       <div className="flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />
-                        <span>{post.created_at ? new Date(post.created_at).toLocaleDateString('it-IT', {
+                        <span>{(post.data_visualizzazione || post.created_at) ? new Date(post.data_visualizzazione || post.created_at).toLocaleDateString('it-IT', {
                           day: 'numeric',
                           month: 'short'
                         }) : "-"}</span>
@@ -476,7 +477,7 @@ const Blog = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
-                    <span>{currentPost.created_at ? new Date(currentPost.created_at).toLocaleDateString('it-IT', {
+                    <span>{(currentPost.data_visualizzazione || currentPost.created_at) ? new Date(currentPost.data_visualizzazione || currentPost.created_at).toLocaleDateString('it-IT', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
