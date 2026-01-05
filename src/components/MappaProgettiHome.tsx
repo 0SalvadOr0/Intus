@@ -293,7 +293,8 @@ const progetti: Progetto[] = [
     destinatari: "Comunità locali e nuove generazioni",
     ente: "Regione Siciliana e Presidenza Consiglio Ministri - Dip. Gioventù e Servizio Civile Universale - Fondo Politiche Giovanili 2023",
     categoria: "territoriale",
-    stato: "in-corso"
+    stato: "in-corso",
+    immagini: ["/files/projectsImage/contatto_radio.jpeg"]
   },
   {
     id: "20",
